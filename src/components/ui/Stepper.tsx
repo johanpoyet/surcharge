@@ -17,8 +17,11 @@ type StepperProps = {
   format?: (value: number) => string;
   /** Unité affichée sous la valeur (`lg`) ou à côté (`md`). */
   unit?: string;
-  /** `lg` : séance en cours (h 56, unité en dessous) ; `md` : formulaires (h 52, unité à côté). */
-  size?: 'lg' | 'md';
+  /**
+   * `xl` : poids de l'onboarding (h 72) ; `lg` : séance en cours (h 56, unité en dessous) ;
+   * `md` : formulaires (h 52, unité à côté).
+   */
+  size?: 'xl' | 'lg' | 'md';
   decrementLabel?: string;
   incrementLabel?: string;
   className?: string;
@@ -91,8 +94,12 @@ export function Stepper({
 
   const formattedStep = unit ? `${formatNumber(step, 2)} ${unit}` : formatNumber(step, 2);
   const large = size === 'lg';
-  const buttonClass = 'h-11 w-11 items-center justify-center rounded-button active:opacity-80';
-  const iconSize = large ? 24 : 22;
+  const huge = size === 'xl';
+  const buttonClass = cn(
+    'items-center justify-center active:opacity-80',
+    huge ? 'h-[52px] w-[52px] rounded-input' : 'h-11 w-11 rounded-button',
+  );
+  const iconSize = huge ? 26 : large ? 24 : 22;
 
   const renderButton = (direction: 1 | -1) => {
     const increment = direction === 1;
@@ -128,14 +135,19 @@ export function Stepper({
     <View
       className={cn(
         'flex-row items-center justify-between',
-        large
-          ? 'h-14 rounded-input border border-line bg-bg px-[5px]'
-          : 'h-[52px] w-40 rounded-input bg-surface px-1',
+        huge && 'h-[72px] rounded-cardSm bg-surface px-2.5',
+        large && 'h-14 rounded-input border border-line bg-bg px-[5px]',
+        size === 'md' && 'h-[52px] w-40 rounded-input bg-surface px-1',
         className,
       )}
     >
       {renderButton(-1)}
-      {large ? (
+      {huge ? (
+        <Text className="font-display text-44 text-text" accessibilityLiveRegion="polite">
+          {display}
+          {unit ? <Text className="text-22 text-muted"> {unit}</Text> : null}
+        </Text>
+      ) : large ? (
         <View className="items-center" accessibilityLiveRegion="polite">
           <Text className="font-display text-26 text-text">{display}</Text>
           {unit ? (

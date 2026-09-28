@@ -10,6 +10,8 @@ type SegmentedControlProps<T extends string> = {
   onChange: (value: T) => void;
   /** `md` : Sem./Mois (sur fond d'écran) ; `sm` : 1M/3M/1A, Charge/Volume/Reps (dans une carte). */
   size?: 'md' | 'sm';
+  /** Fond du conteneur : `surface` sur l'écran, `bg` dans une carte (défaut selon la taille). */
+  tone?: 'surface' | 'bg';
   className?: string;
 };
 
@@ -18,15 +20,18 @@ export function SegmentedControl<T extends string>({
   value,
   onChange,
   size = 'md',
+  tone,
   className,
 }: SegmentedControlProps<T>) {
   const medium = size === 'md';
+  const background = (tone ?? (medium ? 'surface' : 'bg')) === 'surface' ? 'bg-surface' : 'bg-bg';
   return (
     <View
       accessibilityRole="tablist"
       className={cn(
         'flex-row p-[3px]',
-        medium ? 'rounded-button bg-surface' : 'rounded-[9px] bg-bg',
+        medium ? 'rounded-button' : 'rounded-[9px]',
+        background,
         className,
       )}
     >
