@@ -30,3 +30,27 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Interligne des gros titres** : sur iOS, un `lineHeight` inférieur à la taille de police
   (ex. 55 px pour 60 px, comme la maquette de connexion) rogne les accents des majuscules
   (« SOULÈVE »). À traiter dans le composant de titre en Phase 1 (une ligne par `Text`).
+
+## Phase 1
+
+- **`react-native-svg`** (hors liste section 2) : dépendance obligatoire de `lucide-react-native`
+  (seule lib d'icônes autorisée) ; sert aussi au logo et au filigrane.
+- **`expo-image` et `expo-haptics` installés dès la Phase 1** (prévus section 2) : utilisés par
+  PhotoSlot et par le Stepper / DifficultyPicker.
+- **Tokens ajoutés depuis les maquettes** : `lineStrong` `#3A3A3A` (bordures pointillées),
+  opacités du volt (`volt-subtle` / `volt-soft` / `volt-border`) et du noir sur volt,
+  tailles 56 / 40 / 32 / 24 / 18 / 10, rayons 7 (badge) et 16, espacements de lettres en px
+  (React Native n'a pas d'unité em).
+- **Button `secondary`** : fond transparent + bordure `line` comme les maquettes (Apple / Google,
+  « Modifier ») plutôt que fond `surface` du SPEC. Variantes `dark` / `darkOutline` ajoutées pour
+  la carte volt « Séance du jour ».
+- **Switch 48×28** (SPEC) ; les maquettes montrent 46×28. État désactivé : piste `line`,
+  pastille `muted` (absent des maquettes).
+- **TabBar présentationnelle** : elle reçoit onglets, onglet actif et callbacks ; le branchement
+  sur la navigation Expo Router se fera avec le layout `(tabs)` en Phase 2.
+- **Composants en plus de la section 5** : `Heading`, `StackedTitle` (titre multi-lignes serré
+  sans rogner les accents), `Overline`, `Logo`, `BrandWatermark`, `Checkbox` (CGU) et
+  `ProgressSegments` (séance, inscription).
+- **Écran `/_dev/components`** : redirige vers `/` hors mode développement.
+- **Tests** : Lucide est résolu vers son build CommonJS dans Jest (le build React Native est en
+  `.mjs`) ; safe area et haptique sont simulés dans `jest.setup.ts`.
