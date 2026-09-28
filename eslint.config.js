@@ -7,6 +7,7 @@ module.exports = defineConfig([
     ignores: ['dist/*', '.expo/*', 'node_modules/*', 'docs/*', 'src/db/migrations/*'],
   },
   {
+    files: ['**/*.ts', '**/*.tsx'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
     },
