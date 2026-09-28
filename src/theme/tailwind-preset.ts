@@ -1,4 +1,13 @@
-import { colors, fonts, fontSizes, radii, spacing } from './tokens';
+import {
+  colors,
+  fonts,
+  fontSizes,
+  letterSpacings,
+  onVoltAlpha,
+  radii,
+  spacing,
+  voltAlpha,
+} from './tokens';
 
 // Preset Tailwind généré depuis les tokens : aucune valeur n'est dupliquée.
 const sizeScale = Object.fromEntries(
@@ -11,7 +20,13 @@ const px = <T extends Record<string, number>>(values: T) =>
 const preset = {
   theme: {
     extend: {
-      colors,
+      colors: {
+        ...colors,
+        'volt-subtle': voltAlpha.subtle,
+        'volt-soft': voltAlpha.soft,
+        'volt-border': voltAlpha.border,
+        'onVolt-tag': onVoltAlpha.tag,
+      },
       fontFamily: {
         display: [fonts.display],
         body: [fonts.body],
@@ -22,7 +37,7 @@ const preset = {
       fontSize: sizeScale,
       borderRadius: px(radii),
       spacing: px(spacing),
-      letterSpacing: { overline: '0.14em' },
+      letterSpacing: px(letterSpacings),
     },
   },
 };
