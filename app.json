@@ -36,6 +36,14 @@
           "imageWidth": 120,
           "backgroundColor": "#0A0A0A"
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "enableSceneSupport": true
+          }
+        }
       ]
     ],
     "experiments": {

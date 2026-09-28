@@ -23,3 +23,10 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   en `#0A0A0A`.
 - **Prettier sans `eslint-config-prettier`** : ESLint et Prettier tournent séparément
   (`npm run lint`, `npm run format`) pour ne pas ajouter de dépendance.
+- **`expo-build-properties` + `ios.enableSceneSupport: true`** : Xcode 27 (SDK iOS 27) refuse de
+  lancer une app sans cycle de vie UIScene. Sur le SDK 57, Expo (≥ 57.0.23) le rend activable
+  par cette propriété ; il devient le comportement par défaut en SDK 58 (retirer alors
+  l'option). Après changement : `npx expo prebuild --clean`.
+- **Interligne des gros titres** : sur iOS, un `lineHeight` inférieur à la taille de police
+  (ex. 55 px pour 60 px, comme la maquette de connexion) rogne les accents des majuscules
+  (« SOULÈVE »). À traiter dans le composant de titre en Phase 1 (une ligne par `Text`).

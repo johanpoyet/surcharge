@@ -8,7 +8,7 @@ export default function SetupScreen() {
   return (
     <SafeAreaView className="flex-1 bg-bg">
       <View className="flex-1 justify-center px-auth">
-        <Text className="font-display text-60 uppercase leading-[55px] text-text">
+        <Text className="font-display text-60 uppercase text-text">
           {fr.dev.setupTitle}
         </Text>
         <Text className="mt-4 font-body text-16 text-muted">{fr.dev.setupSubtitle}</Text>
