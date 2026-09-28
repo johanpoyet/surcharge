@@ -54,3 +54,31 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Écran `/_dev/components`** : redirige vers `/` hors mode développement.
 - **Tests** : Lucide est résolu vers son build CommonJS dans Jest (le build React Native est en
   `.mjs`) ; safe area et haptique sont simulés dans `jest.setup.ts`.
+
+## Phase 2
+
+- **Création du profil par trigger** (`0002_profil_auto.sql`) : `on_auth_user_created` insère la
+  ligne `profiles` avec le prénom des métadonnées d'inscription (ou `given_name` pour
+  Apple / Google, sinon le début de l'e-mail). Fonctionne pour tous les modes de connexion.
+- **Migrations testées sur PGlite** avec une simulation minimale des schémas Supabase (`auth`,
+  `storage`, `moddatetime`) : trigger profil, RLS lecture / écriture, `updated_at`, contraintes.
+- **CLI Supabase via `npx supabase`** (non ajoutée au `package.json`) : l'installation Homebrew
+  exige des Command Line Tools à jour.
+- **« Confirm email » désactivé** dans Supabase : l'inscription enchaîne directement sur
+  l'onboarding. Si le réglage est réactivé, l'app affiche un message au lieu de planter.
+- **Onboarding enregistré directement dans Supabase** (profil + première pesée) : il suit
+  l'inscription, donc en ligne. Passage par SQLite + outbox en Phase 3, avec le seed.
+- **Onboarding en cours = état en mémoire** (`onboardingPending`) : si l'app est tuée pendant
+  l'étape 2, on arrive sur l'accueil (comme « Passer cette étape »). Retour depuis l'étape 2 =
+  déconnexion (le compte est déjà créé).
+- **Mot de passe oublié** : le lien est demandé depuis l'écran de connexion avec l'e-mail saisi
+  (pas d'écran dédié) ; flux PKCE, le lien rouvre `surcharge://reset-password?code=…`.
+- **Apple et Google** : boutons présents mais inactifs (toast « bientôt disponible »). Il faut le
+  compte Apple Developer payant (la capacité Sign in with Apple empêche de signer avec une
+  Personal Team gratuite) et des identifiants OAuth Google.
+- **`zodResolver` maison** (`src/lib/zodResolver.ts`) plutôt que `@hookform/resolvers`, pour ne
+  pas ajouter de dépendance.
+- **Types Supabase écrits à la main** (`database.types.ts`, tables utilisées seulement) ; à
+  régénérer avec `npx supabase gen types` une fois le projet lié.
+- **Onglets et accueil provisoires** : TabBar branchée sur Expo Router, écrans vides sauf
+  l'en-tête d'accueil et la déconnexion dans le Profil.
