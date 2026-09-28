@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Surcharge – Inscription</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0A0A0A}a{color:#D7FF3A}a:hover{color:#E8FF8A}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #0A0A0A; color: #F5F5F0; font-family: 'Barlow', sans-serif; padding: 56px 24px 32px; display: flex; flex-direction: column; gap: 14px">
+  <svg width="340" height="340" viewBox="0 0 48 48" style="position: absolute; right: -150px; top: 60px" aria-hidden="true"><g transform="skewX(-12) translate(8 0)" fill="#151515"><rect x="8" y="25" width="7" height="13" rx="2"></rect><rect x="18" y="18" width="7" height="20" rx="2"></rect><rect x="28" y="10" width="7" height="28" rx="2"></rect></g></svg>
+
+  <div style="display: flex; align-items: center; gap: 14px; position: relative">
+    <a href="V_Connexion.dc.html" aria-label="Retour" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; background: #151515; color: #F5F5F0; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></a>
+    <div style="flex-grow: 1">
+      <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #9A9A92">Étape 1 / 2</div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; margin-top: 6px"><span style="height: 4px; border-radius: 2px; background: #D7FF3A"></span><span style="height: 4px; border-radius: 2px; background: #2A2A2A"></span></div>
+    </div>
+  </div>
+
+  <div style="position: relative; margin-top: 16px">
+    <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 56px; line-height: 0.92; text-transform: uppercase">Crée ton<br><span style="color: #D7FF3A">compte.</span></div>
+    <p style="margin: 10px 0 0; font-size: 16px; line-height: 1.4; color: #9A9A92">30 secondes, et on attaque ta première séance.</p>
+  </div>
+
+  <div style="flex-grow: 1"></div>
+
+  <div style="position: relative; display: flex; flex-direction: column; gap: 12px">
+    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #9A9A92">Prénom
+      <input type="text" value="Johan" style="height: 52px; box-sizing: border-box; padding: 0 16px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-size: 16px">
+    </label>
+    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #9A9A92">E-mail
+      <input type="email" value="johan@exemple.fr" style="height: 52px; box-sizing: border-box; padding: 0 16px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-size: 16px">
+    </label>
+    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #9A9A92">Mot de passe
+      <input type="password" value="motdepasse123" style="height: 52px; box-sizing: border-box; padding: 0 16px; border-radius: 12px; border: 1.5px solid #D7FF3A; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-size: 16px">
+    </label>
+    <div style="display: flex; align-items: center; gap: 10px; margin-top: -4px">
+      <div style="display: flex; gap: 4px"><span style="width: 28px; height: 4px; border-radius: 2px; background: #D7FF3A"></span><span style="width: 28px; height: 4px; border-radius: 2px; background: #D7FF3A"></span><span style="width: 28px; height: 4px; border-radius: 2px; background: #2A2A2A"></span></div>
+      <span style="font-size: 13px; color: #9A9A92"><b style="color: #D7FF3A">Correct</b> · 8 caractères minimum</span>
+    </div>
+
+    <label style="display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 14px; color: #9A9A92">
+      <input type="checkbox" checked style="width: 22px; height: 22px; margin: 0; accent-color: #D7FF3A">
+      <span>J'accepte les <a href="#" style="text-decoration: none; font-weight: 600">conditions</a> et la <a href="#" style="text-decoration: none; font-weight: 600">confidentialité</a></span>
+    </label>
+
+    <a href="V_InscriptionProfil.dc.html" style="height: 58px; border-radius: 14px; background: #D7FF3A; color: #0A0A0A; text-decoration: none; display: flex; align-items: center; justify-content: space-between; padding: 0 6px 0 22px; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; text-transform: uppercase">
+      Continuer
+      <span style="width: 46px; height: 46px; border-radius: 10px; background: #0A0A0A; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D7FF3A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+    </a>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <button style="height: 50px; border-radius: 12px; border: 1px solid #2A2A2A; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 15px">Avec Apple</button>
+      <button style="height: 50px; border-radius: 12px; border: 1px solid #2A2A2A; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 15px">Avec Google</button>
+    </div>
+
+    <div style="text-align: center; font-size: 15px; color: #9A9A92">Déjà un compte ? <a href="V_Connexion.dc.html" style="font-weight: 700; text-decoration: none">Se connecter</a></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

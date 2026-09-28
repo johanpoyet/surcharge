@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Surcharge – Exercices</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0A0A0A}</style>
+</helmet>
+<div style="width: 390px; height: 1000px; box-sizing: border-box; position: relative; overflow: hidden; background: #0A0A0A; color: #F5F5F0; font-family: 'Barlow', sans-serif">
+  <div style="padding: 58px 20px 110px; display: flex; flex-direction: column; gap: 14px">
+
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 34px; line-height: 1; text-transform: uppercase">Exercices</div>
+      <a href="V_CreerExercice.dc.html" aria-label="Créer un exercice" style="width: 44px; height: 44px; border-radius: 12px; background: #D7FF3A; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></a>
+    </div>
+
+    <label style="height: 48px; border-radius: 12px; background: #151515; border: 1px solid #2A2A2A; box-sizing: border-box; display: flex; align-items: center; gap: 10px; padding: 0 14px; color: #9A9A92">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+      <input aria-label="Rechercher un exercice" placeholder="Rechercher un exercice" style="flex-grow: 1; min-width: 0; border: none; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-size: 16px">
+    </label>
+
+    <div style="display: flex; gap: 6px; margin-right: -20px">
+      <button style="height: 36px; padding: 0 14px; flex-shrink: 0; border: none; border-radius: 10px; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 14px">Tous</button>
+      <button style="height: 36px; padding: 0 14px; flex-shrink: 0; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Pecs</button>
+      <button style="height: 36px; padding: 0 14px; flex-shrink: 0; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Dos</button>
+      <button style="height: 36px; padding: 0 14px; flex-shrink: 0; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Épaules</button>
+      <button style="height: 36px; padding: 0 14px; flex-shrink: 0; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Jambes</button>
+      <button style="height: 36px; padding: 0 14px; flex-shrink: 0; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Bras</button>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; font-size: 13px; color: #9A9A92"><span>24 exercices</span><span>Tri : dernière utilisation</span></div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <a href="V_ExerciceDetail.dc.html" style="height: 72px; border-radius: 14px; background: #151515; padding: 0 14px 0 10px; display: flex; align-items: center; gap: 12px; color: #F5F5F0; text-decoration: none">
+        <span style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 12px; background: #1F1F1F; display: flex; align-items: center; justify-content: center; color: #6B6B65"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>
+        <span style="flex-grow: 1"><span style="display: block; font-weight: 700; font-size: 16px">Développé couché</span><span style="display: block; font-size: 13px; color: #9A9A92">Pecs · aujourd'hui</span></span>
+        <span style="text-align: right"><span style="display: block; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; line-height: 1">82,5 kg</span><span style="display: block; font-size: 12px; font-weight: 700; color: #D7FF3A">↑ record</span></span>
+      </a>
+      <a href="V_ExerciceDetail.dc.html" style="height: 72px; border-radius: 14px; background: #151515; padding: 0 14px 0 10px; display: flex; align-items: center; gap: 12px; color: #F5F5F0; text-decoration: none">
+        <span style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 12px; background: #1F1F1F; display: flex; align-items: center; justify-content: center; color: #6B6B65"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>
+        <span style="flex-grow: 1"><span style="display: block; font-weight: 700; font-size: 16px">Squat</span><span style="display: block; font-size: 13px; color: #9A9A92">Jambes · 25 sept.</span></span>
+        <span style="text-align: right"><span style="display: block; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; line-height: 1">110 kg</span><span style="display: block; font-size: 12px; font-weight: 700; color: #D7FF3A">↑ record</span></span>
+      </a>
+      <a href="V_ExerciceDetail.dc.html" style="height: 72px; border-radius: 14px; background: #151515; padding: 0 14px 0 10px; display: flex; align-items: center; gap: 12px; color: #F5F5F0; text-decoration: none">
+        <span style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 12px; background: #1F1F1F; display: flex; align-items: center; justify-content: center; color: #6B6B65"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>
+        <span style="flex-grow: 1"><span style="display: block; font-weight: 700; font-size: 16px">Rowing barre</span><span style="display: block; font-size: 13px; color: #9A9A92">Dos · 23 sept.</span></span>
+        <span style="text-align: right"><span style="display: block; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; line-height: 1">72,5 kg</span><span style="display: block; font-size: 12px; font-weight: 600; color: #9A9A92">= stable</span></span>
+      </a>
+      <a href="V_ExerciceDetail.dc.html" style="height: 72px; border-radius: 14px; background: #151515; padding: 0 14px 0 10px; display: flex; align-items: center; gap: 12px; color: #F5F5F0; text-decoration: none">
+        <span style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 12px; background: #1F1F1F; display: flex; align-items: center; justify-content: center; color: #6B6B65"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>
+        <span style="flex-grow: 1"><span style="display: block; font-weight: 700; font-size: 16px">Tractions lestées</span><span style="display: block; font-size: 13px; color: #9A9A92">Dos · 23 sept.</span></span>
+        <span style="text-align: right"><span style="display: block; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; line-height: 1">+10 kg</span><span style="display: block; font-size: 12px; font-weight: 700; color: #D7FF3A">↑ 2,5 kg</span></span>
+      </a>
+      <a href="V_ExerciceDetail.dc.html" style="height: 72px; border-radius: 14px; background: #151515; padding: 0 14px 0 10px; display: flex; align-items: center; gap: 12px; color: #F5F5F0; text-decoration: none">
+        <span style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 12px; background: #1F1F1F; display: flex; align-items: center; justify-content: center; color: #6B6B65"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>
+        <span style="flex-grow: 1"><span style="display: block; font-weight: 700; font-size: 16px">Élévations latérales</span><span style="display: block; font-size: 13px; color: #9A9A92">Épaules · 21 sept.</span></span>
+        <span style="text-align: right"><span style="display: block; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; line-height: 1">12 kg</span><span style="display: block; font-size: 12px; font-weight: 600; color: #9A9A92">= stable</span></span>
+      </a>
+      <a href="V_ExerciceDetail.dc.html" style="height: 72px; border-radius: 14px; background: #151515; padding: 0 14px 0 10px; display: flex; align-items: center; gap: 12px; color: #F5F5F0; text-decoration: none">
+        <span style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 12px; background: #1F1F1F; display: flex; align-items: center; justify-content: center; color: #6B6B65"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>
+        <span style="flex-grow: 1"><span style="display: block; font-weight: 700; font-size: 16px">Soulevé de terre</span><span style="display: block; font-size: 13px; color: #9A9A92">Dos · 18 sept.</span></span>
+        <span style="text-align: right"><span style="display: block; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; line-height: 1">140 kg</span><span style="display: block; font-size: 12px; font-weight: 700; color: #D7FF3A">↑ 5 kg</span></span>
+      </a>
+      <a href="V_ExerciceDetail.dc.html" style="height: 72px; border-radius: 14px; background: #151515; padding: 0 14px 0 10px; display: flex; align-items: center; gap: 12px; color: #F5F5F0; text-decoration: none">
+        <span style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 12px; background: #1F1F1F; display: flex; align-items: center; justify-content: center; color: #6B6B65"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>
+        <span style="flex-grow: 1"><span style="display: block; font-weight: 700; font-size: 16px">Curl biceps haltères</span><span style="display: block; font-size: 13px; color: #9A9A92">Bras · 16 sept.</span></span>
+        <span style="text-align: right"><span style="display: block; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; line-height: 1">16 kg</span><span style="display: block; font-size: 12px; font-weight: 600; color: #FF7A2F">↓ 2 kg</span></span>
+      </a>
+    </div>
+  </div>
+
+  <nav style="position: absolute; left: 0; right: 0; bottom: 0; height: 88px; box-sizing: border-box; padding: 10px 14px 24px; background: #0A0A0A; border-top: 1px solid #1F1F1F; display: flex; align-items: center; justify-content: space-between">
+    <a href="V_Accueil.dc.html" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #9A9A92; text-decoration: none; font-size: 12px; font-weight: 600"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg>Accueil</a>
+    <a href="V_Planning.dc.html" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #9A9A92; text-decoration: none; font-size: 12px; font-weight: 600"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>Séances</a>
+    <button aria-label="Démarrer une séance" style="width: 58px; height: 58px; margin-top: -26px; border: 4px solid #0A0A0A; border-radius: 16px; background: #D7FF3A; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+    <a href="#" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #D7FF3A; text-decoration: none; font-size: 12px; font-weight: 600"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"></path></svg>Exercices</a>
+    <a href="V_Profil.dc.html" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #9A9A92; text-decoration: none; font-size: 12px; font-weight: 600"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4-6 8-6s7 2 8 6"></path></svg>Profil</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

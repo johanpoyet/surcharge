@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Surcharge – Connexion</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0A0A0A}a{color:#D7FF3A}a:hover{color:#E8FF8A}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #0A0A0A; color: #F5F5F0; font-family: 'Barlow', sans-serif; padding: 60px 24px 34px; display: flex; flex-direction: column; gap: 22px">
+  <svg width="340" height="340" viewBox="0 0 48 48" style="position: absolute; right: -120px; top: 40px" aria-hidden="true"><g transform="skewX(-12) translate(8 0)" fill="#151515"><rect x="8" y="25" width="7" height="13" rx="2"></rect><rect x="18" y="18" width="7" height="20" rx="2"></rect><rect x="28" y="10" width="7" height="28" rx="2"></rect></g></svg>
+
+  <div style="display: flex; align-items: center; gap: 10px; position: relative">
+    <svg width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#D7FF3A"></rect><g transform="skewX(-12) translate(8 0)" fill="#0A0A0A"><rect x="8" y="25" width="7" height="13" rx="2"></rect><rect x="18" y="18" width="7" height="20" rx="2"></rect><rect x="28" y="10" width="7" height="28" rx="2"></rect></g></svg>
+    <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 24px">SURCHARGE</div>
+  </div>
+
+  <div style="position: relative; margin-top: 18px">
+    <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 60px; line-height: 0.92; text-transform: uppercase">Soulève.<br>Note.<br><span style="color: #D7FF3A">Progresse.</span></div>
+    <p style="margin: 14px 0 0; font-size: 16px; line-height: 1.45; color: #9A9A92; max-width: 290px">Ton carnet de muscu. Chaque série, chaque kilo, chaque progrès.</p>
+  </div>
+
+  <div style="flex-grow: 1"></div>
+
+  <div style="display: flex; flex-direction: column; gap: 14px; position: relative">
+    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #9A9A92">E-mail
+      <input type="email" value="johan@exemple.fr" style="height: 52px; box-sizing: border-box; padding: 0 16px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-size: 16px">
+    </label>
+    <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #9A9A92">Mot de passe
+      <input type="password" value="motdepasse" style="height: 52px; box-sizing: border-box; padding: 0 16px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-size: 16px">
+    </label>
+    <a href="#" style="align-self: flex-end; font-size: 14px; font-weight: 600; text-decoration: none">Mot de passe oublié ?</a>
+
+    <button style="height: 58px; border: none; border-radius: 14px; background: #D7FF3A; color: #0A0A0A; display: flex; align-items: center; justify-content: space-between; padding: 0 6px 0 22px; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; text-transform: uppercase">
+      Se connecter
+      <span style="width: 46px; height: 46px; border-radius: 10px; background: #0A0A0A; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D7FF3A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+    </button>
+
+    <div style="display: flex; align-items: center; gap: 12px; color: #9A9A92; font-size: 13px"><span style="flex-grow: 1; height: 1px; background: #2A2A2A"></span>ou<span style="flex-grow: 1; height: 1px; background: #2A2A2A"></span></div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <button style="height: 50px; border-radius: 12px; border: 1px solid #2A2A2A; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 15px">Apple</button>
+      <button style="height: 50px; border-radius: 12px; border: 1px solid #2A2A2A; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 15px">Google</button>
+    </div>
+
+    <div style="text-align: center; font-size: 15px; color: #9A9A92">Pas encore de compte ? <a href="#" style="font-weight: 700; text-decoration: none">Créer un compte</a></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Surcharge – Créer un exercice</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0A0A0A}</style>
+</helmet>
+<div style="width: 390px; height: 980px; box-sizing: border-box; position: relative; overflow: hidden; background: #0A0A0A; color: #F5F5F0; font-family: 'Barlow', sans-serif; padding: 52px 20px 32px; display: flex; flex-direction: column; gap: 16px">
+
+  <div style="display: flex; align-items: center; justify-content: space-between">
+    <a href="V_Exercices.dc.html" style="height: 44px; display: flex; align-items: center; color: #9A9A92; text-decoration: none; font-weight: 600; font-size: 15px">Annuler</a>
+    <div style="font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #9A9A92">Nouvel exercice</div>
+    <button style="height: 44px; padding: 0; border: none; background: transparent; color: #D7FF3A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 15px">Enregistrer</button>
+  </div>
+
+  <div style="height: 180px; border-radius: 20px; border: 1.5px dashed #D7FF3A; background: rgba(215,255,58,0.04); box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 16px; text-align: center">
+    <span style="width: 52px; height: 52px; border-radius: 14px; background: #D7FF3A; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>
+    <div style="font-weight: 700; font-size: 16px">Ajouter une photo</div>
+    <div style="font-size: 13px; color: #9A9A92; max-width: 260px">Prends la machine en photo à la salle pour la reconnaître d'un coup d'œil.</div>
+    <div style="display: flex; gap: 8px">
+      <button style="height: 36px; padding: 0 14px; border: none; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 13px">Appareil photo</button>
+      <button style="height: 36px; padding: 0 14px; border: none; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 13px">Galerie</button>
+    </div>
+  </div>
+
+  <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9A92">Nom de l'exercice
+    <input value="Presse à cuisses 45°" style="height: 52px; box-sizing: border-box; padding: 0 16px; border-radius: 12px; border: 1.5px solid #D7FF3A; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 17px; text-transform: none; letter-spacing: 0">
+  </label>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9A92">Muscle principal</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px">
+      <button aria-pressed="false" style="height: 38px; padding: 0 14px; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Pecs</button>
+      <button aria-pressed="false" style="height: 38px; padding: 0 14px; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Dos</button>
+      <button aria-pressed="false" style="height: 38px; padding: 0 14px; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Épaules</button>
+      <button aria-pressed="true" style="height: 38px; padding: 0 14px; border: none; border-radius: 10px; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 14px">Jambes</button>
+      <button aria-pressed="false" style="height: 38px; padding: 0 14px; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Bras</button>
+      <button aria-pressed="false" style="height: 38px; padding: 0 14px; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Abdos</button>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9A92">Équipement</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 6px">
+      <button aria-pressed="false" style="height: 38px; padding: 0 14px; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Barre</button>
+      <button aria-pressed="false" style="height: 38px; padding: 0 14px; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Haltères</button>
+      <button aria-pressed="true" style="height: 38px; padding: 0 14px; border: none; border-radius: 10px; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 14px">Machine</button>
+      <button aria-pressed="false" style="height: 38px; padding: 0 14px; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Poulie</button>
+      <button aria-pressed="false" style="height: 38px; padding: 0 14px; border: 1px solid #2A2A2A; border-radius: 10px; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Poids du corps</button>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9A92">Pas des boutons + / −</div>
+    <div style="display: flex; align-items: center; gap: 12px">
+      <div style="width: 160px; height: 52px; border-radius: 12px; background: #151515; display: flex; align-items: center; justify-content: space-between; padding: 0 4px">
+        <button aria-label="Diminuer le pas" style="width: 44px; height: 44px; border: none; border-radius: 10px; background: #1F1F1F; color: #F5F5F0; font-size: 22px">−</button>
+        <span style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px">5 kg</span>
+        <button aria-label="Augmenter le pas" style="width: 44px; height: 44px; border: none; border-radius: 10px; background: #D7FF3A; color: #0A0A0A; font-size: 22px; font-weight: 700">+</button>
+      </div>
+      <div style="font-size: 13px; color: #9A9A92; line-height: 1.35">Poids ajouté à chaque appui pendant la séance.</div>
+    </div>
+  </div>
+
+  <label style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9A92">Note (facultatif)
+    <textarea rows="2" style="box-sizing: border-box; padding: 12px 16px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-size: 15px; text-transform: none; letter-spacing: 0; resize: none">Siège cran 4, pieds largeur épaules</textarea>
+  </label>
+
+  <div style="flex-grow: 1"></div>
+
+  <button style="height: 58px; flex-shrink: 0; border: none; border-radius: 14px; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; text-transform: uppercase">Créer l'exercice</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":980}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

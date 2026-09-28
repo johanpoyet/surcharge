@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Surcharge – Inscription, ton profil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0A0A0A}a{color:#9A9A92}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #0A0A0A; color: #F5F5F0; font-family: 'Barlow', sans-serif; padding: 56px 24px 32px; display: flex; flex-direction: column; gap: 20px">
+
+  <div style="display: flex; align-items: center; gap: 14px">
+    <a href="V_Inscription.dc.html" aria-label="Retour" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; background: #151515; color: #F5F5F0; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></a>
+    <div style="flex-grow: 1">
+      <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #9A9A92">Étape 2 / 2</div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; margin-top: 6px"><span style="height: 4px; border-radius: 2px; background: #D7FF3A"></span><span style="height: 4px; border-radius: 2px; background: #D7FF3A"></span></div>
+    </div>
+  </div>
+
+  <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 48px; line-height: 0.92; text-transform: uppercase">On fait<br><span style="color: #D7FF3A">connaissance.</span></div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9A92">Ton poids actuel</div>
+      <div style="display: flex; padding: 3px; border-radius: 9px; background: #151515">
+        <button style="height: 28px; padding: 0 10px; border: none; border-radius: 7px; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 12px">kg</button>
+        <button style="height: 28px; padding: 0 10px; border: none; border-radius: 7px; background: transparent; color: #9A9A92; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 12px">lb</button>
+      </div>
+    </div>
+    <div style="height: 72px; border-radius: 16px; background: #151515; display: flex; align-items: center; justify-content: space-between; padding: 0 10px">
+      <button aria-label="Retirer 0,1 kg" style="width: 52px; height: 52px; border-radius: 12px; border: none; background: #1F1F1F; color: #F5F5F0; font-size: 26px; font-weight: 600">−</button>
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 44px; line-height: 1">78,4 <span style="font-size: 22px; color: #9A9A92">kg</span></div>
+      <button aria-label="Ajouter 0,1 kg" style="width: 52px; height: 52px; border-radius: 12px; border: none; background: #D7FF3A; color: #0A0A0A; font-size: 26px; font-weight: 700">+</button>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9A92">Ton objectif</div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <button aria-pressed="true" style="height: 52px; border-radius: 12px; border: none; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 15px">Prendre du muscle</button>
+      <button aria-pressed="false" style="height: 52px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 15px">Gagner en force</button>
+      <button aria-pressed="false" style="height: 52px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 15px">Perdre du gras</button>
+      <button aria-pressed="false" style="height: 52px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 15px">Rester en forme</button>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+    <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9A92">Séances par semaine</div>
+    <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px">
+      <button aria-pressed="false" style="height: 48px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px">1</button>
+      <button aria-pressed="false" style="height: 48px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px">2</button>
+      <button aria-pressed="true" style="height: 48px; border-radius: 12px; border: none; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px">3</button>
+      <button aria-pressed="false" style="height: 48px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px">4</button>
+      <button aria-pressed="false" style="height: 48px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px">5</button>
+      <button aria-pressed="false" style="height: 48px; border-radius: 12px; border: 1px solid #2A2A2A; background: #151515; color: #F5F5F0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px">6+</button>
+    </div>
+    <div style="font-size: 13px; color: #9A9A92">Sert à préremplir ton planning. Tu pourras tout changer.</div>
+  </div>
+
+  <div style="flex-grow: 1"></div>
+
+  <a href="V_Accueil.dc.html" style="height: 58px; flex-shrink: 0; border-radius: 14px; background: #D7FF3A; color: #0A0A0A; text-decoration: none; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; text-transform: uppercase">C'est parti</a>
+  <a href="V_Accueil.dc.html" style="align-self: center; margin-top: -8px; min-height: 32px; display: flex; align-items: center; text-decoration: none; font-weight: 600; font-size: 14px">Passer cette étape</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

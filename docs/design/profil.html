@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Surcharge – Profil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0A0A0A}a{color:#D7FF3A}</style>
+</helmet>
+<div style="width: 390px; height: 1300px; box-sizing: border-box; position: relative; overflow: hidden; background: #0A0A0A; color: #F5F5F0; font-family: 'Barlow', sans-serif">
+  <div style="padding: 58px 20px 120px; display: flex; flex-direction: column; gap: 16px">
+
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 34px; line-height: 1; text-transform: uppercase">Profil</div>
+      <button aria-label="Réglages" style="width: 44px; height: 44px; border-radius: 12px; border: none; background: #151515; color: #F5F5F0; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"></path></svg></button>
+    </div>
+
+    <div style="border-radius: 18px; background: #151515; padding: 16px; display: flex; align-items: center; gap: 14px">
+      <div style="width: 72px; height: 72px; flex-shrink: 0; border-radius: 18px; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 40px; display: flex; align-items: center; justify-content: center">J</div>
+      <div style="flex-grow: 1">
+        <div style="font-size: 22px; font-weight: 700">Johan</div>
+        <div style="font-size: 14px; color: #9A9A92">Membre depuis sept. 2026</div>
+      </div>
+      <button style="height: 40px; padding: 0 14px; border: 1px solid #2A2A2A; border-radius: 10px; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px">Modifier</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <div style="border-radius: 14px; background: #151515; padding: 14px 12px"><div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 30px; line-height: 1">86</div><div style="font-size: 13px; color: #9A9A92; margin-top: 4px">séances au total</div></div>
+      <div style="border-radius: 14px; background: #151515; padding: 14px 12px"><div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 30px; line-height: 1">79 h</div><div style="font-size: 13px; color: #9A9A92; margin-top: 4px">à la salle</div></div>
+      <div style="border-radius: 14px; background: #151515; padding: 14px 12px"><div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 30px; line-height: 1">412 t</div><div style="font-size: 13px; color: #9A9A92; margin-top: 4px">soulevées</div></div>
+    </div>
+
+    <div style="border-radius: 18px; background: #151515; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <div style="font-size: 18px; font-weight: 700">Poids corporel</div>
+        <div style="display: flex; padding: 3px; border-radius: 9px; background: #0A0A0A">
+          <button style="height: 28px; padding: 0 10px; border: none; border-radius: 7px; background: transparent; color: #9A9A92; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 12px">1M</button>
+          <button style="height: 28px; padding: 0 10px; border: none; border-radius: 7px; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 12px">3M</button>
+          <button style="height: 28px; padding: 0 10px; border: none; border-radius: 7px; background: transparent; color: #9A9A92; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 12px">1A</button>
+        </div>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 10px">
+        <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 40px; line-height: 1">78,4 kg</div>
+        <div style="font-size: 14px; font-weight: 600; color: #D7FF3A">−1,8 kg en 3 mois</div>
+      </div>
+      <svg width="100%" height="110" viewBox="0 0 318 110" preserveAspectRatio="none" aria-hidden="true">
+        <line x1="0" y1="20" x2="318" y2="20" stroke="#1F1F1F" stroke-width="1"></line>
+        <line x1="0" y1="55" x2="318" y2="55" stroke="#1F1F1F" stroke-width="1"></line>
+        <line x1="0" y1="90" x2="318" y2="90" stroke="#1F1F1F" stroke-width="1"></line>
+        <path d="M4 22 L30 26 L56 20 L82 34 L108 32 L134 44 L160 42 L186 56 L212 52 L238 66 L264 70 L290 78 L314 84" fill="none" stroke="#D7FF3A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        <circle cx="314" cy="84" r="5" fill="#D7FF3A"></circle>
+      </svg>
+      <div style="display: flex; justify-content: space-between; font-size: 12px; color: #9A9A92; margin-top: -6px"><span>Juil.</span><span>Août</span><span>Sept.</span></div>
+      <button style="height: 48px; border-radius: 12px; border: 1.5px solid #D7FF3A; background: transparent; color: #D7FF3A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 15px">+ Ajouter une pesée</button>
+    </div>
+
+    <div style="border-radius: 18px; background: #151515; padding: 16px; display: flex; flex-direction: column; gap: 4px">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px">
+        <div style="font-size: 18px; font-weight: 700">Records personnels</div>
+        <a href="#" style="font-size: 14px; font-weight: 600; text-decoration: none">Tout voir</a>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; height: 56px; border-bottom: 1px solid #1F1F1F">
+        <span style="width: 36px; height: 36px; border-radius: 10px; background: rgba(215,255,58,0.12); display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D7FF3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8"></path></svg></span>
+        <div style="flex-grow: 1"><div style="font-weight: 700; font-size: 15px">Développé couché</div><div style="font-size: 13px; color: #9A9A92">28 sept.</div></div>
+        <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; color: #D7FF3A">82,5 kg × 6</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; height: 56px; border-bottom: 1px solid #1F1F1F">
+        <span style="width: 36px; height: 36px; border-radius: 10px; background: rgba(215,255,58,0.12); display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D7FF3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8"></path></svg></span>
+        <div style="flex-grow: 1"><div style="font-weight: 700; font-size: 15px">Squat</div><div style="font-size: 13px; color: #9A9A92">25 sept.</div></div>
+        <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; color: #D7FF3A">110 kg × 5</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; height: 56px">
+        <span style="width: 36px; height: 36px; border-radius: 10px; background: rgba(215,255,58,0.12); display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D7FF3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8"></path></svg></span>
+        <div style="flex-grow: 1"><div style="font-weight: 700; font-size: 15px">Soulevé de terre</div><div style="font-size: 13px; color: #9A9A92">14 sept.</div></div>
+        <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; color: #D7FF3A">140 kg × 3</div>
+      </div>
+    </div>
+
+    <div style="border-radius: 18px; background: #151515; overflow: hidden">
+      <button style="width: 100%; height: 54px; padding: 0 16px; border: none; border-bottom: 1px solid #1F1F1F; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: space-between">Unité de poids<span style="color: #9A9A92; font-weight: 500">kg ›</span></button>
+      <button style="width: 100%; height: 54px; padding: 0 16px; border: none; border-bottom: 1px solid #1F1F1F; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: space-between">Repos par défaut<span style="color: #9A9A92; font-weight: 500">2:00 ›</span></button>
+      <button aria-pressed="true" style="width: 100%; height: 54px; padding: 0 16px; border: none; border-bottom: 1px solid #1F1F1F; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: space-between">Rappel les jours de séance<span style="width: 46px; height: 28px; border-radius: 14px; background: #D7FF3A; position: relative"><span style="position: absolute; right: 3px; top: 3px; width: 22px; height: 22px; border-radius: 50%; background: #0A0A0A"></span></span></button>
+      <button style="width: 100%; height: 54px; padding: 0 16px; border: none; border-bottom: 1px solid #1F1F1F; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 600; display: flex; align-items: center; justify-content: space-between">Exporter mes données<span style="color: #9A9A92; font-weight: 500">CSV ›</span></button>
+      <button style="width: 100%; height: 54px; padding: 0 16px; border: none; background: transparent; color: #FF6B6B; font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 600; text-align: left">Se déconnecter</button>
+    </div>
+  </div>
+
+  <nav style="position: absolute; left: 0; right: 0; bottom: 0; height: 88px; box-sizing: border-box; padding: 10px 14px 24px; background: #0A0A0A; border-top: 1px solid #1F1F1F; display: flex; align-items: center; justify-content: space-between">
+    <a href="V_Accueil.dc.html" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #9A9A92; text-decoration: none; font-size: 12px; font-weight: 600"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg>Accueil</a>
+    <a href="V_Planning.dc.html" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #9A9A92; text-decoration: none; font-size: 12px; font-weight: 600"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>Séances</a>
+    <button aria-label="Démarrer une séance" style="width: 58px; height: 58px; margin-top: -26px; border: 4px solid #0A0A0A; border-radius: 16px; background: #D7FF3A; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+    <a href="#" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #9A9A92; text-decoration: none; font-size: 12px; font-weight: 600"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"></path></svg>Exercices</a>
+    <a href="#" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #D7FF3A; text-decoration: none; font-size: 12px; font-weight: 600"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4-6 8-6s7 2 8 6"></path></svg>Profil</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1300}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
