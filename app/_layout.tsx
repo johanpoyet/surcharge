@@ -14,9 +14,35 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
 import { ToastProvider } from '@/components/ui';
+import { AuthProvider, useAuth } from '@/features/auth/AuthProvider';
 import { colors } from '@/theme/tokens';
 
 SplashScreen.preventAutoHideAsync();
+
+/** Garde de navigation : non connecté → (auth) ; connecté → onglets (sauf onboarding en cours). */
+function RootNavigator() {
+  const { session, initializing, onboardingPending } = useAuth();
+
+  useEffect(() => {
+    if (!initializing) SplashScreen.hideAsync();
+  }, [initializing]);
+
+  if (initializing) return null;
+
+  const signedIn = session !== null;
+  return (
+    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
+      <Stack.Protected guard={signedIn && !onboardingPending}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="_dev/components" />
+      </Stack.Protected>
+      <Stack.Protected guard={!signedIn || onboardingPending}>
+        <Stack.Screen name="(auth)" />
+      </Stack.Protected>
+      <Stack.Screen name="reset-password" />
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -27,18 +53,14 @@ export default function RootLayout() {
     Barlow_700Bold,
   });
 
-  const ready = fontsLoaded || fontError !== null;
-
-  useEffect(() => {
-    if (ready) SplashScreen.hideAsync();
-  }, [ready]);
-
-  if (!ready) return null;
+  if (!fontsLoaded && fontError === null) return null;
 
   return (
-    <ToastProvider>
-      <StatusBar style="light" />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }} />
-    </ToastProvider>
+    <AuthProvider>
+      <ToastProvider>
+        <StatusBar style="light" />
+        <RootNavigator />
+      </ToastProvider>
+    </AuthProvider>
   );
 }
