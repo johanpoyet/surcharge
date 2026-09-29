@@ -66,6 +66,7 @@ function RootNavigator() {
           name="workout/summary/[sessionId]"
           options={{ presentation: 'fullScreenModal', gestureEnabled: false }}
         />
+        <Stack.Screen name="body-weight" options={{ presentation: 'modal' }} />
         <Stack.Screen name="_dev/components" />
       </Stack.Protected>
       <Stack.Protected guard={!signedIn || onboardingPending}>

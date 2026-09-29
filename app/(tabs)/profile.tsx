@@ -1,22 +1,136 @@
+import { format, parseISO } from 'date-fns';
+import { fr as frLocale } from 'date-fns/locale';
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ChevronRight } from 'lucide-react-native';
+import { useMemo, useState, type ReactNode } from 'react';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, Card, Heading, useToast } from '@/components/ui';
+import { Button, Card, Heading, StatTile, Switch, useToast } from '@/components/ui';
+import { db } from '@/db/client';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { signOut } from '@/features/auth/api';
 import { authErrorMessage } from '@/features/auth/errors';
-import { useProfile } from '@/features/profile/hooks';
-import { usePendingChanges } from '@/sync/hooks';
+import { useExercises } from '@/features/exercises/hooks';
+import { BodyWeightChartCard } from '@/features/profile/components/BodyWeightChartCard';
+import { RecordsCard } from '@/features/profile/components/RecordsCard';
+import { exportCsv } from '@/features/profile/export';
+import { useBodyWeights, useProfile } from '@/features/profile/hooks';
+import { updateProfile } from '@/features/profile/repository';
+import { globalStats, personalRecords } from '@/features/stats/series';
+import { formatRest } from '@/features/templates/format';
+import { useAllSets, useCompletedSessions } from '@/features/workout/hooks';
 import { fr } from '@/i18n/fr';
+import { formatThousands } from '@/lib/format';
+import { usePendingChanges } from '@/sync/hooks';
+import { colors } from '@/theme/tokens';
+
+const t = fr.profile;
+const REST_CHOICES = [60, 90, 120, 150, 180];
+
+function SettingRow({
+  label,
+  value,
+  onPress,
+  right,
+  last = false,
+}: {
+  label: string;
+  value?: string;
+  onPress?: () => void;
+  right?: ReactNode;
+  last?: boolean;
+}) {
+  return (
+    <Pressable
+      accessibilityRole={onPress ? 'button' : undefined}
+      disabled={!onPress}
+      onPress={onPress}
+      className={`h-[54px] flex-row items-center justify-between px-4 active:opacity-80 ${last ? '' : 'border-b border-surface2'}`}
+    >
+      <Text className="font-body-semibold text-15 text-text">{label}</Text>
+      {right ?? (
+        <View className="flex-row items-center gap-1">
+          <Text className="font-body-medium text-15 text-muted">{value}</Text>
+          <ChevronRight size={16} color={colors.muted} strokeWidth={2} />
+        </View>
+      )}
+    </Pressable>
+  );
+}
 
 export default function ProfileScreen() {
   const toast = useToast();
   const { session } = useAuth();
-  const { firstName } = useProfile();
+  const userId = session?.user.id ?? '';
+  const { profile, firstName } = useProfile();
+  const unit = profile?.weightUnit ?? 'kg';
   const pending = usePendingChanges();
+  const sessions = useCompletedSessions();
+  const sets = useAllSets();
+  const weights = useBodyWeights();
+  const exercises = useExercises();
   const [signingOut, setSigningOut] = useState(false);
+
+  const stats = useMemo(() => globalStats(sessions, sets), [sessions, sets]);
+  const records = useMemo(() => {
+    const names = new Map(exercises.map((e) => [e.id, e.name]));
+    return personalRecords(sets)
+      .filter((r) => names.has(r.exerciseId))
+      .map((r) => ({ ...r, exerciseName: names.get(r.exerciseId) ?? '' }));
+  }, [exercises, sets]);
+
+  const memberSince = session?.user.created_at
+    ? format(parseISO(session.user.created_at), 'MMM yyyy', { locale: frLocale })
+    : '';
+
+  const update = (patch: Parameters<typeof updateProfile>[2]) => {
+    if (profile) updateProfile(db, profile.id, patch);
+  };
+
+  const editName = () =>
+    Alert.prompt(
+      t.editNameTitle,
+      undefined,
+      [
+        { text: t.cancel, style: 'cancel' },
+        {
+          text: t.save,
+          onPress: (value?: string) => {
+            const name = value?.trim();
+            if (name) update({ firstName: name.slice(0, 40) });
+          },
+        },
+      ],
+      'plain-text',
+      firstName,
+    );
+
+  const chooseUnit = () =>
+    Alert.alert(t.settings.unitTitle, undefined, [
+      { text: fr.units.kg, onPress: () => update({ weightUnit: 'kg' }) },
+      { text: fr.units.lb, onPress: () => update({ weightUnit: 'lb' }) },
+      { text: t.cancel, style: 'cancel' },
+    ]);
+
+  const chooseRest = () =>
+    Alert.alert(t.settings.restTitle, undefined, [
+      ...REST_CHOICES.map((seconds) => ({
+        text: formatRest(seconds),
+        onPress: () => update({ defaultRestSeconds: seconds }),
+      })),
+      { text: t.cancel, style: 'cancel' as const },
+    ]);
+
+  const onExport = async () => {
+    try {
+      const result = await exportCsv(db, userId);
+      if (result === 'empty') toast.show(t.csv.empty);
+      if (result === 'unavailable') toast.show(t.csv.unavailable);
+    } catch {
+      toast.show(t.csv.failed);
+    }
+  };
 
   const onSignOut = async () => {
     setSigningOut(true);
@@ -30,8 +144,9 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView edges={['top']} className="flex-1 bg-bg">
-      <ScrollView contentContainerClassName="gap-4 px-screen pt-3">
-        <Heading size={34}>{fr.profile.title}</Heading>
+      <ScrollView contentContainerClassName="gap-4 px-screen pb-8 pt-3">
+        <Heading size={34}>{t.title}</Heading>
+
         <Card className="flex-row items-center gap-3.5">
           <View className="h-[72px] w-[72px] items-center justify-center rounded-card bg-volt">
             <Text className="font-display text-40 text-onVolt">
@@ -39,16 +154,51 @@ export default function ProfileScreen() {
             </Text>
           </View>
           <View className="flex-1">
-            <Text className="font-body-bold text-22 text-text">{firstName}</Text>
-            <Text className="font-body text-14 text-muted">{session?.user.email}</Text>
+            <Text numberOfLines={1} className="font-body-bold text-22 text-text">
+              {firstName}
+            </Text>
+            <Text className="font-body text-14 text-muted">{t.memberSince(memberSince)}</Text>
           </View>
+          <Button label={t.edit} variant="secondary" size="sm" onPress={editName} />
         </Card>
-        <Text className="font-body text-13 text-muted">
-          {pending === 0 ? fr.profile.synced : fr.profile.pending(pending)}
-        </Text>
-        <Card className="p-0">
+
+        <View className="flex-row gap-2">
+          <StatTile value={String(stats.sessions)} caption={t.stats.sessions} />
+          <StatTile value={String(stats.hours)} unit={t.stats.hoursUnit} caption={t.stats.hours} />
+          <StatTile
+            value={formatThousands(stats.tonnes)}
+            unit={t.stats.tonnesUnit}
+            caption={t.stats.tonnes}
+          />
+        </View>
+
+        <BodyWeightChartCard weights={weights} unit={unit} />
+        <RecordsCard records={records} unit={unit} />
+
+        <Card className="overflow-hidden p-0">
+          <SettingRow label={t.settings.unit} value={fr.units[unit]} onPress={chooseUnit} />
+          <SettingRow
+            label={t.settings.rest}
+            value={formatRest(profile?.defaultRestSeconds ?? 120)}
+            onPress={chooseRest}
+          />
+          <SettingRow
+            label={t.settings.reminders}
+            right={
+              <Switch
+                value={profile?.remindersEnabled ?? true}
+                onValueChange={(remindersEnabled) => update({ remindersEnabled })}
+                accessibilityLabel={t.settings.reminders}
+              />
+            }
+          />
+          <SettingRow
+            label={t.settings.export}
+            value={t.settings.exportValue}
+            onPress={() => void onExport()}
+          />
           <Button
-            label={fr.profile.signOut}
+            label={t.signOut}
             variant="ghost"
             tone="danger"
             loading={signingOut}
@@ -56,9 +206,14 @@ export default function ProfileScreen() {
             className="h-[54px] justify-start px-4"
           />
         </Card>
+
+        <Text className="text-center font-body text-13 text-muted">
+          {pending === 0 ? t.synced : t.pending(pending)}
+        </Text>
+
         {__DEV__ ? (
           <Button
-            label={fr.dev.openComponents}
+            label={t.dev}
             variant="secondary"
             onPress={() => router.push('/_dev/components')}
           />

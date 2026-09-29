@@ -19,7 +19,11 @@ import { deleteLocalPhoto } from '@/features/exercises/photos';
 import { updateExercise } from '@/features/exercises/repository';
 import { usePhotoPicker } from '@/features/exercises/usePhotoPicker';
 import { useProfile } from '@/features/profile/hooks';
+import { FeelingCard } from '@/features/exercises/components/FeelingCard';
+import { ProgressChartCard } from '@/features/exercises/components/ProgressChartCard';
 import { bestEstimated1RM, recordSet } from '@/features/stats/calc';
+import { difficultyAt, exerciseSeries } from '@/features/stats/series';
+import { loadAdvice } from '@/features/workout/logic';
 import { fr } from '@/i18n/fr';
 import { cn } from '@/lib/cn';
 import { formatMonth, formatSessionDay, formatShortDay } from '@/lib/dates';
@@ -76,6 +80,18 @@ export default function ExerciseDetailScreen() {
   const record = recordSet(allSets);
   const oneRm = bestEstimated1RM(allSets);
   const firstSession = history[history.length - 1];
+  const series = exerciseSeries(
+    history.map((h) => ({
+      sessionId: h.sessionId,
+      startedAt: h.startedAt,
+      sets: h.sets.map((set) => ({ ...set, exerciseId: exercise.id })),
+    })),
+  );
+  // Charge de travail : charge max de la dernière séance (bloc « Ressenti à X kg »).
+  const lastSession = history[0];
+  const workingWeight = lastSession ? Math.max(...lastSession.sets.map((s) => s.weightKg)) : null;
+  const feeling = difficultyAt(allSets, workingWeight ?? -1);
+  const advice = lastSession ? loadAdvice(lastSession.sets, null, exercise.weightStep) : null;
   const visibleHistory = showAll ? history : history.slice(0, HISTORY_PREVIEW);
 
   const changePhoto = () =>
@@ -152,7 +168,19 @@ export default function ExerciseDetailScreen() {
           </Card>
         ) : null}
 
-        <Text className="font-body text-13 text-muted">{t.charts}</Text>
+        <ProgressChartCard series={series} unit={unit} />
+
+        {lastSession && workingWeight !== null ? (
+          <FeelingCard
+            weightLabel={formatWeight(workingWeight, unit)}
+            counts={feeling.counts}
+            rated={feeling.rated}
+            total={feeling.total}
+            advice={advice}
+            adviceWeightLabel={advice ? formatWeight(advice.weightKg, unit) : ''}
+            nextWeightLabel={formatWeight(workingWeight + exercise.weightStep, unit)}
+          />
+        ) : null}
 
         <Text className="mt-1 font-body-bold text-18 text-text">{t.history}</Text>
         {history.length === 0 ? (
