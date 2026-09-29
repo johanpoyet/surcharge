@@ -49,6 +49,9 @@ function RootNavigator() {
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
       <Stack.Protected guard={signedIn && !onboardingPending}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="exercises/new" options={{ presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="exercises/[id]" />
+        <Stack.Screen name="exercises/[id]/edit" options={{ presentation: 'fullScreenModal' }} />
         <Stack.Screen name="_dev/components" />
       </Stack.Protected>
       <Stack.Protected guard={!signedIn || onboardingPending}>

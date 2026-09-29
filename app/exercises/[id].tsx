@@ -1,0 +1,199 @@
+import { router, useLocalSearchParams } from 'expo-router';
+import { ChevronLeft } from 'lucide-react-native';
+import { useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import {
+  Button,
+  Card,
+  DifficultyBadge,
+  Heading,
+  IconButton,
+  PhotoSlot,
+  StatTile,
+} from '@/components/ui';
+import { db } from '@/db/client';
+import { useExercise, useExerciseHistory } from '@/features/exercises/hooks';
+import { deleteLocalPhoto } from '@/features/exercises/photos';
+import { updateExercise } from '@/features/exercises/repository';
+import { usePhotoPicker } from '@/features/exercises/usePhotoPicker';
+import { useProfile } from '@/features/profile/hooks';
+import { bestEstimated1RM, recordSet } from '@/features/stats/calc';
+import { fr } from '@/i18n/fr';
+import { cn } from '@/lib/cn';
+import { formatMonth, formatSessionDay, formatShortDay } from '@/lib/dates';
+import { formatNumber, formatWeight } from '@/lib/format';
+import { fromKg } from '@/lib/units';
+
+const t = fr.exercises.detail;
+const HISTORY_PREVIEW = 3;
+
+function Tag({ label, tone }: { label: string; tone: 'volt' | 'text' | 'muted' }) {
+  return (
+    <View
+      className={cn(
+        'h-7 justify-center rounded-sm px-2.5',
+        tone === 'volt' ? 'bg-volt-soft' : 'bg-surface',
+      )}
+    >
+      <Text
+        className={cn(
+          'text-13',
+          tone === 'volt' ? 'font-body-bold text-volt' : 'font-body-semibold',
+          tone === 'text' && 'text-text',
+          tone === 'muted' && 'text-muted',
+        )}
+      >
+        {label}
+      </Text>
+    </View>
+  );
+}
+
+export default function ExerciseDetailScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const exercise = useExercise(id);
+  const history = useExerciseHistory(id);
+  const unit = useProfile().profile?.weightUnit ?? 'kg';
+  const photos = usePhotoPicker();
+  const [showAll, setShowAll] = useState(false);
+
+  if (!exercise) {
+    return (
+      <SafeAreaView className="flex-1 bg-bg px-screen">
+        <IconButton
+          icon={ChevronLeft}
+          accessibilityLabel={fr.common.back}
+          onPress={() => router.back()}
+        />
+        <Text className="mt-6 font-body text-15 text-muted">{t.notFound}</Text>
+      </SafeAreaView>
+    );
+  }
+
+  const allSets = history.flatMap((session) => session.sets);
+  const record = recordSet(allSets);
+  const oneRm = bestEstimated1RM(allSets);
+  const firstSession = history[history.length - 1];
+  const visibleHistory = showAll ? history : history.slice(0, HISTORY_PREVIEW);
+
+  const changePhoto = () =>
+    photos.choose(
+      (uri) => {
+        deleteLocalPhoto(exercise.photoLocalUri);
+        updateExercise(db, exercise.id, { photoLocalUri: uri });
+      },
+      exercise.photoLocalUri
+        ? () => {
+            deleteLocalPhoto(exercise.photoLocalUri);
+            updateExercise(db, exercise.id, { photoLocalUri: null });
+          }
+        : undefined,
+    );
+
+  const stepLabel = `${formatNumber(Math.round(fromKg(exercise.weightStep, unit) * 2) / 2, 1)} ${fr.units[unit]}`;
+
+  return (
+    <SafeAreaView edges={['top']} className="flex-1 bg-bg">
+      <ScrollView contentContainerClassName="gap-3.5 px-screen pb-10 pt-2">
+        <View className="flex-row items-center justify-between">
+          <IconButton
+            icon={ChevronLeft}
+            accessibilityLabel={fr.common.back}
+            onPress={() => router.back()}
+          />
+          <Button
+            label={t.edit}
+            variant="secondary"
+            size="sm"
+            className="h-11"
+            onPress={() =>
+              router.push({ pathname: '/exercises/[id]/edit', params: { id: exercise.id } })
+            }
+          />
+        </View>
+
+        <PhotoSlot variant="banner" uri={exercise.photoLocalUri} onPress={changePhoto} />
+
+        <View>
+          <Heading size={38}>{exercise.name}</Heading>
+          <View className="mt-2.5 flex-row flex-wrap gap-1.5">
+            <Tag label={fr.exercises.muscles[exercise.muscle]} tone="volt" />
+            <Tag label={fr.exercises.equipment[exercise.equipment]} tone="text" />
+            <Tag label={t.step(stepLabel)} tone="muted" />
+          </View>
+        </View>
+
+        <View className="flex-row gap-2">
+          <StatTile
+            label={t.record}
+            value={record ? formatWeight(record.weightKg, unit) : t.noData}
+            caption={
+              record ? t.recordCaption(record.reps, formatShortDay(record.completedAt)) : undefined
+            }
+            accent={record !== null}
+          />
+          <StatTile
+            label={t.oneRm}
+            value={oneRm !== null ? formatWeight(oneRm, unit) : t.noData}
+            caption={t.oneRmCaption}
+          />
+          <StatTile
+            label={t.sessions}
+            value={String(history.length)}
+            caption={firstSession ? t.since(formatMonth(firstSession.startedAt)) : t.noSessions}
+          />
+        </View>
+
+        {exercise.note ? (
+          <Card>
+            <Text className="font-body text-15 text-text">{exercise.note}</Text>
+          </Card>
+        ) : null}
+
+        <Text className="font-body text-13 text-muted">{t.charts}</Text>
+
+        <Text className="mt-1 font-body-bold text-18 text-text">{t.history}</Text>
+        {history.length === 0 ? (
+          <Text className="font-body text-15 text-muted">{t.noHistory}</Text>
+        ) : (
+          visibleHistory.map((session) => (
+            <View key={session.sessionId} className="gap-2 rounded-tile bg-surface px-3.5 py-3">
+              <View className="flex-row justify-between">
+                <Text className="font-body-bold text-14 text-text">
+                  {formatSessionDay(session.startedAt)}
+                </Text>
+                <Text className="font-body text-14 text-muted">{session.sessionName}</Text>
+              </View>
+              <View className="flex-row flex-wrap gap-1.5">
+                {session.sets.map((set) => (
+                  <View
+                    key={set.id}
+                    className="h-7 flex-row items-center gap-1.5 rounded-sm bg-bg pl-1 pr-2"
+                  >
+                    {set.difficulty ? (
+                      <DifficultyBadge difficulty={set.difficulty} size="sm" />
+                    ) : null}
+                    <Text className="font-body text-13 text-text">
+                      {t.set(formatNumber(fromKg(set.weightKg, unit)), set.reps)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          ))
+        )}
+        {history.length > HISTORY_PREVIEW ? (
+          <Button
+            label={showAll ? t.showLess : t.showAll}
+            variant="secondary"
+            size="sm"
+            className="h-11"
+            onPress={() => setShowAll((v) => !v)}
+          />
+        ) : null}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
