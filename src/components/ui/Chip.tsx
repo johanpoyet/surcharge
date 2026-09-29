@@ -2,22 +2,27 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { cn } from '@/lib/cn';
 
+type ChipSize = 'md' | 'sm';
+
 type ChipProps = {
   label: string;
   selected?: boolean;
   onPress?: () => void;
+  /** `md` : formulaires (h 38) ; `sm` : filtres de liste (h 36). */
+  size?: ChipSize;
   className?: string;
 };
 
-export function Chip({ label, selected = false, onPress, className }: ChipProps) {
+export function Chip({ label, selected = false, onPress, size = 'md', className }: ChipProps) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ selected }}
       onPress={onPress}
-      hitSlop={{ top: 3, bottom: 3 }}
+      hitSlop={{ top: 4, bottom: 4 }}
       className={cn(
-        'h-[38px] items-center justify-center rounded-button px-3.5 active:opacity-80',
+        'items-center justify-center rounded-button px-3.5 active:opacity-80',
+        size === 'md' ? 'h-[38px]' : 'h-9',
         selected ? 'bg-volt' : 'border border-line bg-surface',
         className,
       )}
@@ -40,6 +45,7 @@ type ChipGroupBase<T extends string> = {
   options: readonly ChipOption<T>[];
   /** `wrap` : retour à la ligne (formulaires) ; `scroll` : défilement horizontal (filtres). */
   layout?: 'wrap' | 'scroll';
+  size?: ChipSize;
   className?: string;
 };
 
@@ -57,7 +63,7 @@ type MultipleProps<T extends string> = ChipGroupBase<T> & {
 
 /** Groupe de chips en sélection simple ou multiple. */
 export function ChipGroup<T extends string>(props: SingleProps<T> | MultipleProps<T>) {
-  const { options, layout = 'wrap', className } = props;
+  const { options, layout = 'wrap', size = 'md', className } = props;
 
   const isSelected = (option: T) =>
     props.multiple ? props.value.includes(option) : props.value === option;
@@ -77,6 +83,7 @@ export function ChipGroup<T extends string>(props: SingleProps<T> | MultipleProp
     <Chip
       key={option.value}
       label={option.label}
+      size={size}
       selected={isSelected(option.value)}
       onPress={() => toggle(option.value)}
     />

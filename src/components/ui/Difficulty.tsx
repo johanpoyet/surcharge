@@ -27,7 +27,7 @@ export function DifficultyBadge({ difficulty, size = 'md', className }: BadgePro
       accessibilityLabel={fr.difficulty.a11y(fr.difficulty[difficulty])}
       className={cn(
         'items-center justify-center',
-        size === 'md' ? 'h-7 w-7 rounded-badge' : 'h-[22px] w-[22px] rounded-tag',
+        size === 'md' ? 'h-7 w-7 rounded-badge' : 'h-5 w-5 rounded-[5px]',
         fillClasses[difficulty],
         className,
       )}

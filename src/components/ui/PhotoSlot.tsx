@@ -21,13 +21,24 @@ type PhotoSlotProps = {
   className?: string;
 };
 
-function SmallAction({ label, onPress }: { label: string; onPress?: () => void }) {
+function SmallAction({
+  label,
+  onPress,
+  onDark = false,
+}: {
+  label: string;
+  onPress?: () => void;
+  onDark?: boolean;
+}) {
   return (
     <Pressable
       accessibilityRole="button"
       onPress={onPress}
-      hitSlop={4}
-      className="h-9 justify-center rounded-button bg-surface px-3.5 active:opacity-80"
+      hitSlop={5}
+      className={cn(
+        'h-9 justify-center rounded-button px-3.5 active:opacity-80',
+        onDark ? 'bg-bg' : 'bg-surface',
+      )}
     >
       <Text className="font-body-semibold text-13 text-text">{label}</Text>
     </Pressable>
@@ -72,7 +83,7 @@ export function PhotoSlot({
       <View
         className={cn(
           'overflow-hidden rounded-hero bg-surface',
-          variant === 'hero' ? 'h-[180px]' : 'h-32',
+          variant === 'hero' ? 'h-[180px]' : 'h-[190px]',
           className,
         )}
       >
@@ -89,7 +100,7 @@ export function PhotoSlot({
               <SmallAction label={fr.photo.gallery} onPress={onGallery} />
             </>
           ) : (
-            <SmallAction label={fr.photo.change} onPress={onPress} />
+            <SmallAction label={fr.photo.change} onPress={onPress} onDark />
           )}
         </View>
       </View>
@@ -100,14 +111,14 @@ export function PhotoSlot({
     return (
       <View
         className={cn(
-          'h-32 items-center justify-center gap-2 rounded-hero border-[1.5px] border-dashed border-lineStrong bg-surface',
+          'h-[190px] items-center justify-center gap-1.5 rounded-hero border border-dashed border-lineStrong bg-surface',
           className,
         )}
       >
         <Camera size={24} color={colors.muted} strokeWidth={2} />
         <Text className="font-body text-14 text-muted">{fr.photo.placeholder}</Text>
-        <View className="absolute bottom-3 right-3">
-          <SmallAction label={fr.photo.change} onPress={onPress} />
+        <View className="absolute bottom-2.5 right-2.5">
+          <SmallAction label={fr.photo.change} onPress={onPress} onDark />
         </View>
       </View>
     );

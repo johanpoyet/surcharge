@@ -2,7 +2,7 @@ import { Text, View, type TextProps } from 'react-native';
 
 import { cn } from '@/lib/cn';
 
-type DisplaySize = 60 | 56 | 48 | 40 | 34 | 32 | 30 | 26 | 24 | 22 | 20;
+type DisplaySize = 60 | 56 | 48 | 40 | 38 | 34 | 32 | 30 | 26 | 24 | 22 | 20;
 
 // Classes littérales pour que Tailwind les détecte.
 const displaySizes: Record<DisplaySize, string> = {
@@ -10,6 +10,7 @@ const displaySizes: Record<DisplaySize, string> = {
   56: 'text-56',
   48: 'text-48',
   40: 'text-40',
+  38: 'text-38',
   34: 'text-34',
   32: 'text-32',
   30: 'text-30',

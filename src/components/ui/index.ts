@@ -10,6 +10,7 @@ export { BrandWatermark, Logo } from './Logo';
 export { PhotoSlot } from './PhotoSlot';
 export { Placeholder } from './Placeholder';
 export { ProgressSegments } from './ProgressSegments';
+export { SearchField } from './SearchField';
 export { SegmentedControl, type SegmentOption } from './SegmentedControl';
 export { StatTile } from './StatTile';
 export { Stepper } from './Stepper';
