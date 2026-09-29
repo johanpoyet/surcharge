@@ -12,7 +12,7 @@ import {
 import { useAuth } from '@/features/auth/AuthProvider';
 import { StepHeader } from '@/features/auth/components/StepHeader';
 import { authErrorMessage } from '@/features/auth/errors';
-import { saveOnboarding } from '@/features/profile/api';
+import { completeOnboarding, skipOnboarding } from '@/features/profile/onboarding';
 import { signOut } from '@/features/auth/api';
 import { fr } from '@/i18n/fr';
 import type { Goal, WeightUnit } from '@/lib/database.types';
@@ -52,20 +52,25 @@ export default function OnboardingScreen() {
     setUnit(next);
   };
 
-  const finish = () => setOnboardingPending(false);
+  const onSkip = async () => {
+    if (!session) return;
+    setSaving(true);
+    await skipOnboarding(session.user.id);
+    setOnboardingPending(false);
+  };
 
   const onSubmit = async () => {
     if (!session) return;
     setSaving(true);
     setError(null);
     try {
-      await saveOnboarding(session.user.id, {
+      await completeOnboarding(session.user.id, {
         weightKg: toKg(weight, unit),
         weightUnit: unit,
         goal,
         sessionsPerWeek,
       });
-      finish();
+      setOnboardingPending(false);
     } catch (e) {
       setError(authErrorMessage(e));
       setSaving(false);
@@ -146,7 +151,14 @@ export default function OnboardingScreen() {
         </Text>
       ) : null}
       <Button label={t.submit} loading={saving} onPress={onSubmit} />
-      <Button label={t.skip} variant="ghost" tone="muted" size="sm" onPress={finish} />
+      <Button
+        label={t.skip}
+        variant="ghost"
+        tone="muted"
+        size="sm"
+        disabled={saving}
+        onPress={onSkip}
+      />
     </KeyboardScreen>
   );
 }

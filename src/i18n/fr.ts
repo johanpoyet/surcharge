@@ -130,6 +130,20 @@ export const fr = {
   profile: {
     title: 'Profil',
     signOut: 'Se déconnecter',
+    synced: 'Synchronisé',
+    pending: (n: number) =>
+      n === 1 ? '1 modification en attente' : `${n} modifications en attente`,
+  },
+  exercises: {
+    count: (n: number) =>
+      n === 0
+        ? 'Aucun exercice pour le moment.'
+        : n === 1
+          ? '1 exercice dans ta bibliothèque.'
+          : `${n} exercices dans ta bibliothèque.`,
+  },
+  errors: {
+    database: 'Impossible de préparer les données de l’app. Ferme-la et rouvre-la.',
   },
   placeholders: {
     sessions: 'Planning et séances types arrivent en Phase 5.',

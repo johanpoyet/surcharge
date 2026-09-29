@@ -8,12 +8,14 @@ import { useAuth } from '@/features/auth/AuthProvider';
 import { signOut } from '@/features/auth/api';
 import { authErrorMessage } from '@/features/auth/errors';
 import { useProfile } from '@/features/profile/hooks';
+import { usePendingChanges } from '@/sync/hooks';
 import { fr } from '@/i18n/fr';
 
 export default function ProfileScreen() {
   const toast = useToast();
   const { session } = useAuth();
   const { firstName } = useProfile();
+  const pending = usePendingChanges();
   const [signingOut, setSigningOut] = useState(false);
 
   const onSignOut = async () => {
@@ -41,6 +43,9 @@ export default function ProfileScreen() {
             <Text className="font-body text-14 text-muted">{session?.user.email}</Text>
           </View>
         </Card>
+        <Text className="font-body text-13 text-muted">
+          {pending === 0 ? fr.profile.synced : fr.profile.pending(pending)}
+        </Text>
         <Card className="p-0">
           <Button
             label={fr.profile.signOut}

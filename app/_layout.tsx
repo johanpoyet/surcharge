@@ -8,13 +8,18 @@ import {
 } from '@expo-google-fonts/barlow';
 import { BarlowCondensed_800ExtraBold_Italic } from '@expo-google-fonts/barlow-condensed';
 import { useFonts } from 'expo-font';
+import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { Text, View } from 'react-native';
 
 import { ToastProvider } from '@/components/ui';
+import { liveDb } from '@/db/client';
+import migrations from '@/db/migrations/migrations';
 import { AuthProvider, useAuth } from '@/features/auth/AuthProvider';
+import { fr } from '@/i18n/fr';
 import { colors } from '@/theme/tokens';
 
 SplashScreen.preventAutoHideAsync();
@@ -22,12 +27,22 @@ SplashScreen.preventAutoHideAsync();
 /** Garde de navigation : non connecté → (auth) ; connecté → onglets (sauf onboarding en cours). */
 function RootNavigator() {
   const { session, initializing, onboardingPending } = useAuth();
+  // Base locale : migrations Drizzle appliquées avant tout écran (SQLite = source de vérité).
+  const migration = useMigrations(liveDb, migrations);
+  const ready = !initializing && (migration.success || migration.error !== undefined);
 
   useEffect(() => {
-    if (!initializing) SplashScreen.hideAsync();
-  }, [initializing]);
+    if (ready) SplashScreen.hideAsync();
+  }, [ready]);
 
-  if (initializing) return null;
+  if (!ready) return null;
+  if (migration.error) {
+    return (
+      <View className="flex-1 justify-center bg-bg px-screen">
+        <Text className="font-body-semibold text-16 text-text">{fr.errors.database}</Text>
+      </View>
+    );
+  }
 
   const signedIn = session !== null;
   return (
