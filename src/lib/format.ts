@@ -20,3 +20,8 @@ export function toLocalDateString(date: Date): string {
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
+
+/** Grand nombre avec espace fine insécable entre les milliers (« 4 520 »). */
+export function formatThousands(value: number): string {
+  return String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f');
+}
