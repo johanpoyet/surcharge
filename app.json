@@ -11,6 +11,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "fr.johanpoyet.surcharge",
+      "appleTeamId": "R7GAYTSBWH",
       "infoPlist": {
         "NSCameraUsageDescription": "Pour photographier tes machines et exercices.",
         "NSPhotoLibraryUsageDescription": "Pour photographier tes machines et exercices."
