@@ -82,3 +82,28 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   régénérer avec `npx supabase gen types` une fois le projet lié.
 - **Onglets et accueil provisoires** : TabBar branchée sur Expo Router, écrans vides sauf
   l'en-tête d'accueil et la déconnexion dans le Profil.
+
+## Phase 3
+
+- **Drizzle stable** (`drizzle-orm` 0.45, `drizzle-kit` 0.31) plutôt que les versions candidates 1.0
+  de la doc.
+- **Dépendances de développement hors liste** : `babel-plugin-inline-import` (exigé par
+  drizzle-kit pour embarquer les migrations `.sql`), `sql.js` (SQLite en JavaScript pour tester
+  les repositories dans Jest, sans module natif) et `@types/node` (types des tests).
+- **Migrations locales dans `src/db/migrations`**, générées par `npm run db:generate` et appliquées
+  au démarrage (`useMigrations`) ; les tests des repositories rejouent ces mêmes fichiers.
+- **Pas de clés étrangères en local** : la synchro peut recevoir un enfant avant son parent et les
+  suppressions sont douces ; l'intégrité reste garantie par Supabase.
+- **Outbox : une entrée par ligne** (index unique `table_name` + `row_id`) ; le push enverra l'état
+  le plus récent de la ligne. Suppression douce = entrée `delete` (la ligne porte `deleted_at`).
+- **Repositories synchrones** prenant la base en paramètre (`AppDatabase`), pour être testés sur
+  sql.js ; les écrans lisent via `useLiveQuery` sur la base expo-sqlite.
+- **Onboarding** : écrit d'abord dans Supabase (en ligne juste après l'inscription), puis recopie
+  profil et pesée en local comme déjà synchronisés (ni `dirty`, ni outbox). La bibliothèque par
+  défaut (34 exercices) est ajoutée en local + outbox, y compris si l'étape est passée.
+- **Bibliothèque par défaut seulement à l'onboarding** (SPEC) : un compte créé avant la Phase 3
+  n'en a pas. Elle n'est ajoutée que si le compte n'a aucun exercice, même supprimé.
+- **Profil lu dans SQLite** ; s'il n'y est pas (compte existant, nouvel appareil), il est
+  récupéré une fois dans Supabase en attendant le pull complet de la Phase 9.
+- **Données locales conservées à la déconnexion** (filtrées par `user_id`) : une déconnexion ne
+  doit pas perdre des séances pas encore synchronisées.
