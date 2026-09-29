@@ -57,6 +57,10 @@ export function updateExercise(
       .set({
         ...patch,
         ...(patch.name !== undefined ? { name: patch.name.trim() } : {}),
+        // Nouvelle photo (ou photo retirée) : la version en ligne n'est plus la bonne.
+        ...(patch.photoLocalUri !== undefined && patch.photoPath === undefined
+          ? { photoPath: null }
+          : {}),
         updatedAt: nowIso(),
         dirty: true,
       })

@@ -194,8 +194,9 @@ export const outbox = sqliteTable(
   (t) => [uniqueIndex('outbox_row').on(t.tableName, t.rowId)],
 );
 
+/** Dernier pull par table et par utilisateur : clé `{userId}/{table}` (plusieurs comptes possibles). */
 export const syncState = sqliteTable('sync_state', {
-  tableName: text('table_name').$type<SyncedTableName>().primaryKey(),
+  tableName: text('table_name').primaryKey(),
   lastPulledAt: text('last_pulled_at'),
 });
 
