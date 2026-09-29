@@ -153,3 +153,32 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   (Phase 6), Supprimer (confirmation).
 - **Nom de séance** saisi tel quel (affiché en majuscules dans les listes par la police de titre).
 - **Choix des exercices** : ceux déjà dans la séance sont cochés et grisés (pas de doublon).
+
+## Phase 6
+
+- **État de l'écran persisté dans SQLite** (table locale `workout_state`, JSON, non synchronisée) :
+  plan figé au démarrage, exercice affiché, séries ajoutées, valeurs saisies, chrono de repos. Les
+  séries validées sont dans `session_sets`. À la réouverture de l'app, une séance non terminée est
+  rouverte automatiquement (une fois par lancement).
+- **Plan figé** : modifier la séance type pendant une séance ne change pas la séance en cours.
+- **Pré-remplissage** : même série à la dernière séance, sinon sa dernière série, sinon la cible
+  (reps max, sinon min, sinon 10) avec 20 kg pour une barre et 0 sinon.
+- **Conseil de charge** (SPEC 9.3) : sur les séries de la dernière séance ; la charge de référence
+  est la charge max de cette séance. Bandeau seulement pour « augmenter » / « baisser ».
+- **Après la dernière série d'un exercice**, on passe au prochain exercice non terminé ; le repos
+  est celui de l'exercice qui vient d'être fait. Plus aucune série : le bouton devient « Terminer
+  la séance ».
+- **Modifier une série validée** : la toucher charge ses valeurs dans la carte active (« Modifier la
+  série N ») ; glisser vers la gauche pour la supprimer (les suivantes sont renumérotées).
+- **Terminer** : confirmation s'il reste des séries prévues ; une séance sans aucune série est
+  supprimée au lieu d'être enregistrée.
+- **Records battus (récap)** : meilleure série de chaque exercice qui bat le record d'avant la
+  séance ; un exercice fait pour la première fois ne compte pas.
+- **Notifications locales uniquement** : `expo-notifications` ajoute d'office l'autorisation push
+  (`aps-environment`), impossible à signer avec une Personal Team gratuite. Un plugin local
+  (`plugins/withoutPushEntitlement.js`) la retire. Au premier plan, pas de bannière (le chrono est
+  affiché) : vibration + message dans l'app.
+- **Chrono de repos** : −15 s / +15 s et « Passer » en plus de la maquette ; la notification est
+  reprogrammée à chaque ajustement et annulée si la série suivante est validée avant la fin.
+- **Bouton + central** : reprend la séance en cours, sinon propose la liste des séances types
+  (la carte « Séance du jour » de l'accueil arrive en Phase 7).
