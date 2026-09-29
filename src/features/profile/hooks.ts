@@ -1,9 +1,9 @@
-import { eq } from 'drizzle-orm';
+import { and, asc, eq, isNull } from 'drizzle-orm';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { useEffect } from 'react';
 
 import { db, liveDb } from '@/db/client';
-import { profiles, type Profile } from '@/db/schema';
+import { bodyWeights, profiles, type BodyWeight, type Profile } from '@/db/schema';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { fetchProfile } from './api';
 import { saveRemoteProfile } from './repository';
@@ -35,4 +35,18 @@ export function useProfile(): { profile: Profile | undefined; firstName: string 
   const metadataName = session?.user.user_metadata.first_name;
   const firstName = profile?.firstName ?? (typeof metadataName === 'string' ? metadataName : '');
   return { profile, firstName };
+}
+
+/** Pesées de l'utilisateur, de la plus ancienne à la plus récente. */
+export function useBodyWeights(): BodyWeight[] {
+  const userId = useAuth().session?.user.id ?? '';
+  const { data } = useLiveQuery(
+    liveDb
+      .select()
+      .from(bodyWeights)
+      .where(and(eq(bodyWeights.userId, userId), isNull(bodyWeights.deletedAt)))
+      .orderBy(asc(bodyWeights.measuredOn)),
+    [userId],
+  );
+  return data;
 }

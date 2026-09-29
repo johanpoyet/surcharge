@@ -1,32 +1,18 @@
-import { and, desc, eq, isNull } from 'drizzle-orm';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { ChevronUp } from 'lucide-react-native';
 import { Pressable, Text, View } from 'react-native';
 
-import { liveDb } from '@/db/client';
-import { sessions } from '@/db/schema';
-import { useAuth } from '@/features/auth/AuthProvider';
 import { fr } from '@/i18n/fr';
 import { useNow } from '@/lib/useNow';
 import { colors } from '@/theme/tokens';
+import { useActiveSession } from '../hooks';
 import { formatClock } from '../logic';
 
 type ActiveWorkoutBarProps = { onOpen: (sessionId: string) => void };
 
 /** Barre flottante au-dessus des onglets quand une séance est réduite (SPEC 8.2). */
 export function ActiveWorkoutBar({ onOpen }: ActiveWorkoutBarProps) {
-  const userId = useAuth().session?.user.id ?? '';
   const now = useNow();
-  const { data } = useLiveQuery(
-    liveDb
-      .select()
-      .from(sessions)
-      .where(and(eq(sessions.userId, userId), isNull(sessions.endedAt), isNull(sessions.deletedAt)))
-      .orderBy(desc(sessions.startedAt))
-      .limit(1),
-    [userId],
-  );
-  const active = data[0];
+  const active = useActiveSession();
   if (!active) return null;
   const elapsed = formatClock((now - new Date(active.startedAt).getTime()) / 1000);
 

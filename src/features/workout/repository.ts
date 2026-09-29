@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gt, inArray, isNull, lt, ne } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, inArray, isNotNull, isNull, lt, ne } from 'drizzle-orm';
 
 import type { AppDatabase } from '@/db/client';
 import { sessions, sessionSets, workoutState, type Session, type SessionSet } from '@/db/schema';
@@ -308,3 +308,34 @@ export const sessionSetsQuery = (db: AppDatabase, sessionId: string) =>
 export function getSession(db: AppDatabase, id: string): Session | undefined {
   return db.select().from(sessions).where(eq(sessions.id, id)).get();
 }
+
+/** Séances terminées (accueil, régularité, stats). */
+export const completedSessionsQuery = (db: AppDatabase, userId: string) =>
+  db
+    .select({
+      id: sessions.id,
+      name: sessions.name,
+      templateId: sessions.templateId,
+      startedAt: sessions.startedAt,
+      endedAt: sessions.endedAt,
+    })
+    .from(sessions)
+    .where(
+      and(eq(sessions.userId, userId), isNull(sessions.deletedAt), isNotNull(sessions.endedAt)),
+    )
+    .orderBy(desc(sessions.startedAt));
+
+/** Toutes les séries (records, progression). */
+export const allSetsQuery = (db: AppDatabase, userId: string) =>
+  db
+    .select({
+      id: sessionSets.id,
+      sessionId: sessionSets.sessionId,
+      exerciseId: sessionSets.exerciseId,
+      weightKg: sessionSets.weightKg,
+      reps: sessionSets.reps,
+      difficulty: sessionSets.difficulty,
+      completedAt: sessionSets.completedAt,
+    })
+    .from(sessionSets)
+    .where(and(eq(sessionSets.userId, userId), isNull(sessionSets.deletedAt)));
