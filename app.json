@@ -10,7 +10,11 @@
     "backgroundColor": "#0A0A0A",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "fr.johanpoyet.surcharge"
+      "bundleIdentifier": "fr.johanpoyet.surcharge",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Pour photographier tes machines et exercices.",
+        "NSPhotoLibraryUsageDescription": "Pour photographier tes machines et exercices."
+      }
     },
     "android": {
       "package": "fr.johanpoyet.surcharge",
@@ -46,7 +50,15 @@
         }
       ],
       "expo-image",
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Pour photographier tes machines et exercices.",
+          "cameraPermission": "Pour photographier tes machines et exercices.",
+          "microphonePermission": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
