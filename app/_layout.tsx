@@ -14,6 +14,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { Text, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { ToastProvider } from '@/components/ui';
 import { liveDb } from '@/db/client';
@@ -52,6 +53,9 @@ function RootNavigator() {
         <Stack.Screen name="exercises/new" options={{ presentation: 'fullScreenModal' }} />
         <Stack.Screen name="exercises/[id]" />
         <Stack.Screen name="exercises/[id]/edit" options={{ presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="templates/new" options={{ presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="templates/[id]" options={{ presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="templates/pick-exercises" options={{ presentation: 'modal' }} />
         <Stack.Screen name="_dev/components" />
       </Stack.Protected>
       <Stack.Protected guard={!signedIn || onboardingPending}>
@@ -74,11 +78,13 @@ export default function RootLayout() {
   if (!fontsLoaded && fontError === null) return null;
 
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <StatusBar style="light" />
-        <RootNavigator />
-      </ToastProvider>
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <ToastProvider>
+          <StatusBar style="light" />
+          <RootNavigator />
+        </ToastProvider>
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }
