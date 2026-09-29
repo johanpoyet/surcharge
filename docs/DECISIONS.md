@@ -130,3 +130,26 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   Historique : 3 dernières séances, « Voir tout l'historique » déplie la liste sur place.
 - **Suppression** depuis l'écran de modification (confirmation), retour à la liste.
 - **Délai des tests Jest porté à 15 s** : le premier lancement sans cache (sql.js) peut dépasser 5 s.
+
+## Phase 5
+
+- **Glisser-déposer maison** (`ReorderableList`) avec `react-native-gesture-handler` et Reanimated,
+  déjà dans la liste section 2 : appui de 120 ms sur la poignée, les autres cartes se décalent en
+  direct, défilement bloqué pendant le glisser. Actions VoiceOver « Monter » / « Descendre » sur la
+  poignée. Pas de bibliothèque de liste réordonnable en plus.
+- **`react-native-gesture-handler` 2.32** (version du SDK 57) déclarée explicitement ; elle remplace
+  la 3.3 tirée par Expo Router. `GestureHandlerRootView` à la racine.
+- **Zustand** (liste section 2) pour le brouillon de séance type, partagé entre l'éditeur et l'écran
+  « Ajouter des exercices ».
+- **Enregistrement en une transaction** : nom, exercices dans l'ordre et jours au modèle de semaine.
+  Choisir un jour déjà pris par une autre séance type le lui retire (sans avertissement en V1).
+  Supprimer une séance type libère ses jours.
+- **Saisie des cibles** : reps « 8–10 », « 8-10 », « 8 à 10 » ou « 12 » (vide = pas de cible) ;
+  repos « 2:00 », « 90 », « 90s » ou « 2 min » (15 min max.). Remise en forme à la sortie du champ,
+  bordure rouge si invalide. Nouvel exercice : 3 séries, 8–12 reps, repos par défaut du profil.
+- **Durée estimée** (SPEC 9.4) : Σ séries × (45 s + repos), arrondie à 5 min.
+- **Onglet Séances** : « Mes séances » affiché par défaut tant que le Planning (Phase 7) n'existe pas.
+  Actions d'une séance type (bouton « … ») : Modifier, Dupliquer (sans les jours), Démarrer
+  (Phase 6), Supprimer (confirmation).
+- **Nom de séance** saisi tel quel (affiché en majuscules dans les listes par la police de titre).
+- **Choix des exercices** : ceux déjà dans la séance sont cochés et grisés (pas de doublon).
