@@ -207,3 +207,27 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   seulement si l'autorisation des notifications a déjà été donnée (demandée au premier repos).
   Le réglage « Rappels » du Profil arrive en Phase 8 (activé par défaut).
 - **Graphiques simples** (barres en vues, courbe en SVG) en attendant victory-native (Phase 8).
+
+## Phase 8
+
+- **victory-native 42 + Skia 2.6** (liste section 2) ; **expo-sharing** ajouté avec l'accord de Johan
+  pour l'export CSV.
+- **Composant `LineChart`** (victory-native) : courbe volt, points pleins, records en cercle vide,
+  graduations en Barlow 500 (police passée à Skia). Libellés de mois sous la courbe en texte.
+- **Accueil** : les barres « Progression » et la courbe du poids gardent leurs dessins simples (vues
+  et SVG), plus fidèles aux maquettes qu'un graphique complet ; victory-native sert au détail
+  exercice et au profil.
+- **Détail exercice** : Charge = charge max réussie par séance, Volume = Σ charge × reps,
+  Reps = total des reps de la séance. Record (cercle vide) = séance contenant une série qui a
+  battu le record à ce moment-là. « Ressenti à X kg » : X = charge max de la dernière séance,
+  répartition sur toutes les séries à cette charge ; conseil SPEC 9.3 sur la dernière séance
+  (sans cible de reps depuis ce détail).
+- **Profil** : heures = somme des durées des séances terminées ; tonnes = volume total / 1000,
+  toujours en tonnes métriques ; records = meilleur set de chaque exercice, le plus récent d'abord
+  (3 affichés, « Tout voir »). Prénom modifiable (invite iOS). Réglages : unité, repos par défaut
+  (1:00 à 3:00), rappels, export CSV. Pas d'icône Réglages dans l'en-tête : tout est sur l'écran.
+- **Pesée** : écran modal, pesée du jour (remplace celle du jour si elle existe).
+- **CSV** : séparateur « ; », virgule décimale, BOM UTF-8 (ouverture directe dans Excel / Numbers
+  en français) ; une ligne par série des séances terminées.
+- **Modifications du profil** enregistrées en local + outbox : elles atteindront Supabase avec la
+  synchronisation (Phase 9).
