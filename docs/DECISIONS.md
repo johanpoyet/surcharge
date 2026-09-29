@@ -231,3 +231,28 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   en français) ; une ligne par série des séances terminées.
 - **Modifications du profil** enregistrées en local + outbox : elles atteindront Supabase avec la
   synchronisation (Phase 9).
+
+## Phase 9
+
+- **`updated_at` fixé par le serveur à l'insertion** (migration `0003`, appliquée le 30/09/2026) :
+  le pull incrémental ne dépend que de l'horloge de Supabase. Pull avec 60 s de recouvrement
+  (`updated_at >= dernier pull − 60 s`) ; les lignes reçues deux fois sont sans effet.
+- **Dernier pull par utilisateur** (`sync_state.table_name` = `{user_id}/{table}`) : plusieurs comptes
+  sur le même téléphone ne se gênent pas. Le push n'envoie que les lignes du compte connecté ;
+  celles d'un autre compte restent dans l'outbox jusqu'à sa prochaine connexion.
+- **Push** : par table dans l'ordre des dépendances, par lots de 100 (`upsert` sur `id`), outbox
+  dans l'ordre chronologique (une ligne supprimée part avant celle qui la remplace, à cause des
+  index uniques partiels). Une ligne modifiée pendant l'envoi reste `dirty` et repart ensuite.
+  Échec : `attempts` + 1, nouvelle tentative espacée (60 s × 2^échecs, 15 min max.).
+- **Horodatages strictement croissants** (`nowIso`) : deux écritures n'ont jamais le même
+  `updated_at`, ce qui fiabilise la détection « modifié pendant l'envoi ».
+- **Conflits** : une ligne locale pas encore envoyée n'est pas écrasée par le pull ; ensuite, la
+  dernière écriture envoyée gagne.
+- **Photos** : chemin `{user_id}/{exercise_id}-{horodatage}.jpg` plutôt que `{exercise_id}.jpg`, pour
+  qu'une photo remplacée soit retéléchargée par les autres appareils. Changer ou retirer la photo
+  remet `photo_path` à vide (nouvel envoi). Les photos manquantes sont téléchargées juste après le
+  pull (URL signée), pas à l'affichage. Les anciennes photos ne sont pas supprimées du bucket (V1).
+- **Déclencheurs** : ouverture des onglets (démarrage, connexion), retour du réseau (NetInfo), retour
+  de l'app au premier plan, fin de séance, et toutes les 60 s s'il reste des modifications.
+- **Séance commencée sur un autre appareil** : pas d'état d'écran local (`workout_state`) ;
+  limitation connue de la V1.
