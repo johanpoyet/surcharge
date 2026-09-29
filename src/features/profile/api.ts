@@ -4,8 +4,8 @@ import type { Goal, ProfileRow, WeightUnit } from '@/lib/database.types';
 import { toLocalDateString } from '@/lib/format';
 import { supabase } from '@/lib/supabase';
 
-// Phase 2 : écriture directe dans Supabase (l'onboarding se fait juste après l'inscription,
-// donc en ligne). La Phase 3 passera par SQLite + outbox.
+// L'onboarding suit l'inscription, donc se fait en ligne : écriture directe dans Supabase, puis
+// copie locale déjà synchronisée (voir features/profile/onboarding.ts).
 
 export type OnboardingValues = {
   weightKg: number;
@@ -14,24 +14,42 @@ export type OnboardingValues = {
   sessionsPerWeek: number;
 };
 
-export async function saveOnboarding(userId: string, values: OnboardingValues): Promise<void> {
-  const { error: profileError } = await supabase
+export type OnboardingResult = {
+  profile: ProfileRow;
+  bodyWeight: { id: string; measuredOn: string; weightKg: number };
+};
+
+/** Enregistre l'onboarding dans Supabase et renvoie ce qu'il faut recopier en local. */
+export async function saveOnboarding(
+  userId: string,
+  values: OnboardingValues,
+): Promise<OnboardingResult> {
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .update({
       goal: values.goal,
       sessions_per_week: values.sessionsPerWeek,
       weight_unit: values.weightUnit,
     })
-    .eq('id', userId);
+    .eq('id', userId)
+    .select('*')
+    .single();
   if (profileError) throw profileError;
 
-  const { error: weightError } = await supabase.from('body_weights').insert({
+  const bodyWeight = {
     id: randomUUID(),
+    measuredOn: toLocalDateString(new Date()),
+    weightKg: Math.round(values.weightKg * 100) / 100,
+  };
+  const { error: weightError } = await supabase.from('body_weights').insert({
+    id: bodyWeight.id,
     user_id: userId,
-    measured_on: toLocalDateString(new Date()),
-    weight_kg: Math.round(values.weightKg * 100) / 100,
+    measured_on: bodyWeight.measuredOn,
+    weight_kg: bodyWeight.weightKg,
   });
   if (weightError) throw weightError;
+
+  return { profile, bodyWeight };
 }
 
 export async function fetchProfile(userId: string): Promise<ProfileRow | null> {
