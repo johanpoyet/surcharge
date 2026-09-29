@@ -11,6 +11,7 @@ import { useAuth } from '@/features/auth/AuthProvider';
 import { estimateMinutes } from '@/features/templates/format';
 import { useTemplateItems, useTemplates, useTemplateWeekdays } from '@/features/templates/hooks';
 import { deleteTemplate, duplicateTemplate } from '@/features/templates/repository';
+import { useStartWorkout } from '@/features/workout/useStartWorkout';
 import { fr } from '@/i18n/fr';
 
 const t = fr.templates;
@@ -24,6 +25,7 @@ export default function SessionsScreen() {
   const toast = useToast();
   const { session } = useAuth();
   const templates = useTemplates();
+  const { start } = useStartWorkout();
   const items = useTemplateItems();
   const weekdays = useTemplateWeekdays();
   // « Mes séances » par défaut tant que le planning (Phase 7) n'existe pas.
@@ -43,7 +45,7 @@ export default function SessionsScreen() {
           toast.show(t.duplicated);
         },
       },
-      { text: t.start, onPress: () => toast.show(fr.placeholders.workout) },
+      { text: t.start, onPress: () => start(template.id) },
       {
         text: t.delete,
         style: 'destructive',

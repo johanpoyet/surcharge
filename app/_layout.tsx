@@ -20,10 +20,12 @@ import { ToastProvider } from '@/components/ui';
 import { liveDb } from '@/db/client';
 import migrations from '@/db/migrations/migrations';
 import { AuthProvider, useAuth } from '@/features/auth/AuthProvider';
+import { configureNotifications } from '@/features/workout/restNotifications';
 import { fr } from '@/i18n/fr';
 import { colors } from '@/theme/tokens';
 
 SplashScreen.preventAutoHideAsync();
+configureNotifications();
 
 /** Garde de navigation : non connecté → (auth) ; connecté → onglets (sauf onboarding en cours). */
 function RootNavigator() {
@@ -56,6 +58,14 @@ function RootNavigator() {
         <Stack.Screen name="templates/new" options={{ presentation: 'fullScreenModal' }} />
         <Stack.Screen name="templates/[id]" options={{ presentation: 'fullScreenModal' }} />
         <Stack.Screen name="templates/pick-exercises" options={{ presentation: 'modal' }} />
+        <Stack.Screen
+          name="workout/[sessionId]"
+          options={{ presentation: 'fullScreenModal', gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="workout/summary/[sessionId]"
+          options={{ presentation: 'fullScreenModal', gestureEnabled: false }}
+        />
         <Stack.Screen name="_dev/components" />
       </Stack.Protected>
       <Stack.Protected guard={!signedIn || onboardingPending}>
