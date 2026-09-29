@@ -163,3 +163,40 @@ export function templateIdForDate(db: AppDatabase, userId: string, date: Date): 
     .get();
   return resolveTemplateId(override, weekly);
 }
+
+export const overridesQuery = (db: AppDatabase, userId: string) =>
+  db
+    .select({ date: scheduleOverrides.date, templateId: scheduleOverrides.templateId })
+    .from(scheduleOverrides)
+    .where(and(eq(scheduleOverrides.userId, userId), isNull(scheduleOverrides.deletedAt)));
+
+/**
+ * Choix d'une séance (ou du repos) pour une date depuis le planning. `repeat` : le choix vaut pour
+ * tous les mêmes jours de la semaine (modèle de semaine, et l'exception éventuelle de la date est
+ * retirée) ; sinon, seulement pour cette date (exception).
+ */
+export function assignDay(
+  db: AppDatabase,
+  userId: string,
+  date: Date,
+  templateId: string | null,
+  repeat: boolean,
+): void {
+  if (!repeat) return setOverride(db, userId, toLocalDateString(date), templateId);
+  db.transaction((tx) => {
+    assignWeekday(tx, userId, isoWeekday(date), templateId);
+  });
+  clearOverride(db, userId, toLocalDateString(date));
+}
+
+/** « Déplacer vers… » : repos à la date d'origine, la séance à la date cible (exceptions). */
+export function moveDay(
+  db: AppDatabase,
+  userId: string,
+  from: Date,
+  to: Date,
+  templateId: string,
+): void {
+  setOverride(db, userId, toLocalDateString(from), null);
+  setOverride(db, userId, toLocalDateString(to), templateId);
+}
