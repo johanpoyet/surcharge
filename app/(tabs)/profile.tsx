@@ -3,10 +3,11 @@ import { fr as frLocale } from 'date-fns/locale';
 import { router } from 'expo-router';
 import { ChevronRight } from 'lucide-react-native';
 import { useMemo, useState, type ReactNode } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, Card, Heading, StatTile, Switch, useToast } from '@/components/ui';
+import { config } from '@/config';
 import { db } from '@/db/client';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { signOut } from '@/features/auth/api';
@@ -14,6 +15,7 @@ import { authErrorMessage } from '@/features/auth/errors';
 import { useExercises } from '@/features/exercises/hooks';
 import { BodyWeightChartCard } from '@/features/profile/components/BodyWeightChartCard';
 import { RecordsCard } from '@/features/profile/components/RecordsCard';
+import { deleteAccount } from '@/features/profile/deleteAccount';
 import { exportCsv } from '@/features/profile/export';
 import { useBodyWeights, useProfile } from '@/features/profile/hooks';
 import { updateProfile } from '@/features/profile/repository';
@@ -73,6 +75,7 @@ export default function ProfileScreen() {
   const weights = useBodyWeights();
   const exercises = useExercises();
   const [signingOut, setSigningOut] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const stats = useMemo(() => globalStats(sessions, sets), [sessions, sets]);
   const records = useMemo(() => {
@@ -133,6 +136,32 @@ export default function ProfileScreen() {
       toast.show(t.csv.failed);
     }
   };
+
+  const d = t.deleteAccount;
+  const runDelete = async () => {
+    setDeleting(true);
+    toast.show(d.deleting);
+    try {
+      await deleteAccount(db);
+    } catch {
+      toast.show(d.failed);
+      setDeleting(false);
+    }
+  };
+  // Double confirmation (SPEC 11).
+  const confirmDelete = () =>
+    Alert.alert(d.title, d.message, [
+      { text: d.cancel, style: 'cancel' },
+      {
+        text: d.confirm,
+        style: 'destructive',
+        onPress: () =>
+          Alert.alert(d.finalTitle, d.finalMessage, [
+            { text: d.cancel, style: 'cancel' },
+            { text: d.finalConfirm, style: 'destructive', onPress: () => void runDelete() },
+          ]),
+      },
+    ]);
 
   const onSignOut = async () => {
     setSigningOut(true);
@@ -205,6 +234,27 @@ export default function ProfileScreen() {
             tone="danger"
             loading={signingOut}
             onPress={onSignOut}
+            className="h-[54px] justify-start px-4"
+          />
+        </Card>
+
+        <Card className="overflow-hidden p-0">
+          <SettingRow
+            label={t.legal.terms}
+            value=""
+            onPress={() => void Linking.openURL(config.termsUrl)}
+          />
+          <SettingRow
+            label={t.legal.privacy}
+            value=""
+            onPress={() => void Linking.openURL(config.privacyUrl)}
+          />
+          <Button
+            label={d.action}
+            variant="ghost"
+            tone="danger"
+            loading={deleting}
+            onPress={confirmDelete}
             className="h-[54px] justify-start px-4"
           />
         </Card>

@@ -392,6 +392,20 @@ export const fr = {
       cancel: 'Annuler',
     },
     dev: 'Voir les composants',
+    legal: { terms: 'Conditions d’utilisation', privacy: 'Politique de confidentialité' },
+    deleteAccount: {
+      action: 'Supprimer mon compte',
+      title: 'Supprimer ton compte ?',
+      message:
+        'Tes séances, exercices, photos, pesées et ton profil seront effacés définitivement, sur ce téléphone et en ligne.',
+      confirm: 'Supprimer',
+      finalTitle: 'Dernière confirmation',
+      finalMessage: 'Cette action est irréversible. Supprimer définitivement ton compte ?',
+      finalConfirm: 'Supprimer définitivement',
+      cancel: 'Annuler',
+      deleting: 'Suppression du compte…',
+      failed: 'Suppression impossible. Vérifie ta connexion et réessaie.',
+    },
     synced: 'Synchronisé',
     syncing: 'Synchronisation…',
     pending: (n: number) =>
