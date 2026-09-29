@@ -5,7 +5,7 @@ import { scheduleOverrides, weeklySchedule } from '@/db/schema';
 import { nowIso } from '@/db/time';
 import { toLocalDateString } from '@/lib/format';
 import { newId } from '@/lib/id';
-import { enqueue } from '@/sync/outbox';
+import { enqueue, type Tx } from '@/sync/outbox';
 import { isoWeekday, resolveTemplateId } from './resolve';
 
 /** Modèle de semaine : `templateId` null retire la séance de ce jour. */
@@ -15,41 +15,67 @@ export function setWeekdayTemplate(
   weekday: number,
   templateId: string | null,
 ): void {
-  const now = nowIso();
-  db.transaction((tx) => {
-    const existing = tx
-      .select({ id: weeklySchedule.id })
-      .from(weeklySchedule)
-      .where(
-        and(
-          eq(weeklySchedule.userId, userId),
-          eq(weeklySchedule.weekday, weekday),
-          isNull(weeklySchedule.deletedAt),
-        ),
-      )
-      .get();
+  db.transaction((tx) => assignWeekday(tx, userId, weekday, templateId));
+}
 
-    if (templateId === null) {
-      if (!existing) return;
-      tx.update(weeklySchedule)
-        .set({ deletedAt: now, updatedAt: now, dirty: true })
-        .where(eq(weeklySchedule.id, existing.id))
-        .run();
-      enqueue(tx, 'weekly_schedule', existing.id, 'delete');
-    } else if (existing) {
-      tx.update(weeklySchedule)
-        .set({ templateId, updatedAt: now, dirty: true })
-        .where(eq(weeklySchedule.id, existing.id))
-        .run();
-      enqueue(tx, 'weekly_schedule', existing.id, 'upsert');
-    } else {
-      const id = newId();
-      tx.insert(weeklySchedule)
-        .values({ id, userId, weekday, templateId, createdAt: now, updatedAt: now, dirty: true })
-        .run();
-      enqueue(tx, 'weekly_schedule', id, 'upsert');
-    }
-  });
+/** Version sans transaction propre, pour les écritures groupées (enregistrement d'une séance type). */
+export function assignWeekday(
+  tx: Tx,
+  userId: string,
+  weekday: number,
+  templateId: string | null,
+): void {
+  const now = nowIso();
+  const existing = tx
+    .select({ id: weeklySchedule.id, templateId: weeklySchedule.templateId })
+    .from(weeklySchedule)
+    .where(
+      and(
+        eq(weeklySchedule.userId, userId),
+        eq(weeklySchedule.weekday, weekday),
+        isNull(weeklySchedule.deletedAt),
+      ),
+    )
+    .get();
+
+  if (templateId === null) {
+    if (!existing) return;
+    tx.update(weeklySchedule)
+      .set({ deletedAt: now, updatedAt: now, dirty: true })
+      .where(eq(weeklySchedule.id, existing.id))
+      .run();
+    enqueue(tx, 'weekly_schedule', existing.id, 'delete');
+  } else if (existing) {
+    if (existing.templateId === templateId) return;
+    tx.update(weeklySchedule)
+      .set({ templateId, updatedAt: now, dirty: true })
+      .where(eq(weeklySchedule.id, existing.id))
+      .run();
+    enqueue(tx, 'weekly_schedule', existing.id, 'upsert');
+  } else {
+    const id = newId();
+    tx.insert(weeklySchedule)
+      .values({ id, userId, weekday, templateId, createdAt: now, updatedAt: now, dirty: true })
+      .run();
+    enqueue(tx, 'weekly_schedule', id, 'upsert');
+  }
+}
+
+/** Jours (1 = lundi … 7) où une séance type est au modèle de semaine. */
+export function weekdaysForTemplate(tx: Tx, userId: string, templateId: string): number[] {
+  return tx
+    .select({ weekday: weeklySchedule.weekday })
+    .from(weeklySchedule)
+    .where(
+      and(
+        eq(weeklySchedule.userId, userId),
+        eq(weeklySchedule.templateId, templateId),
+        isNull(weeklySchedule.deletedAt),
+      ),
+    )
+    .all()
+    .map((row) => row.weekday)
+    .sort((a, b) => a - b);
 }
 
 /** Exception à une date (`AAAA-MM-JJ`) ; `templateId` null = repos forcé. */
