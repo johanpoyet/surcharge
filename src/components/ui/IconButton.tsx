@@ -4,7 +4,7 @@ import { Pressable, type PressableProps } from 'react-native';
 import { cn } from '@/lib/cn';
 import { colors, iconSizes } from '@/theme/tokens';
 
-type IconButtonTone = 'surface' | 'volt' | 'raised';
+type IconButtonTone = 'surface' | 'volt' | 'raised' | 'ghost';
 
 type IconButtonProps = Omit<PressableProps, 'children'> & {
   icon: LucideIcon;
@@ -19,12 +19,14 @@ const toneClasses: Record<IconButtonTone, string> = {
   surface: 'bg-surface',
   volt: 'bg-volt',
   raised: 'bg-line',
+  ghost: '',
 };
 
 const iconColors: Record<IconButtonTone, string> = {
   surface: colors.text,
   volt: colors.onVolt,
   raised: colors.volt,
+  ghost: colors.muted,
 };
 
 /** Bouton carré 44×44 (36×36 en `sm`, avec zone tactile étendue à 44). */

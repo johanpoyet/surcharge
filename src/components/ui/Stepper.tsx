@@ -19,9 +19,9 @@ type StepperProps = {
   unit?: string;
   /**
    * `xl` : poids de l'onboarding (h 72) ; `lg` : séance en cours (h 56, unité en dessous) ;
-   * `md` : formulaires (h 52, unité à côté).
+   * `md` : formulaires (h 52, unité à côté) ; `sm` : cartes de séance type (h 48, sans unité).
    */
-  size?: 'xl' | 'lg' | 'md';
+  size?: 'xl' | 'lg' | 'md' | 'sm';
   decrementLabel?: string;
   incrementLabel?: string;
   className?: string;
@@ -95,11 +95,14 @@ export function Stepper({
   const formattedStep = unit ? `${formatNumber(step, 2)} ${unit}` : formatNumber(step, 2);
   const large = size === 'lg';
   const huge = size === 'xl';
+  const small = size === 'sm';
   const buttonClass = cn(
     'items-center justify-center active:opacity-80',
-    huge ? 'h-[52px] w-[52px] rounded-input' : 'h-11 w-11 rounded-button',
+    huge && 'h-[52px] w-[52px] rounded-input',
+    small && 'h-[38px] w-[38px] rounded-sm',
+    !huge && !small && 'h-11 w-11 rounded-button',
   );
-  const iconSize = huge ? 26 : large ? 24 : 22;
+  const iconSize = huge ? 26 : large ? 24 : small ? 18 : 22;
 
   const renderButton = (direction: 1 | -1) => {
     const increment = direction === 1;
@@ -114,6 +117,7 @@ export function Stepper({
         }
         accessibilityState={{ disabled }}
         disabled={disabled}
+        hitSlop={small ? 3 : undefined}
         delayLongPress={LONG_PRESS_DELAY}
         onPress={() => stepBy(direction)}
         onLongPress={() => startRepeat(direction)}
@@ -138,6 +142,7 @@ export function Stepper({
         huge && 'h-[72px] rounded-cardSm bg-surface px-2.5',
         large && 'h-14 rounded-input border border-line bg-bg px-[5px]',
         size === 'md' && 'h-[52px] w-40 rounded-input bg-surface px-1',
+        small && 'h-12 rounded-button border border-line bg-bg px-1',
         className,
       )}
     >
