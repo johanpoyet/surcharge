@@ -199,6 +199,17 @@ export const syncState = sqliteTable('sync_state', {
   lastPulledAt: text('last_pulled_at'),
 });
 
+/**
+ * Local uniquement : état de l'écran de la séance en cours (exercice affiché, séries ajoutées,
+ * valeurs saisies, chrono de repos), en JSON. Permet de rouvrir la séance au même endroit si
+ * l'app est tuée (SPEC 8.2). Supprimé à la fin de la séance.
+ */
+export const workoutState = sqliteTable('workout_state', {
+  sessionId: text('session_id').primaryKey(),
+  state: text('state').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
+
 export type Profile = typeof profiles.$inferSelect;
 export type Exercise = typeof exercises.$inferSelect;
 export type WorkoutTemplate = typeof workoutTemplates.$inferSelect;
