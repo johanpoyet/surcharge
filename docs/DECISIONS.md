@@ -256,3 +256,23 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   de l'app au premier plan, fin de séance, et toutes les 60 s s'il reste des modifications.
 - **Séance commencée sur un autre appareil** : pas d'état d'écran local (`workout_state`) ;
   limitation connue de la V1.
+
+## Phase 10 (partie sans comptes Apple / Sentry)
+
+- **Suppression de compte** : Edge Function `delete-account` (déployée le 30/09/2026) : l'utilisateur
+  est identifié par son propre jeton, ses photos (`exercise-photos/{user_id}/`) sont effacées, puis
+  `auth.admin.deleteUser` (cascade sur toutes ses lignes). Double confirmation dans le Profil ;
+  ensuite la base locale et les photos du téléphone sont vidées et la session locale fermée.
+  Appel refusé sans jeton valide (vérifié : 401).
+- **Code Deno exclu** du typecheck, du lint et de Jest de l'app (`supabase/functions`).
+- **Icône** : logo du SPEC (carré volt, barres noires) à 62 % sur fond `#0A0A0A`, sans canal alpha
+  (exigence App Store). Écran de démarrage : logo seul sur `#0A0A0A`. Icônes Android adaptatives
+  (premier plan dans la zone sûre, fond noir, monochrome). Générées depuis le SVG avec resvg
+  (outil hors projet).
+- **`eas.json`** : `development`, `development-simulator`, `preview` (distribution store →
+  TestFlight / test interne Play), `production` (numéro de build incrémenté par EAS).
+  Variables `EXPO_PUBLIC_SUPABASE_*` à créer dans les environnements EAS (le `.env` n'est pas envoyé).
+- **Export** : `ITSAppUsesNonExemptEncryption = false` (HTTPS uniquement), `buildNumber` 1.
+- **Liens CGU et confidentialité** dans le Profil (`src/config.ts`, pages à héberger).
+- **En attente** : Sentry (compte + DSN), EAS (compte Expo, `eas init`), build TestFlight (compte
+  Apple Developer), connexion Apple et Google, EAS Update (`expo-updates`).
