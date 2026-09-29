@@ -31,6 +31,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      "./plugins/withoutPushEntitlement",
       "expo-router",
       "expo-status-bar",
       "expo-font",
@@ -59,7 +60,8 @@
           "cameraPermission": "Pour photographier tes machines et exercices.",
           "microphonePermission": false
         }
-      ]
+      ],
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true
