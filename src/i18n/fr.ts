@@ -126,9 +126,6 @@ export const fr = {
     submit: "C'est parti",
     skip: 'Passer cette étape',
   },
-  home: {
-    greeting: (firstName: string) => (firstName ? `Salut ${firstName}` : 'Salut'),
-  },
   weekdays: {
     letters: ['L', 'M', 'M', 'J', 'V', 'S', 'D'],
     short: ['Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.', 'Dim.'],
@@ -259,6 +256,76 @@ export const fr = {
       done: 'Terminer',
     },
   },
+  planning: {
+    week: 'Sem.',
+    month: 'Mois',
+    prevWeek: 'Semaine précédente',
+    nextWeek: 'Semaine suivante',
+    prevMonth: 'Mois précédent',
+    nextMonth: 'Mois suivant',
+    rest: 'Repos',
+    today: "Aujourd'hui",
+    done: 'Faite',
+    onlyThisDay: 'Juste ce jour',
+    exercisesMinutes: (n: number, minutes: number) =>
+      `${n} ${n > 1 ? 'exos' : 'exo'} · ~${minutes} min`,
+    dayA11y: (day: string, plan: string) => `${day} : ${plan}. Toucher pour changer.`,
+    repeat: 'Répéter chaque semaine',
+    repeatOn: "L'app te propose la bonne séance chaque jour",
+    repeatOff: 'Tes choix ne valent que pour la date choisie',
+    restOption: 'Repos',
+    resetOption: 'Revenir au modèle de semaine',
+    moveOption: 'Déplacer vers…',
+    moveTitle: (name: string) => `Déplacer ${name} vers…`,
+    cancel: 'Annuler',
+    monthTotal: (n: number) => (n > 1 ? `${n} séances` : `${n} séance`),
+    monthCaption: (month: string) => `prévues en ${month}`,
+    noTemplates: 'Crée d’abord une séance type (onglet Mes séances).',
+  },
+  home: {
+    greeting: (firstName: string) => (firstName ? `Salut ${firstName}` : 'Salut'),
+    profile: 'Profil',
+    day: {
+      overline: 'Séance du jour',
+      planned: 'Prévue au planning',
+      changed: 'Changée pour aujourd’hui',
+      meta: (exercises: number, minutes: number, muscles: string) =>
+        [`${exercises} ${exercises > 1 ? 'exercices' : 'exercice'}`, `~${minutes} min`, muscles]
+          .filter(Boolean)
+          .join(' · '),
+      start: 'Démarrer',
+      change: 'Changer',
+      changeTitle: 'Quelle séance aujourd’hui ?',
+      rest: 'Jour de repos',
+      restHint: 'Récupérer fait partie du programme.',
+      anyway: 'Faire une séance quand même',
+      done: 'Séance faite ✓',
+      doneLink: 'Voir le récap',
+      inProgress: 'Séance en cours',
+      resume: 'Reprendre',
+      empty: 'Pas encore de séance type',
+      emptyHint: 'Crée ta première séance et place-la dans ta semaine.',
+      create: 'Créer une séance',
+    },
+    stats: {
+      sessions: (month: string) => `séances en ${month}`,
+      records: 'records ce mois',
+      streak: 'de régularité',
+      streakUnit: 'sem.',
+    },
+    regularity: { title: 'Régularité', done: 'Faite', planned: 'Prévue', record: 'Record' },
+    progression: {
+      title: 'Progression',
+      badge: (delta: string, weeks: number) => `+${delta} en ${weeks} sem.`,
+    },
+    bodyWeight: {
+      title: 'Poids corporel',
+      change: (delta: string) => `${delta} ce mois`,
+    },
+  },
+  reminders: {
+    body: (name: string) => `Aujourd'hui : ${name}`,
+  },
   profile: {
     title: 'Profil',
     signOut: 'Se déconnecter',
@@ -357,10 +424,7 @@ export const fr = {
   errors: {
     database: 'Impossible de préparer les données de l’app. Ferme-la et rouvre-la.',
   },
-  placeholders: {
-    planning: 'Le planning de la semaine et du mois arrive en Phase 7.',
-    home: 'Séance du jour, statistiques et régularité arrivent en Phase 7.',
-  },
+  placeholders: {},
   tabs: {
     home: 'Accueil',
     sessions: 'Séances',

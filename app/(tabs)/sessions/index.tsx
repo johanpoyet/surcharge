@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { Alert, FlatList, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, Heading, IconButton, Placeholder, Tabs, useToast } from '@/components/ui';
+import { Button, Heading, IconButton, Tabs, useToast } from '@/components/ui';
 import { db } from '@/db/client';
 import type { WorkoutTemplate } from '@/db/schema';
 import { useAuth } from '@/features/auth/AuthProvider';
+import { PlanningPanel } from '@/features/planning/components/PlanningPanel';
 import { estimateMinutes } from '@/features/templates/format';
 import { useTemplateItems, useTemplates, useTemplateWeekdays } from '@/features/templates/hooks';
 import { deleteTemplate, duplicateTemplate } from '@/features/templates/repository';
@@ -28,8 +29,7 @@ export default function SessionsScreen() {
   const { start } = useStartWorkout();
   const items = useTemplateItems();
   const weekdays = useTemplateWeekdays();
-  // « Mes séances » par défaut tant que le planning (Phase 7) n'existe pas.
-  const [tab, setTab] = useState<Tab>('templates');
+  const [tab, setTab] = useState<Tab>('planning');
 
   const open = (template: WorkoutTemplate) =>
     router.push({ pathname: '/templates/[id]', params: { id: template.id } });
@@ -81,9 +81,7 @@ export default function SessionsScreen() {
       </View>
 
       {tab === 'planning' ? (
-        <View className="px-screen pt-4">
-          <Placeholder>{fr.placeholders.planning}</Placeholder>
-        </View>
+        <PlanningPanel />
       ) : (
         <FlatList
           data={templates}
