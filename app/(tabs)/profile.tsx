@@ -22,6 +22,7 @@ import { formatRest } from '@/features/templates/format';
 import { useAllSets, useCompletedSessions } from '@/features/workout/hooks';
 import { fr } from '@/i18n/fr';
 import { formatThousands } from '@/lib/format';
+import { useSyncStatus } from '@/sync';
 import { usePendingChanges } from '@/sync/hooks';
 import { colors } from '@/theme/tokens';
 
@@ -66,6 +67,7 @@ export default function ProfileScreen() {
   const { profile, firstName } = useProfile();
   const unit = profile?.weightUnit ?? 'kg';
   const pending = usePendingChanges();
+  const syncing = useSyncStatus((s) => s.syncing);
   const sessions = useCompletedSessions();
   const sets = useAllSets();
   const weights = useBodyWeights();
@@ -208,7 +210,7 @@ export default function ProfileScreen() {
         </Card>
 
         <Text className="text-center font-body text-13 text-muted">
-          {pending === 0 ? t.synced : t.pending(pending)}
+          {syncing ? t.syncing : pending === 0 ? t.synced : t.pending(pending)}
         </Text>
 
         {__DEV__ ? (

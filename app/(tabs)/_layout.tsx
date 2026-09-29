@@ -10,6 +10,7 @@ import { ActiveWorkoutBar } from '@/features/workout/components/ActiveWorkoutBar
 import { getActiveSession } from '@/features/workout/repository';
 import { useStartWorkout } from '@/features/workout/useStartWorkout';
 import { fr } from '@/i18n/fr';
+import { useSync } from '@/sync/useSync';
 
 type RouteName = 'index' | 'sessions/index' | 'exercises/index' | 'profile';
 
@@ -45,6 +46,7 @@ export default function TabsLayout() {
   const userId = useAuth().session?.user.id;
   const { openWorkout } = useStartWorkout();
   useReminderSync();
+  useSync();
 
   // App tuée pendant une séance : on la rouvre directement sur la séance en cours (SPEC 8.2).
   useEffect(() => {

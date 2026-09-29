@@ -393,6 +393,7 @@ export const fr = {
     },
     dev: 'Voir les composants',
     synced: 'Synchronisé',
+    syncing: 'Synchronisation…',
     pending: (n: number) =>
       n === 1 ? '1 modification en attente' : `${n} modifications en attente`,
   },

@@ -19,6 +19,7 @@ import {
   sessionSetsQuery,
   updateSet,
 } from './repository';
+import { requestSync } from '@/sync';
 import { cancelRestNotification, scheduleRestEnd } from './restNotifications';
 import { draftKey, type WorkoutPlanItem, type WorkoutUiState } from './state';
 
@@ -208,7 +209,10 @@ export function useWorkout(sessionId: string) {
 
   const finish = (): 'finished' | 'discarded' => {
     cancelRestNotification(state?.rest?.notificationId);
-    return endWorkout(db, sessionId);
+    const result = endWorkout(db, sessionId);
+    // Fin de séance : on envoie tout de suite (SPEC 7).
+    requestSync();
+    return result;
   };
 
   return {
