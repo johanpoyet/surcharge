@@ -43,6 +43,9 @@ describe('authErrorMessage', () => {
     expect(authErrorMessage(new AuthApiError('x', 422, 'user_already_exists'))).toBe(
       fr.auth.errors.emailTaken,
     );
+    expect(authErrorMessage(new AuthApiError('x', 400, 'email_provider_disabled'))).toBe(
+      fr.auth.errors.signupDisabled,
+    );
     expect(authErrorMessage(new AuthRetryableFetchError('x', 0))).toBe(fr.auth.errors.network);
     expect(authErrorMessage(new Error('???'))).toBe(fr.auth.errors.generic);
   });

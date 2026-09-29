@@ -103,6 +103,7 @@ export const fr = {
       rateLimited: 'Trop de tentatives. Réessaie dans quelques minutes.',
       emailNotConfirmed: 'Confirme ton e-mail avec le lien reçu avant de te connecter.',
       samePassword: 'Choisis un mot de passe différent de l’ancien.',
+      signupDisabled: 'Les inscriptions par e-mail sont fermées pour le moment.',
       network: 'Pas de connexion. Vérifie ton réseau et réessaie.',
       generic: 'Une erreur est survenue. Réessaie.',
     },

@@ -22,6 +22,9 @@ export function authErrorMessage(error: unknown): string {
         return e.emailNotConfirmed;
       case 'same_password':
         return e.samePassword;
+      case 'email_provider_disabled':
+      case 'signup_disabled':
+        return e.signupDisabled;
     }
     if (error.name === 'AuthRetryableFetchError') return e.network;
   }
