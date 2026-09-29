@@ -71,6 +71,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a440ecb1-b057-441e-a1ed-73834ee9ea24"
+      }
+    },
+    "owner": "johanpoyet"
   }
 }
