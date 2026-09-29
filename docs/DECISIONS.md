@@ -182,3 +182,28 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   reprogrammée à chaque ajustement et annulée si la série suivante est validée avant la fin.
 - **Bouton + central** : reprend la séance en cours, sinon propose la liste des séances types
   (la carte « Séance du jour » de l'accueil arrive en Phase 7).
+
+## Phase 7
+
+- **« Répéter chaque semaine »** activé par défaut (maquette) et mémorisé sur l'appareil
+  (AsyncStorage, confort local). Activé : le choix d'un jour modifie le modèle de semaine et retire
+  l'exception éventuelle de cette date ; désactivé : seule la date change (exception).
+- **Menu d'un jour** (toucher ou appui long) : séances types, Repos, « Déplacer vers… » (jours de la
+  semaine affichée, toujours en exceptions) et « Revenir au modèle de semaine » si la date a une
+  exception. Mention « Juste ce jour » sur les jours modifiés.
+- **Vue mois** : jours hors mois atténués (opacité) plutôt que deux nouvelles couleurs ; étiquette
+  pleine volt pour aujourd'hui et les jours faits, contour volt pour les jours prévus.
+- **Accueil – carte du jour** : séance en cours (Reprendre) > séance faite aujourd'hui (Séance faite
+  ✓ + récap) > aucune séance type (Créer) > séance prévue (Démarrer / Changer) > repos (Faire une
+  séance quand même). « Changer » démarre une autre séance type, sans modifier le planning.
+- **Records du mois** : séries qui battaient le record de leur exercice au moment où elles ont été
+  faites (la première série d'un exercice ne compte pas). Point « record » sur le calendrier.
+- **Progression** : exercice fait dans le plus de séances ; 8 dernières charges max ; badge
+  « +X en N sem. » seulement en cas de gain.
+- **Poids corporel** : variation sur les 30 derniers jours ; carte masquée sans pesée.
+- **Pas de cloche** dans l'en-tête de l'accueil (pas de centre de notifications en V1) ; l'avatar
+  ouvre le Profil.
+- **Rappels** : reprogrammés sur 14 jours à chaque changement du planning ou du réglage, à 9 h 00,
+  seulement si l'autorisation des notifications a déjà été donnée (demandée au premier repos).
+  Le réglage « Rappels » du Profil arrive en Phase 8 (activé par défaut).
+- **Graphiques simples** (barres en vues, courbe en SVG) en attendant victory-native (Phase 8).
