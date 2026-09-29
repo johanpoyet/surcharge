@@ -107,3 +107,26 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   récupéré une fois dans Supabase en attendant le pull complet de la Phase 9.
 - **Données locales conservées à la déconnexion** (filtrées par `user_id`) : une déconnexion ne
   doit pas perdre des séances pas encore synchronisées.
+
+## Phase 4
+
+- **Photos** : `expo-image-picker` (recadrage 4:3), compression `expo-image-manipulator` (1080 px max,
+  JPEG 0,7), fichier déplacé dans `Documents/exercise-photos/{uuid}.jpg` (`expo-file-system`, nouvelle
+  API `File` / `Directory`). Nom par UUID et non par exercice : l'exercice n'existe pas encore à la
+  prise de vue. Les photos abandonnées (annulation, remplacement, retrait) sont supprimées.
+  Envoi vers Supabase Storage en Phase 9.
+- **Accès refusé** à l'appareil photo ou aux photos : message + bouton « Réglages ».
+- **Muscle et équipement « Autre »** ajoutés aux chips (valeurs de l'enum, absentes des maquettes).
+- **Muscle et équipement obligatoires** à la création (aucun choix par défaut).
+- **Pas des boutons en lb** : affiché et saisi dans l'unité du profil (au demi près), enregistré
+  en kg. Pour un compte en kg, le pas suit l'équipement (5 kg machine, 2,5 kg sinon) tant qu'il n'a
+  pas été modifié à la main.
+- **Liste** : charge affichée = charge max réussie de la dernière séance (cohérente avec la
+  tendance) ; tendance seulement à partir de 2 séances ; au poids du corps, la charge est le lest
+  (« +10 kg », rien à 0). Recherche insensible aux accents et à la casse.
+- **Calculs SPEC 9.2 déjà écrits et testés** (`features/stats/calc.ts`) : record, 1RM Epley, charge
+  max par séance, volume, tendance. Utilisés par la liste et le détail.
+- **Détail** : pas encore de graphique ni de bloc « Ressenti à X kg » / conseil (Phases 6 et 8).
+  Historique : 3 dernières séances, « Voir tout l'historique » déplie la liste sur place.
+- **Suppression** depuis l'écran de modification (confirmation), retour à la liste.
+- **Délai des tests Jest porté à 15 s** : le premier lancement sans cache (sql.js) peut dépasser 5 s.
