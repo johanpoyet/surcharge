@@ -1,7 +1,14 @@
-import { and, asc, eq, isNull } from 'drizzle-orm';
+import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 
 import type { AppDatabase } from '@/db/client';
-import { exercises, type Equipment, type Exercise, type MuscleGroup } from '@/db/schema';
+import {
+  exercises,
+  sessions,
+  sessionSets,
+  type Equipment,
+  type Exercise,
+  type MuscleGroup,
+} from '@/db/schema';
 import { DEFAULT_EXERCISES, defaultWeightStep } from '@/db/seed';
 import { nowIso } from '@/db/time';
 import { newId } from '@/lib/id';
@@ -120,4 +127,72 @@ export function seedDefaultExercises(db: AppDatabase, userId: string): number {
     }
     return DEFAULT_EXERCISES.length;
   });
+}
+
+/** Charge max réussie et dernière série, par exercice et par séance (liste des exercices). */
+export const exerciseSessionStatsQuery = (db: AppDatabase, userId: string) =>
+  db
+    .select({
+      exerciseId: sessionSets.exerciseId,
+      sessionId: sessionSets.sessionId,
+      maxKg: sql<
+        number | null
+      >`max(case when ${sessionSets.reps} > 0 and (${sessionSets.difficulty} is null or ${sessionSets.difficulty} <> 'fail') then ${sessionSets.weightKg} end)`,
+      lastAt: sql<string>`max(${sessionSets.completedAt})`,
+    })
+    .from(sessionSets)
+    .where(and(eq(sessionSets.userId, userId), isNull(sessionSets.deletedAt)))
+    .groupBy(sessionSets.exerciseId, sessionSets.sessionId);
+
+/** Séries d'un exercice avec leur séance, de la plus récente à la plus ancienne (détail). */
+export const exerciseHistoryQuery = (db: AppDatabase, exerciseId: string) =>
+  db
+    .select({
+      id: sessionSets.id,
+      sessionId: sessionSets.sessionId,
+      sessionName: sessions.name,
+      startedAt: sessions.startedAt,
+      setNumber: sessionSets.setNumber,
+      weightKg: sessionSets.weightKg,
+      reps: sessionSets.reps,
+      difficulty: sessionSets.difficulty,
+      completedAt: sessionSets.completedAt,
+    })
+    .from(sessionSets)
+    .innerJoin(sessions, eq(sessions.id, sessionSets.sessionId))
+    .where(
+      and(
+        eq(sessionSets.exerciseId, exerciseId),
+        isNull(sessionSets.deletedAt),
+        isNull(sessions.deletedAt),
+      ),
+    )
+    .orderBy(desc(sessions.startedAt), asc(sessionSets.setNumber));
+
+export type ExerciseHistoryRow = ReturnType<ReturnType<typeof exerciseHistoryQuery>['all']>[number];
+
+export type HistorySession = {
+  sessionId: string;
+  sessionName: string;
+  startedAt: string;
+  sets: ExerciseHistoryRow[];
+};
+
+/** Regroupe l'historique par séance, dans l'ordre de la requête. */
+export function groupHistory(rows: readonly ExerciseHistoryRow[]): HistorySession[] {
+  const groups: HistorySession[] = [];
+  for (const row of rows) {
+    const last = groups[groups.length - 1];
+    if (last?.sessionId === row.sessionId) {
+      last.sets.push(row);
+    } else {
+      groups.push({
+        sessionId: row.sessionId,
+        sessionName: row.sessionName,
+        startedAt: row.startedAt,
+        sets: [row],
+      });
+    }
+  }
+  return groups;
 }
