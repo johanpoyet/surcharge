@@ -21,7 +21,7 @@ export function isNewAccount(
   return Math.abs(Date.parse(user.last_sign_in_at) - Date.parse(user.created_at)) < toleranceMs;
 }
 
-/** Apple disponible : iOS, et app compilée avec la capacité (voir SANS_APPLE_SIGNIN, app.config.js). */
+/** Apple disponible : iOS, et app compilée avec la capacité « Sign in with Apple ». */
 export async function appleSignInAvailable(): Promise<boolean> {
   if (Platform.OS !== 'ios' || Constants.expoConfig?.ios?.usesAppleSignIn === false) return false;
   return AppleAuthentication.isAvailableAsync();

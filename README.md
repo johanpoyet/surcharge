@@ -77,13 +77,3 @@ rsync -avz --delete -e "ssh -i ~/.ssh/planify_vps_ed25519" \
 ```
 
 La racine `johanpoyet.fr` redirige vers l'assistance en attendant le portfolio.
-
-## iPhone avec une Personal Team gratuite (temporaire)
-
-Tant que le compte Apple Developer payant n'est pas actif, la capacité « Sign in with Apple » ne
-peut pas être signée. Pour installer l'app sur un iPhone malgré tout (sans le bouton Apple) :
-
-```bash
-SANS_APPLE_SIGNIN=1 npx expo prebuild --platform ios --clean
-SANS_APPLE_SIGNIN=1 npx expo run:ios --device
-```

@@ -287,7 +287,8 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Nouveau compte** (création et première connexion à moins d'une minute d'écart) : onboarding ;
   sinon, accueil.
 - **Branche fusionnée seulement avec le compte Apple Developer payant** : la capacité Sign in with
-  Apple ne peut pas être signée par une Personal Team gratuite.
+  Apple ne peut pas être signée par une Personal Team gratuite. Compte payant actif le 30/09/2026
+  (même Team ID `R7GAYTSBWH`) ; l'interrupteur temporaire `SANS_APPLE_SIGNIN` a été retiré.
 - **Connexion Google** : `@react-native-google-signin/google-signin` (liste section 2), jeton
   d'identité vérifié par Supabase (`signInWithIdToken`, « Skip nonce checks » activé côté Supabase :
   le SDK iOS ne fournit pas de nonce). Identifiants OAuth iOS et Web (publics) dans

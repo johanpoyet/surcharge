@@ -45,7 +45,10 @@ export function SocialButtons({ prefixed = false }: { prefixed?: boolean }) {
       if (!isNew) setOnboardingPending(false);
     } catch (error) {
       setOnboardingPending(false);
-      if (!(error instanceof SignInCanceledError)) toast.show(authErrorMessage(error));
+      if (error instanceof SignInCanceledError) return;
+      // En développement : l'erreur exacte dans le terminal de Metro (diagnostic).
+      if (__DEV__) console.warn('Connexion sociale refusée :', error);
+      toast.show(authErrorMessage(error));
     } finally {
       setBusy(false);
     }
