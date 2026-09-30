@@ -12,8 +12,9 @@ Textes prêts à coller dans **App Store Connect** (longueurs vérifiées).
 | Catégorie secondaire | Sport | |
 | Prix | Gratuit | |
 | Classification par âge | 4+ (aucun contenu sensible) | |
+| E-mail de contact | surcharge@johanpoyet.fr | |
 | URL de confidentialité | https://johanpoyet.fr/surcharge/confidentialite | obligatoire |
-| URL d'assistance | [page d'assistance ou de contact à créer] | obligatoire |
+| URL d'assistance | [page d'assistance à créer, avec l'adresse surcharge@johanpoyet.fr] | obligatoire |
 | Identifiant (bundle) | fr.johanpoyet.surcharge | |
 | Chiffrement | Non (HTTPS uniquement, déjà déclaré dans l'app) | |
 

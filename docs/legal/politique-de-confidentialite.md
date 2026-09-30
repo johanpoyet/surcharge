@@ -12,7 +12,7 @@ supprimer depuis l'application, à tout moment.
 ## 1. Qui est responsable de tes données ?
 
 Le responsable du traitement est **Johan Poyet**, éditeur de l'application, joignable à
-l'adresse **[adresse e-mail de contact]**.
+l'adresse **surcharge@johanpoyet.fr**.
 
 ## 2. Quelles données sont traitées ?
 
@@ -79,7 +79,7 @@ décès. Dans l'application :
   séries).
 - **Supprimer** : *Profil → Supprimer mon compte*.
 
-Pour toute autre demande : **[adresse e-mail de contact]**. Si tu estimes que tes droits ne sont pas
+Pour toute autre demande : **surcharge@johanpoyet.fr**. Si tu estimes que tes droits ne sont pas
 respectés, tu peux adresser une réclamation à la **CNIL** (www.cnil.fr).
 
 ## 8. Âge minimum

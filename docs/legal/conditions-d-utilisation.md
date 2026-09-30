@@ -5,7 +5,7 @@
 ## 1. Objet
 
 Les présentes conditions encadrent l'utilisation de l'application **Surcharge**, éditée par
-**Johan Poyet** ([adresse e-mail de contact]). Surcharge permet d'enregistrer ses séances de
+**Johan Poyet** (surcharge@johanpoyet.fr). Surcharge permet d'enregistrer ses séances de
 musculation, de planifier ses entraînements et de suivre sa progression.
 
 En créant un compte, tu acceptes ces conditions ainsi que la
@@ -75,4 +75,4 @@ défaut, les tribunaux français sont compétents.
 
 ## 10. Contact
 
-[adresse e-mail de contact]
+surcharge@johanpoyet.fr
