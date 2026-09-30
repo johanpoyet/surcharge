@@ -135,7 +135,7 @@ export default function ComponentsScreen() {
                 <Text className="font-body-bold text-11 text-onVolt">{s.heroTag}</Text>
               </View>
             </View>
-            <Heading size={48} className="mt-1 text-onVolt">
+            <Heading size={48} tone="onVolt" className="mt-1">
               {s.heading}
             </Heading>
             <Text className="mt-1 font-body-medium text-15 text-onVolt">{s.heroMeta}</Text>

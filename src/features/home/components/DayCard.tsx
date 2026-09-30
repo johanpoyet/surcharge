@@ -45,7 +45,7 @@ export function DayCard({ state, onStart, onChange, onResume, onRecap, onCreate 
             {overline}
             <Tag label={state.changed ? t.changed : t.planned} />
           </View>
-          <Heading size={48} className="mt-1 text-onVolt">
+          <Heading size={48} tone="onVolt" className="mt-1">
             {state.name}
           </Heading>
           <Text className="mt-1 font-body-medium text-15 text-onVolt">{state.meta}</Text>
@@ -59,7 +59,7 @@ export function DayCard({ state, onStart, onChange, onResume, onRecap, onCreate 
       {state.kind === 'rest' ? (
         <>
           {overline}
-          <Heading size={48} className="mt-1 text-onVolt">
+          <Heading size={48} tone="onVolt" className="mt-1">
             {t.rest}
           </Heading>
           <Text className="mt-1 font-body-medium text-15 text-onVolt">{t.restHint}</Text>
@@ -70,7 +70,7 @@ export function DayCard({ state, onStart, onChange, onResume, onRecap, onCreate 
       {state.kind === 'active' ? (
         <>
           {overline}
-          <Heading size={48} className="mt-1 text-onVolt">
+          <Heading size={48} tone="onVolt" className="mt-1">
             {state.name}
           </Heading>
           <Button label={t.resume} variant="dark" className="mt-4" onPress={onResume} />
@@ -80,7 +80,7 @@ export function DayCard({ state, onStart, onChange, onResume, onRecap, onCreate 
       {state.kind === 'done' ? (
         <>
           {overline}
-          <Heading size={48} className="mt-1 text-onVolt">
+          <Heading size={48} tone="onVolt" className="mt-1">
             {t.done}
           </Heading>
           <Text className="mt-1 font-body-medium text-15 text-onVolt">{state.name}</Text>
@@ -91,7 +91,7 @@ export function DayCard({ state, onStart, onChange, onResume, onRecap, onCreate 
       {state.kind === 'empty' ? (
         <>
           {overline}
-          <Heading size={40} className="mt-1 text-onVolt">
+          <Heading size={40} tone="onVolt" className="mt-1">
             {t.empty}
           </Heading>
           <Text className="mt-1 font-body-medium text-15 text-onVolt">{t.emptyHint}</Text>

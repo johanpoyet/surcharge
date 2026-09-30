@@ -20,19 +20,38 @@ const displaySizes: Record<DisplaySize, string> = {
   20: 'text-20',
 };
 
+type HeadingTone = 'text' | 'onVolt' | 'volt';
+
+// Couleur passée en option : une classe de couleur ajoutée via `className` ne l'emporte pas
+// toujours sur celle par défaut (l'ordre des classes n'est pas garanti).
+const toneClasses: Record<HeadingTone, string> = {
+  text: 'text-text',
+  onVolt: 'text-onVolt',
+  volt: 'text-volt',
+};
+
 type HeadingProps = TextProps & {
   size?: DisplaySize;
   uppercase?: boolean;
+  /** `onVolt` : sur fond volt (carte « Séance du jour »). */
+  tone?: HeadingTone;
   className?: string;
 };
 
 /** Titre ou chiffre clé en Barlow Condensed ExtraBold Italic. */
-export function Heading({ size = 34, uppercase = true, className, ...props }: HeadingProps) {
+export function Heading({
+  size = 34,
+  uppercase = true,
+  tone = 'text',
+  className,
+  ...props
+}: HeadingProps) {
   return (
     <Text
       accessibilityRole="header"
       className={cn(
-        'font-display text-text',
+        'font-display',
+        toneClasses[tone],
         displaySizes[size],
         uppercase && 'uppercase',
         className,
