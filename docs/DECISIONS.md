@@ -288,3 +288,9 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   sinon, accueil.
 - **Branche fusionnée seulement avec le compte Apple Developer payant** : la capacité Sign in with
   Apple ne peut pas être signée par une Personal Team gratuite.
+- **Connexion Google** : `@react-native-google-signin/google-signin` (liste section 2), jeton
+  d'identité vérifié par Supabase (`signInWithIdToken`, « Skip nonce checks » activé côté Supabase :
+  le SDK iOS ne fournit pas de nonce). Identifiants OAuth iOS et Web (publics) dans
+  `src/config.ts` ; le secret du client Web n'est que dans Supabase. Le prénom vient de
+  `given_name`, repris par le trigger de création du profil. Bouton aux couleurs de l'app avec le
+  « G » de Google. Testable dès maintenant sur le simulateur (pas besoin du compte Apple payant).

@@ -20,6 +20,13 @@ jest.mock('expo-apple-authentication', () => ({
   isAvailableAsync: jest.fn().mockResolvedValue(false),
 }));
 
+jest.mock('@react-native-google-signin/google-signin', () => ({
+  GoogleSignin: { configure: jest.fn(), hasPlayServices: jest.fn(), signIn: jest.fn() },
+  isErrorWithCode: () => false,
+  isSuccessResponse: () => false,
+  statusCodes: {},
+}));
+
 jest.mock('@/features/auth/AuthProvider', () => ({
   useAuth: () => ({ setOnboardingPending: jest.fn() }),
 }));

@@ -79,7 +79,7 @@ export const fr = {
       withApple: 'Avec Apple',
       withGoogle: 'Avec Google',
       soon: 'Connexion Apple et Google : bientôt disponible',
-      googleSoon: 'Connexion Google : bientôt disponible',
+      googleA11y: 'Continuer avec Google',
     },
     resetPassword: {
       title: ['Nouveau', 'mot de passe.'],
