@@ -63,3 +63,17 @@ src/sync           outbox, push, pull, photos
 supabase/          migrations Postgres, Edge Function delete-account
 plugins/           plugins de configuration Expo locaux
 ```
+
+## Pages publiques (johanpoyet.fr/surcharge)
+
+Politique de confidentialité, conditions d'utilisation et assistance, exigées par l'App Store.
+Sources : `docs/legal/*.md` ; pages générées dans `website/surcharge/`, servies par nginx sur le
+VPS (`website/nginx/johanpoyet.fr.conf`, HTTPS Let's Encrypt renouvelé automatiquement).
+
+```bash
+npm i --no-save marked@15 && node website/build.mjs      # régénérer les pages
+rsync -avz --delete -e "ssh -i ~/.ssh/planify_vps_ed25519" \
+  website/surcharge ubuntu@51.210.180.130:/home/ubuntu/sites/johanpoyet.fr/   # publier
+```
+
+La racine `johanpoyet.fr` redirige vers l'assistance en attendant le portfolio.
