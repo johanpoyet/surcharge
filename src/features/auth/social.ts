@@ -5,6 +5,7 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import Constants from 'expo-constants';
 import * as Crypto from 'expo-crypto';
 import { Platform } from 'react-native';
 
@@ -20,8 +21,10 @@ export function isNewAccount(
   return Math.abs(Date.parse(user.last_sign_in_at) - Date.parse(user.created_at)) < toleranceMs;
 }
 
+/** Apple disponible : iOS, et app compilée avec la capacité (voir SANS_APPLE_SIGNIN, app.config.js). */
 export async function appleSignInAvailable(): Promise<boolean> {
-  return Platform.OS === 'ios' && (await AppleAuthentication.isAvailableAsync());
+  if (Platform.OS !== 'ios' || Constants.expoConfig?.ios?.usesAppleSignIn === false) return false;
+  return AppleAuthentication.isAvailableAsync();
 }
 
 /** Annulation par l'utilisateur (pas une erreur à afficher). */

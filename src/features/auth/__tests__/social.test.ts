@@ -3,6 +3,7 @@ import { isNewAccount } from '../social';
 jest.mock('@/lib/supabase', () => ({ supabase: {} }));
 jest.mock('expo-apple-authentication', () => ({}));
 jest.mock('@react-native-google-signin/google-signin', () => ({}));
+jest.mock('expo-constants', () => ({ expoConfig: {} }));
 
 it('nouveau compte : première connexion au moment de la création', () => {
   expect(
