@@ -20,7 +20,8 @@
       "environment": "preview",
       "android": {
         "buildType": "app-bundle"
-      }
+      },
+      "autoIncrement": true
     },
     "production": {
       "distribution": "store",

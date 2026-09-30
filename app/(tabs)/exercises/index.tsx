@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ChipGroup, Heading, IconButton, SearchField } from '@/components/ui';
 import type { MuscleGroup } from '@/db/schema';
+import { EmptyLibrary } from '@/features/exercises/components/EmptyLibrary';
 import { ExerciseRow } from '@/features/exercises/components/ExerciseRow';
 import { useExercises, useExerciseSummaries } from '@/features/exercises/hooks';
 import { muscleOptions } from '@/features/exercises/labels';
@@ -81,9 +82,11 @@ export default function ExercisesScreen() {
           />
         )}
         ListEmptyComponent={
-          <Text className="pt-6 text-center font-body text-15 text-muted">
-            {exercises.length === 0 ? t.emptyLibrary : t.empty}
-          </Text>
+          exercises.length === 0 ? (
+            <EmptyLibrary />
+          ) : (
+            <Text className="pt-6 text-center font-body text-15 text-muted">{t.empty}</Text>
+          )
         }
       />
     </SafeAreaView>

@@ -1,4 +1,5 @@
 import * as AppleAuthentication from 'expo-apple-authentication';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -42,7 +43,9 @@ export function SocialButtons({ prefixed = false }: { prefixed?: boolean }) {
     setOnboardingPending(true);
     try {
       const { isNew } = await signIn();
-      if (!isNew) setOnboardingPending(false);
+      // Nouveau compte : étape 2 de l'inscription (profil, puis bibliothèque d'exercices).
+      if (isNew) router.replace('/onboarding');
+      else setOnboardingPending(false);
     } catch (error) {
       setOnboardingPending(false);
       if (error instanceof SignInCanceledError) return;

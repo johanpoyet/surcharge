@@ -421,6 +421,8 @@ export const fr = {
     sort: 'Tri : dernière utilisation',
     empty: 'Aucun exercice ne correspond.',
     emptyLibrary: 'Ta bibliothèque est vide : crée ton premier exercice.',
+    addDefaults: 'Ajouter les exercices de base',
+    defaultsAdded: (n: number) => (n > 1 ? `${n} exercices ajoutés` : `${n} exercice ajouté`),
     muscles: {
       chest: 'Pecs',
       back: 'Dos',

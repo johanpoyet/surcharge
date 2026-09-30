@@ -101,6 +101,45 @@ export function getExercise(db: AppDatabase, id: string): Exercise | undefined {
  * Ajoute la bibliothèque par défaut si l'utilisateur n'a encore aucun exercice (même supprimé) :
  * ne s'exécute qu'une fois par compte. Retourne le nombre d'exercices créés.
  */
+/**
+ * Bibliothèque vide (compte sans onboarding, tout supprimé…) : ajoute les exercices par défaut
+ * dont le nom n'existe pas déjà parmi les exercices actifs. Retourne le nombre ajouté.
+ */
+export function addMissingDefaultExercises(db: AppDatabase, userId: string): number {
+  return db.transaction((tx) => {
+    const existing = new Set(
+      tx
+        .select({ name: exercises.name })
+        .from(exercises)
+        .where(and(eq(exercises.userId, userId), isNull(exercises.deletedAt)))
+        .all()
+        .map((e) => e.name.trim().toLowerCase()),
+    );
+    const now = nowIso();
+    let added = 0;
+    for (const seed of DEFAULT_EXERCISES) {
+      if (existing.has(seed.name.toLowerCase())) continue;
+      const id = newId();
+      tx.insert(exercises)
+        .values({
+          id,
+          userId,
+          name: seed.name,
+          muscle: seed.muscle,
+          equipment: seed.equipment,
+          weightStep: defaultWeightStep(seed.equipment),
+          createdAt: now,
+          updatedAt: now,
+          dirty: true,
+        })
+        .run();
+      enqueue(tx, 'exercises', id, 'upsert');
+      added += 1;
+    }
+    return added;
+  });
+}
+
 export function seedDefaultExercises(db: AppDatabase, userId: string): number {
   return db.transaction((tx) => {
     const existing = tx

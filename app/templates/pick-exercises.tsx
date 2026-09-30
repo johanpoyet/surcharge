@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, ChipGroup, Heading, IconButton, SearchField } from '@/components/ui';
 import type { MuscleGroup } from '@/db/schema';
+import { EmptyLibrary } from '@/features/exercises/components/EmptyLibrary';
 import { ExerciseThumb } from '@/features/exercises/components/ExerciseThumb';
 import { useExercises } from '@/features/exercises/hooks';
 import { muscleOptions } from '@/features/exercises/labels';
@@ -94,6 +95,7 @@ export default function PickExercisesScreen() {
             </View>
           </Pressable>
         }
+        ListEmptyComponent={exercises.length === 0 ? <EmptyLibrary /> : null}
         renderItem={({ item }) => {
           const disabled = already.has(item.id);
           const checked = disabled || selected.includes(item.id);

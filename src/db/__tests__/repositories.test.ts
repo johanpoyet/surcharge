@@ -288,3 +288,25 @@ it('les tables locales portent bien les colonnes de synchro', () => {
   expect(row).toMatchObject({ dirty: true, deletedAt: null, photoLocalUri: null, photoPath: null });
   expect(db.select().from(profiles).all()).toHaveLength(0);
 });
+
+describe('bibliothèque vide', () => {
+  it('ajoute seulement les exercices de base manquants', async () => {
+    const { addMissingDefaultExercises } = jest.requireActual<
+      typeof import('@/features/exercises/repository')
+    >('@/features/exercises/repository');
+    createExercise(db, USER, { name: 'squat', muscle: 'legs', equipment: 'barbell' });
+    expect(addMissingDefaultExercises(db, USER)).toBe(DEFAULT_EXERCISES.length - 1);
+    expect(addMissingDefaultExercises(db, USER)).toBe(0);
+    expect(listExercises(db, USER)).toHaveLength(DEFAULT_EXERCISES.length);
+  });
+
+  it('fonctionne même après avoir tout supprimé', async () => {
+    const { addMissingDefaultExercises } = jest.requireActual<
+      typeof import('@/features/exercises/repository')
+    >('@/features/exercises/repository');
+    const id = createExercise(db, USER, { name: 'Squat', muscle: 'legs', equipment: 'barbell' });
+    deleteExercise(db, id);
+    expect(seedDefaultExercises(db, USER)).toBe(0);
+    expect(addMissingDefaultExercises(db, USER)).toBe(DEFAULT_EXERCISES.length);
+  });
+});

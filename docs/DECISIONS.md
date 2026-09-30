@@ -295,3 +295,12 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   `src/config.ts` ; le secret du client Web n'est que dans Supabase. Le prénom vient de
   `given_name`, repris par le trigger de création du profil. Bouton aux couleurs de l'app avec le
   « G » de Google. Testable dès maintenant sur le simulateur (pas besoin du compte Apple payant).
+
+## Retours TestFlight (build 1)
+
+- **Onboarding après Apple / Google** : un nouveau compte social est maintenant redirigé vers
+  l'onboarding (la redirection manquait : l'app restait sur la connexion, puis sautait l'onboarding
+  et donc la bibliothèque d'exercices).
+- **Bibliothèque vide** : bouton « Ajouter les exercices de base » (onglet Exercices et choix des
+  exercices) ; n'ajoute que les exercices par défaut absents parmi les exercices actifs.
+- **Numéro de build incrémenté aussi pour `preview`** (TestFlight refuse deux builds identiques).
