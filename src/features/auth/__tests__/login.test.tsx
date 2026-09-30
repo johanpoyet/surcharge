@@ -16,6 +16,14 @@ jest.mock('@/lib/supabase', () => ({
   },
 }));
 
+jest.mock('expo-apple-authentication', () => ({
+  isAvailableAsync: jest.fn().mockResolvedValue(false),
+}));
+
+jest.mock('@/features/auth/AuthProvider', () => ({
+  useAuth: () => ({ setOnboardingPending: jest.fn() }),
+}));
+
 jest.mock('expo-linking', () => ({
   createURL: (path: string) => `surcharge://${path.replace(/^\//, '')}`,
 }));

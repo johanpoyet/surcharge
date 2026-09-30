@@ -276,3 +276,15 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Liens CGU et confidentialité** dans le Profil (`src/config.ts`, pages à héberger).
 - **En attente** : Sentry (compte + DSN), EAS (compte Expo, `eas init`), build TestFlight (compte
   Apple Developer), connexion Apple et Google, EAS Update (`expo-updates`).
+
+## Connexion Apple (branche `auth/apple-google`)
+
+- **Bouton officiel d'Apple** (`AppleAuthenticationButton`, style blanc, rayon 12, hauteur 50) au lieu
+  du bouton « Apple » des maquettes : les règles de validation d'Apple l'imposent.
+- **Nonce** : envoyé haché (SHA-256) à Apple, en clair à Supabase (`signInWithIdToken`).
+- **Prénom** : Apple ne le donne qu'à la première autorisation ; il est alors écrit dans les
+  métadonnées et dans `profiles` (le trigger a mis le début de l'e-mail).
+- **Nouveau compte** (création et première connexion à moins d'une minute d'écart) : onboarding ;
+  sinon, accueil.
+- **Branche fusionnée seulement avec le compte Apple Developer payant** : la capacité Sign in with
+  Apple ne peut pas être signée par une Personal Team gratuite.
