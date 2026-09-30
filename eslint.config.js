@@ -11,6 +11,7 @@ module.exports = defineConfig([
       'docs/*',
       'src/db/migrations/*',
       'supabase/functions/*',
+      'website/*',
     ],
   },
   {

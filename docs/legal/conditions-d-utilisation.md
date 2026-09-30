@@ -1,6 +1,6 @@
 # Conditions d'utilisation — Surcharge
 
-*Dernière mise à jour : [date de mise en ligne]*
+*Dernière mise à jour : 30 septembre 2026*
 
 ## 1. Objet
 

@@ -1,6 +1,6 @@
 # Politique de confidentialité — Surcharge
 
-*Dernière mise à jour : [date de mise en ligne]*
+*Dernière mise à jour : 30 septembre 2026*
 
 Surcharge est une application de suivi de musculation. Cette page explique quelles données
 l'application traite, pourquoi, où elles sont stockées et comment tu gardes la main dessus.

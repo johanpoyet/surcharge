@@ -8,3 +8,4 @@ package-lock.json
 *.md
 supabase/.temp
 src/db/migrations
+website
