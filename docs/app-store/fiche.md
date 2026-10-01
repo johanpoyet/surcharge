@@ -111,7 +111,17 @@ Obligatoires : iPhone 6,9" (1320 × 2868 px), au moins 3, jusqu'à 10. Suggestio
 5. Bibliothèque d'exercices avec photos
 6. Profil (poids corporel, records)
 
-Elles peuvent être prises sur le simulateur « iPhone 18 Pro Max » avec un compte de démonstration.
+Prises sur le simulateur « iPhone 18 Pro Max » (1320 × 2868), puis réduites au format
+**6,5" (1284 × 2778)** demandé par App Store Connect (Apple les réutilise pour toutes les tailles).
+Ordre envoyé pour la 1.0.0 : séance en cours, accueil, détail exercice (photo Unsplash, licence
+libre), planning, bibliothèque, profil.
+
+## Soumission 1.0.0 (1er octobre 2026)
+
+- Build **1.0.0 (4)**, version **1.0.0**, publication **manuelle** après validation.
+- Dispositif médical réglementé : **Non**. Statut DSA : **non commerçant** (app gratuite, sans
+  revenus) — à repasser en commerçant si abonnement ou publicité.
+- Compte démo à ne pas modifier pendant la vérification (mot de passe, données).
 
 ## Avant publication dans l'UE
 
