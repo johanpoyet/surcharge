@@ -52,6 +52,20 @@ Profils dans `eas.json` : `development` (client de dev), `development-simulator`
 (TestFlight / test interne), `production`. Prérequis : compte Expo (`eas login`, `eas init`), compte
 Apple Developer, puis `eas build` et `eas submit`.
 
+## Mises à jour OTA (EAS Update)
+
+Correctif **JavaScript uniquement** (textes, écrans, logique) : pas de nouveau build ni de
+vérification Apple.
+
+```bash
+npm run update:prod -- "fix(planning): description"
+```
+
+Le script publie sur le canal `production` (environnement EAS `production`) puis envoie les source
+maps à Sentry. Seuls les builds de la **même version** (`runtimeVersion` = `version` d'`app.json`)
+reçoivent la mise à jour, téléchargée au lancement et appliquée au lancement suivant. Tout
+changement natif (module, permission, plugin, icône) demande un build et une nouvelle version.
+
 ## Sentry (rapports de plantage)
 
 Organisation `johan-ea`, projet `surcharge`, région UE (`de.sentry.io`). Actif uniquement dans les

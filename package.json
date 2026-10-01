@@ -32,6 +32,7 @@
     "expo-splash-screen": "~57.0.9",
     "expo-sqlite": "~57.0.3",
     "expo-status-bar": "~57.0.1",
+    "expo-updates": "~57.0.24",
     "lucide-react-native": "^1.48.0",
     "nativewind": "^4.2.7",
     "react": "19.2.3",
@@ -76,7 +77,8 @@
     "lint": "expo lint",
     "format": "prettier --write .",
     "test": "jest",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "update:prod": "sh scripts/update-production.sh"
   },
   "private": true
 }

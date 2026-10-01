@@ -3,7 +3,7 @@
     "name": "Surcharge",
     "slug": "surcharge",
     "scheme": "surcharge",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -94,6 +94,17 @@
         "projectId": "a440ecb1-b057-441e-a1ed-73834ee9ea24"
       }
     },
-    "owner": "johanpoyet"
+    "owner": "johanpoyet",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a440ecb1-b057-441e-a1ed-73834ee9ea24",
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0,
+      "requestHeaders": {
+        "expo-channel-name": "production"
+      }
+    }
   }
 }

@@ -329,3 +329,18 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Suivi des ouvertures et des clics désactivé** dans Resend.
 - Clé d'API Resend (accès envoi, limitée au domaine) saisie uniquement dans Supabase.
 
+## EAS Update (branche `deploiement/eas-update`)
+
+- **`expo-updates`** (SPEC section 2), à partir de la **1.0.1** : le build 4 (1.0.0) en vérification
+  ne l'a pas.
+- **`runtimeVersion` = version de l'app** (`appVersion`) : une mise à jour ne vise que les builds
+  de la même version ; changement natif = nouvelle version.
+- **Un seul canal, `production`**, fixé dans `app.json` (`requestHeaders`) car les builds sont faits
+  en local avec Xcode (pas EAS Build) ; aussi déclaré dans `eas.json` pour EAS Build. TestFlight et
+  l'App Store partagent le même binaire, donc le même canal : tester une mise à jour en Release sur
+  le simulateur avant de la publier.
+- **Vérification au lancement, sans attente** (`ON_LOAD`, `fallbackToCacheTimeout: 0`) : l'app
+  démarre toujours avec la version en cache ; la mise à jour s'applique au lancement suivant.
+- `npm run update:prod -- "message"` publie et envoie les source maps à Sentry.
+- Politique de confidentialité : Expo ajouté (données techniques de la vérification).
+

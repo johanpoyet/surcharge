@@ -55,6 +55,10 @@ de ton **consentement explicite**, que tu peux retirer en supprimant tes pesées
   réinitialisation du mot de passe. Resend agit en tant que sous-traitant de l'éditeur ; les
   transferts éventuels hors de l'Union européenne sont encadrés par les clauses contractuelles
   types de la Commission européenne.
+- **Mises à jour de l'application, via Expo** (650 Industries Inc.) : au lancement, l'application
+  vérifie auprès des serveurs d'Expo si une mise à jour est disponible. Seules des informations
+  techniques sont transmises (version de l'application, plateforme, adresse IP de connexion) ;
+  aucune de tes données d'entraînement ni ton e-mail.
 - **Rapports de plantage, chez Sentry** (Functional Software Inc.), hébergés **dans l'Union
   européenne (Francfort, Allemagne)**. Sentry agit en tant que sous-traitant de l'éditeur ; ces
   rapports ne contiennent ni ton adresse IP, ni ton e-mail, ni ton identifiant de compte, ni tes
