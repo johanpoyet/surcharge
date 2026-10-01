@@ -14,7 +14,8 @@ Textes prêts à coller dans **App Store Connect** (longueurs vérifiées).
 | Classification par âge | 4+ (aucun contenu sensible) | |
 | E-mail de contact | surcharge@johanpoyet.fr | |
 | URL de confidentialité | https://johanpoyet.fr/surcharge/confidentialite | obligatoire |
-| URL d'assistance | [page d'assistance à créer, avec l'adresse surcharge@johanpoyet.fr] | obligatoire |
+| URL d'assistance | https://johanpoyet.fr/surcharge/support | obligatoire |
+| Copyright | 2026 Johan Poyet | |
 | Identifiant (bundle) | fr.johanpoyet.surcharge | |
 | Chiffrement | Non (HTTPS uniquement, déjà déclaré dans l'app) | |
 
