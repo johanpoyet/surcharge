@@ -92,10 +92,13 @@ traçage, finalité **Fonctionnalités de l'app** :
 
 La connexion est obligatoire : fournir un **compte de démonstration** avec quelques séances.
 
-- Identifiant : [compte de démonstration à créer, par ex. demo.surcharge@…]
-- Mot de passe : [à définir]
-- Note : « Créez une séance depuis l'onglet Séances ou utilisez celles du compte de démonstration.
-  L'app fonctionne hors ligne ; la suppression de compte est dans Profil. »
+- Identifiant : `demo.surcharge@johanpoyet.fr`
+- Mot de passe : choisi par Johan, saisi seulement dans App Store Connect (pas dans le dépôt).
+- Données : `supabase/demo/seed-demo.sql` (10 semaines de Push / Pull / Legs, pesées), à lancer
+  une fois dans le SQL Editor de Supabase après l'onboarding du compte.
+- Note (en anglais pour l'équipe de vérification) : « Sign in with the demo account (email +
+  password). It contains 10 weeks of workout history. Start today's workout from the Home tab or
+  the Workouts tab. The app works offline. Account deletion: Profile → Delete my account. »
 
 ## Captures d'écran
 
