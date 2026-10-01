@@ -268,6 +268,7 @@ export const fr = {
     today: "Aujourd'hui",
     done: 'Faite',
     onlyThisDay: 'Juste ce jour',
+    offPlan: 'Hors planning',
     exercisesMinutes: (n: number, minutes: number) =>
       `${n} ${n > 1 ? 'exos' : 'exo'} · ~${minutes} min`,
     dayA11y: (day: string, plan: string) => `${day} : ${plan}. Toucher pour changer.`,

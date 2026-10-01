@@ -16,7 +16,8 @@ type MonthViewProps = {
   weekly: ReadonlyMap<number, string>;
   overrides: ReadonlyMap<string, string | null>;
   templates: ReadonlyMap<string, TemplateInfo>;
-  doneDates: ReadonlySet<string>;
+  /** Date locale → nom de la séance terminée ce jour-là. */
+  doneSessions: ReadonlyMap<string, string>;
   onDayPress: (date: Date) => void;
 };
 
@@ -28,7 +29,7 @@ export function MonthView({
   weekly,
   overrides,
   templates,
-  doneDates,
+  doneSessions,
   onDayPress,
 }: MonthViewProps) {
   const todayKey = toLocalDateString(new Date());
@@ -57,12 +58,14 @@ export function MonthView({
                 const info = plan.templateId ? templates.get(plan.templateId) : undefined;
                 const inMonth = date.getMonth() === month;
                 const isToday = plan.date === todayKey;
-                const done = doneDates.has(plan.date);
+                const doneName = doneSessions.get(plan.date);
+                const done = doneName !== undefined;
+                const label = info?.name ?? doneName;
                 return (
                   <Pressable
                     key={plan.date}
                     accessibilityRole="button"
-                    accessibilityLabel={t.dayA11y(dayTitle(date), info?.name ?? t.rest)}
+                    accessibilityLabel={t.dayA11y(dayTitle(date), label ?? t.rest)}
                     onPress={() => onDayPress(date)}
                     className={cn(
                       'h-[60px] flex-1 justify-between rounded-button p-[5px] active:opacity-80',
@@ -79,7 +82,7 @@ export function MonthView({
                     >
                       {date.getDate()}
                     </Text>
-                    {info ? (
+                    {label ? (
                       <View
                         className={cn(
                           'h-[18px] items-center justify-center rounded-[5px]',
@@ -93,7 +96,7 @@ export function MonthView({
                             done || isToday ? 'text-onVolt' : 'text-volt',
                           )}
                         >
-                          {monthLabel(info.name)}
+                          {monthLabel(label)}
                         </Text>
                       </View>
                     ) : null}

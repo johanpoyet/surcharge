@@ -18,7 +18,8 @@ type WeekViewProps = {
   weekly: ReadonlyMap<number, string>;
   overrides: ReadonlyMap<string, string | null>;
   templates: ReadonlyMap<string, TemplateInfo>;
-  doneDates: ReadonlySet<string>;
+  /** Date locale → nom de la séance terminée ce jour-là. */
+  doneSessions: ReadonlyMap<string, string>;
   onDayPress: (date: Date) => void;
 };
 
@@ -28,7 +29,7 @@ export function WeekView({
   weekly,
   overrides,
   templates,
-  doneDates,
+  doneSessions,
   onDayPress,
 }: WeekViewProps) {
   const todayKey = toLocalDateString(new Date());
@@ -38,8 +39,11 @@ export function WeekView({
         const plan = planForDay(date, overrides, weekly);
         const info = plan.templateId ? templates.get(plan.templateId) : undefined;
         const isToday = plan.date === todayKey;
-        const done = doneDates.has(plan.date);
-        const a11yPlan = info ? info.name : t.rest;
+        const doneName = doneSessions.get(plan.date);
+        const done = doneName !== undefined;
+        // Séance faite un jour de repos : on affiche celle réalisée plutôt que « Repos ».
+        const title = info?.name ?? doneName;
+        const a11yPlan = title ?? t.rest;
         return (
           <View key={plan.date} className="flex-row items-center gap-2.5">
             <View className="w-11 items-center">
@@ -62,18 +66,18 @@ export function WeekView({
               onLongPress={() => onDayPress(date)}
               className={cn(
                 'h-[58px] flex-1 flex-row items-center justify-between rounded-input px-3 active:opacity-80',
-                info ? 'bg-surface' : 'border border-dashed border-line',
+                title ? 'bg-surface' : 'border border-dashed border-line',
                 info && isToday && 'border-[1.5px] border-volt',
               )}
             >
-              {info ? (
+              {title ? (
                 <View className="flex-1">
                   <Text numberOfLines={1} className="font-display text-20 uppercase text-text">
-                    {info.name}
+                    {title}
                   </Text>
                   <Text className="font-body text-13 text-muted">
-                    {t.exercisesMinutes(info.exerciseCount, info.minutes)}
-                    {plan.source === 'override' ? ` · ${t.onlyThisDay}` : ''}
+                    {info ? t.exercisesMinutes(info.exerciseCount, info.minutes) : t.offPlan}
+                    {info && plan.source === 'override' ? ` · ${t.onlyThisDay}` : ''}
                   </Text>
                 </View>
               ) : (
