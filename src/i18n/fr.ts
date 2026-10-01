@@ -309,8 +309,8 @@ export const fr = {
       create: 'Créer une séance',
     },
     stats: {
-      sessions: (month: string) => `séances en ${month}`,
-      records: 'records ce mois',
+      sessions: (count: number, month: string) => `${count > 1 ? 'séances' : 'séance'} en ${month}`,
+      records: (count: number) => (count > 1 ? 'records ce mois' : 'record ce mois'),
       streak: 'de régularité',
       streakUnit: 'sem.',
     },
