@@ -22,8 +22,10 @@ import migrations from '@/db/migrations/migrations';
 import { AuthProvider, useAuth } from '@/features/auth/AuthProvider';
 import { configureNotifications } from '@/features/workout/restNotifications';
 import { fr } from '@/i18n/fr';
+import { captureException, initSentry, wrapRoot } from '@/monitoring/sentry';
 import { colors } from '@/theme/tokens';
 
+initSentry();
 SplashScreen.preventAutoHideAsync();
 configureNotifications();
 
@@ -37,6 +39,10 @@ function RootNavigator() {
   useEffect(() => {
     if (ready) SplashScreen.hideAsync();
   }, [ready]);
+
+  useEffect(() => {
+    if (migration.error) captureException(migration.error);
+  }, [migration.error]);
 
   if (!ready) return null;
   if (migration.error) {
@@ -77,7 +83,7 @@ function RootNavigator() {
   );
 }
 
-export default function RootLayout() {
+function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     BarlowCondensed_800ExtraBold_Italic,
     Barlow_400Regular,
@@ -99,3 +105,5 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+export default wrapRoot(RootLayout);

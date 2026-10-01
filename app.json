@@ -75,6 +75,14 @@
         {
           "iosUrlScheme": "com.googleusercontent.apps.785547112745-1a6oh9j6d5ri3980hkulptrkvlrlqghd"
         }
+      ],
+      [
+        "@sentry/react-native",
+        {
+          "url": "https://de.sentry.io/",
+          "organization": "johan-ea",
+          "project": "surcharge"
+        }
       ]
     ],
     "experiments": {

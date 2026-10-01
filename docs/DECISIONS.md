@@ -304,3 +304,17 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Bibliothèque vide** : bouton « Ajouter les exercices de base » (onglet Exercices et choix des
   exercices) ; n'ajoute que les exercices par défaut absents parmi les exercices actifs.
 - **Numéro de build incrémenté aussi pour `preview`** (TestFlight refuse deux builds identiques).
+
+## Sentry (branche `monitoring/sentry`)
+
+- **Région UE** (Francfort), organisation `johan-ea`, projet `surcharge`. DSN dans
+  `src/monitoring/sentry.ts` (public par nature).
+- **Actif seulement hors `__DEV__`** (TestFlight, App Store) : pas de bruit pendant le développement.
+- **Aucune donnée personnelle** : `sendDefaultPii: false` (pas d'IP), pas de `setUser`, adresses
+  des requêtes sans paramètres (les filtres Supabase contiennent l'identifiant du compte). Rapports
+  « non liés » à l'identité dans le questionnaire App Store.
+- **Pas de suivi de performance ni de replay** : uniquement les plantages et erreurs (offre gratuite).
+- Erreur de migration SQLite envoyée à Sentry (écran d'erreur base de données).
+- Source maps via `getSentryExpoConfig` (Metro) et la phase Xcode du plugin ; jeton dans
+  `.env.sentry-build-plugin` (ignoré par Git).
+

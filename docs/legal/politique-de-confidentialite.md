@@ -1,6 +1,6 @@
 # Politique de confidentialité — Surcharge
 
-*Dernière mise à jour : 30 septembre 2026*
+*Dernière mise à jour : 1er octobre 2026*
 
 Surcharge est une application de suivi de musculation. Cette page explique quelles données
 l'application traite, pourquoi, où elles sont stockées et comment tu gardes la main dessus.
@@ -24,6 +24,7 @@ l'adresse **surcharge@johanpoyet.fr**.
 | Poids corporel | Pesées que tu saisis (facultatives) | Afficher l'évolution de ton poids |
 | Photos | Photos d'exercices ou de machines que tu choisis d'ajouter | T'aider à reconnaître une machine à la salle |
 | Technique | Identifiant de compte, jetons de connexion, dates de création et de modification des données | Sécuriser ton compte et synchroniser tes appareils |
+| Diagnostic | Rapports de plantage : description de l'erreur, modèle d'appareil, version d'iOS et de l'application, derniers écrans et actions techniques avant l'erreur. Sans adresse IP, sans e-mail ni identifiant de compte | Détecter et corriger les bugs |
 
 Surcharge **ne collecte pas** : ta localisation, tes contacts, ton carnet d'adresses, des
 identifiants publicitaires, ni des données d'autres applications (dont Apple Santé).
@@ -38,7 +39,7 @@ de ton **consentement explicite**, que tu peux retirer en supprimant tes pesées
   profil, entraînement, photos, synchronisation.
 - **Ton consentement explicite** : poids corporel.
 - **L'intérêt légitime** de l'éditeur : sécurité du service (prévention des abus et des accès non
-  autorisés).
+  autorisés) et correction des bugs (rapports de plantage).
 
 ## 4. Où sont stockées tes données ?
 
@@ -49,6 +50,10 @@ de ton **consentement explicite**, que tu peux retirer en supprimant tes pesées
   Supabase agit en tant que sous-traitant de l'éditeur ; lorsque des opérations techniques
   impliquent des entités hors de l'Union européenne, elles sont encadrées par les clauses
   contractuelles types de la Commission européenne.
+- **Rapports de plantage, chez Sentry** (Functional Software Inc.), hébergés **dans l'Union
+  européenne (Francfort, Allemagne)**. Sentry agit en tant que sous-traitant de l'éditeur ; ces
+  rapports ne contiennent ni ton adresse IP, ni ton e-mail, ni ton identifiant de compte, ni tes
+  données d'entraînement.
 - Tes données sont protégées par un contrôle d'accès : chaque compte ne peut lire et modifier que
   ses propres données. Les photos sont dans un espace privé, accessible uniquement par liens
   temporaires.
@@ -66,7 +71,8 @@ les désactiver dans les réglages de l'application ou d'iOS.
 Tes données sont conservées **tant que ton compte existe**. Quand tu supprimes ton compte, tes
 données en ligne (profil, entraînement, pesées, photos) sont effacées immédiatement, ainsi que les
 données enregistrées sur ton téléphone. Les copies de sauvegarde techniques de l'hébergeur sont
-écrasées selon son cycle de rotation habituel.
+écrasées selon son cycle de rotation habituel. Les rapports de plantage sont supprimés
+automatiquement au bout de **90 jours** au plus.
 
 ## 7. Tes droits
 
@@ -88,5 +94,4 @@ Surcharge est destinée aux personnes de **15 ans et plus**.
 
 ## 9. Modifications
 
-Cette politique peut évoluer (par exemple si un outil de suivi des plantages est ajouté). En cas de
-changement important, tu en seras informé dans l'application.
+Cette politique peut évoluer. En cas de changement important, tu en seras informé dans l'application.

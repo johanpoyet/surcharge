@@ -42,3 +42,6 @@ yarn-error.*
 
 # env
 .env
+
+# Jeton Sentry (envoi des source maps), jamais commité
+.env.sentry-build-plugin

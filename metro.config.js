@@ -1,7 +1,8 @@
-const { getDefaultConfig } = require('expo/metro-config');
+const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { withNativeWind } = require('nativewind/metro');
 
-const config = getDefaultConfig(__dirname);
+// Config Expo + identifiants de debug Sentry (rattachement des source maps).
+const config = getSentryExpoConfig(__dirname);
 
 // Migrations Drizzle (.sql) importées par src/db/migrations/migrations.js.
 config.resolver.sourceExts.push('sql');

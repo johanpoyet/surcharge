@@ -81,8 +81,12 @@ traçage**, finalité **Fonctionnalités de l'app** uniquement :
 | Contenu utilisateur | Autre contenu | notes, noms de séances |
 | Identifiants | Identifiant utilisateur | identifiant du compte |
 
-À mettre à jour si Sentry est ajouté : *Diagnostic → Données de plantage* (non liées, finalité
-Fonctionnalités de l'app).
+Plus une donnée **non liée** à l'identité (Sentry, sans identifiant ni IP), non utilisée pour le
+traçage, finalité **Fonctionnalités de l'app** :
+
+| Catégorie Apple | Type | Détail |
+|---|---|---|
+| Diagnostic | Données de plantage | rapports Sentry |
 
 ## Informations pour la vérification d'Apple
 

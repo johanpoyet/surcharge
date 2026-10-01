@@ -52,6 +52,17 @@ Profils dans `eas.json` : `development` (client de dev), `development-simulator`
 (TestFlight / test interne), `production`. Prérequis : compte Expo (`eas login`, `eas init`), compte
 Apple Developer, puis `eas build` et `eas submit`.
 
+## Sentry (rapports de plantage)
+
+Organisation `johan-ea`, projet `surcharge`, région UE (`de.sentry.io`). Actif uniquement dans les
+builds Release. Les source maps et symboles sont envoyés pendant le build Release ; il faut un jeton
+d'organisation Sentry (secret, jamais commité) :
+
+- build local : fichier `.env.sentry-build-plugin` à la racine, `SENTRY_AUTH_TOKEN=…` ;
+- build EAS : `eas env:create --name SENTRY_AUTH_TOKEN --visibility secret`.
+
+Sans jeton, les builds Debug passent ; un build Release échoue (ou `SENTRY_DISABLE_AUTO_UPLOAD=true`).
+
 ## Structure
 
 ```
