@@ -318,3 +318,14 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - Source maps via `getSentryExpoConfig` (Metro) et la phase Xcode du plugin ; jeton dans
   `.env.sentry-build-plugin` (ignoré par Git).
 
+## E-mails via Resend (branche `auth/emails-resend`)
+
+- **SMTP personnalisé Supabase → Resend** (domaine `send.johanpoyet.fr` déjà vérifié, région
+  Irlande), expéditeur `Surcharge <noreply@send.johanpoyet.fr>`. Le service de test de Supabase est
+  limité à quelques e-mails par heure.
+- **Seul e-mail envoyé** : mot de passe oublié (confirmation d'inscription désactivée). Modèle
+  français aux couleurs de l'app dans `supabase/templates/recovery.html`, recopié à la main dans le
+  tableau de bord (le `config.toml` ne sert qu'au Supabase local).
+- **Suivi des ouvertures et des clics désactivé** dans Resend.
+- Clé d'API Resend (accès envoi, limitée au domaine) saisie uniquement dans Supabase.
+

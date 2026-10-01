@@ -50,6 +50,11 @@ de ton **consentement explicite**, que tu peux retirer en supprimant tes pesées
   Supabase agit en tant que sous-traitant de l'éditeur ; lorsque des opérations techniques
   impliquent des entités hors de l'Union européenne, elles sont encadrées par les clauses
   contractuelles types de la Commission européenne.
+- **E-mails de l'application, via Resend** (Resend Inc.), envoyés depuis **l'Union européenne
+  (Irlande)** : seule ton adresse e-mail lui est transmise, pour t'envoyer le lien de
+  réinitialisation du mot de passe. Resend agit en tant que sous-traitant de l'éditeur ; les
+  transferts éventuels hors de l'Union européenne sont encadrés par les clauses contractuelles
+  types de la Commission européenne.
 - **Rapports de plantage, chez Sentry** (Functional Software Inc.), hébergés **dans l'Union
   européenne (Francfort, Allemagne)**. Sentry agit en tant que sous-traitant de l'éditeur ; ces
   rapports ne contiennent ni ton adresse IP, ni ton e-mail, ni ton identifiant de compte, ni tes
