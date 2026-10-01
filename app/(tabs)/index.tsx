@@ -138,8 +138,11 @@ export default function HomeScreen() {
         />
 
         <View className="flex-row gap-2">
-          <StatTile value={String(counts.sessions)} caption={t.stats.sessions(monthShort)} />
-          <StatTile value={String(counts.records)} caption={t.stats.records} />
+          <StatTile
+            value={String(counts.sessions)}
+            caption={t.stats.sessions(counts.sessions, monthShort)}
+          />
+          <StatTile value={String(counts.records)} caption={t.stats.records(counts.records)} />
           <StatTile value={String(streak)} unit={t.stats.streakUnit} caption={t.stats.streak} />
         </View>
 

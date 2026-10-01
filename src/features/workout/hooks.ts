@@ -27,6 +27,19 @@ export function useDoneDates(): Set<string> {
   );
 }
 
+/** Nom de la séance terminée par jour (date locale), pour les jours faits hors planning. */
+export function useDoneSessionsByDate(): Map<string, string> {
+  const sessions = useCompletedSessions();
+  return useMemo(() => {
+    const byDate = new Map<string, string>();
+    for (const s of sessions) {
+      const key = toLocalDateString(parseISO(s.startedAt));
+      if (!byDate.has(key)) byDate.set(key, s.name);
+    }
+    return byDate;
+  }, [sessions]);
+}
+
 export function useAllSets() {
   const userId = useUserId();
   const { data } = useLiveQuery(allSetsQuery(liveDb, userId), [userId]);

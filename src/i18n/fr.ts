@@ -268,6 +268,7 @@ export const fr = {
     today: "Aujourd'hui",
     done: 'Faite',
     onlyThisDay: 'Juste ce jour',
+    offPlan: 'Hors planning',
     exercisesMinutes: (n: number, minutes: number) =>
       `${n} ${n > 1 ? 'exos' : 'exo'} · ~${minutes} min`,
     dayA11y: (day: string, plan: string) => `${day} : ${plan}. Toucher pour changer.`,
@@ -309,8 +310,8 @@ export const fr = {
       create: 'Créer une séance',
     },
     stats: {
-      sessions: (month: string) => `séances en ${month}`,
-      records: 'records ce mois',
+      sessions: (count: number, month: string) => `${count > 1 ? 'séances' : 'séance'} en ${month}`,
+      records: (count: number) => (count > 1 ? 'records ce mois' : 'record ce mois'),
       streak: 'de régularité',
       streakUnit: 'sem.',
     },
