@@ -96,6 +96,7 @@ export function useWorkout(sessionId: string) {
           p.previous,
           { repsMin: p.item.repsMin, repsMax: p.item.repsMax },
           p.exercise?.equipment ?? 'other',
+          p.done,
         ),
         difficulty: null,
       };

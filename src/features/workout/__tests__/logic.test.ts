@@ -28,6 +28,20 @@ describe('pré-remplissage (SPEC 8.2)', () => {
     expect(prefillSet(4, previous, target, 'barbell')).toEqual({ weightKg: 82.5, reps: 6 });
   });
 
+  it('série en plus : reprend plutôt la dernière série de cette séance', () => {
+    expect(prefillSet(4, previous, target, 'barbell', [set(1, 85, 6), set(2, 85, 5)])).toEqual({
+      weightKg: 85,
+      reps: 5,
+    });
+  });
+
+  it('première fois : les séries suivantes reprennent la dernière série validée', () => {
+    expect(prefillSet(3, [], target, 'dumbbell', [set(1, 22.5, 10), set(2, 25, 10)])).toEqual({
+      weightKg: 25,
+      reps: 10,
+    });
+  });
+
   it('première fois : la cible (barre vide pour une barre, 0 sinon)', () => {
     expect(prefillSet(1, [], target, 'barbell')).toEqual({ weightKg: 20, reps: 10 });
     expect(prefillSet(1, [], { repsMin: null, repsMax: null }, 'machine')).toEqual({
