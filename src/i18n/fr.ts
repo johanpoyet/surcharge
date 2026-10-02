@@ -319,6 +319,7 @@ export const fr = {
     progression: {
       title: 'Progression',
       badge: (delta: string, weeks: number) => `+${delta} en ${weeks} sem.`,
+      notEnough: 'Ta progression apparaît à partir de 2 séances de cet exercice.',
     },
     bodyWeight: {
       title: 'Poids corporel',

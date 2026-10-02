@@ -44,24 +44,31 @@ export function ProgressionCard({
           </View>
         ) : null}
       </View>
-      <View className="mt-3.5 h-24 flex-row items-end gap-2" accessibilityElementsHidden>
-        {maxes.map((value, index) => (
-          <View
-            key={index}
-            className={cn(
-              'flex-1 rounded-[5px]',
-              index === maxes.length - 1 ? 'bg-volt' : 'bg-line',
-            )}
-            style={{ height: `${ratio(value) * 100}%` }}
-          />
-        ))}
-      </View>
-      <View className="mt-2 flex-row justify-between">
-        <Text className="font-body text-12 text-muted">{formatWeight(maxes[0]!, unit)}</Text>
-        <Text className="font-body text-12 text-muted">
-          {formatWeight(maxes[maxes.length - 1]!, unit)}
-        </Text>
-      </View>
+      {maxes.length < 2 ? (
+        // Une seule séance : une barre pleine largeur ne montre rien (bloc volt).
+        <Text className="mt-3 font-body text-14 text-muted">{t.notEnough}</Text>
+      ) : (
+        <>
+          <View className="mt-3.5 h-24 flex-row items-end gap-2" accessibilityElementsHidden>
+            {maxes.map((value, index) => (
+              <View
+                key={index}
+                className={cn(
+                  'flex-1 rounded-[5px]',
+                  index === maxes.length - 1 ? 'bg-volt' : 'bg-line',
+                )}
+                style={{ height: `${ratio(value) * 100}%` }}
+              />
+            ))}
+          </View>
+          <View className="mt-2 flex-row justify-between">
+            <Text className="font-body text-12 text-muted">{formatWeight(maxes[0]!, unit)}</Text>
+            <Text className="font-body text-12 text-muted">
+              {formatWeight(maxes[maxes.length - 1]!, unit)}
+            </Text>
+          </View>
+        </>
+      )}
     </Card>
   );
 }

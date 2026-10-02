@@ -14,15 +14,20 @@ const DEFAULT_REPS = 10;
 
 /**
  * Pré-remplissage de la série n : la même série à la dernière séance, sinon la dernière série
- * de cette séance, sinon la cible (première fois).
+ * validée dans cette séance, sinon la dernière série de la dernière séance, sinon la cible
+ * (première fois).
  */
 export function prefillSet(
   setNumber: number,
   previous: readonly PreviousSet[],
   target: Target,
   equipment: Equipment,
+  doneThisSession: readonly SetLike[] = [],
 ): { weightKg: number; reps: number } {
-  const same = previous.find((s) => s.setNumber === setNumber) ?? previous[previous.length - 1];
+  const same =
+    previous.find((s) => s.setNumber === setNumber) ??
+    doneThisSession[doneThisSession.length - 1] ??
+    previous[previous.length - 1];
   if (same) return { weightKg: same.weightKg, reps: same.reps };
   return {
     weightKg: firstTimeWeight(equipment),
