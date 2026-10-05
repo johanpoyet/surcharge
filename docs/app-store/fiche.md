@@ -127,3 +127,28 @@ libre), planning, bibliothèque, profil.
 
 App Store Connect demandera le statut de **professionnel (trader)** au sens du DSA. Si oui, adresse
 et téléphone affichés publiquement sur la fiche.
+
+## Version 1.1.0 (build 6)
+
+### Nouveautés (« What's New », 4000 caractères max)
+
+```
+Ton chrono de repos te suit partout.
+
+• Chrono de repos dans la Dynamic Island et sur l'écran verrouillé : quitte l'app pendant ton repos, le compte à rebours reste visible. Un appui te ramène à ta séance.
+• Première fois sur un exercice : chaque série reprend la charge et les répétitions de la précédente, plus besoin de tout remonter.
+• Une séance commencée sur un autre appareil se reprend sans souci.
+• Petites corrections sur l'accueil.
+
+Bonnes séances !
+```
+
+### Vérification d'Apple
+
+Notes inchangées (compte démo, réponse « Information Needed » du 02/10/2026). Ajouter en fin de
+notes :
+
+```
+New in 1.1.0: during a workout, the rest timer is shown as a Live Activity (Dynamic Island and Lock Screen) after a set is validated. It is started and ended locally by the app (no push notifications) and tapping it reopens the current workout.
+```
+
