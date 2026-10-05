@@ -249,6 +249,7 @@ export const fr = {
     noTemplates: 'Crée d’abord une séance type.',
     cancel: 'Annuler',
     notFound: 'Cette séance est terminée.',
+    backHome: 'Retour à l’accueil',
     summary: {
       title: 'Séance terminée',
       duration: 'Durée',

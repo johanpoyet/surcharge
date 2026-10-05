@@ -4,6 +4,7 @@
 import type { AppDatabase } from '@/db/client';
 import { createExercise } from '@/features/exercises/repository';
 import { saveTemplate } from '@/features/templates/repository';
+import { workoutState } from '@/db/schema';
 import { createTestDb } from '@/test/testDb';
 import {
   addSet,
@@ -18,7 +19,7 @@ import {
   setsBefore,
   startSession,
 } from '../repository';
-import { startFromTemplate } from '../start';
+import { restoreWorkoutState, startFromTemplate } from '../start';
 
 const USER = '11111111-1111-1111-1111-111111111111';
 let db: AppDatabase;
@@ -137,4 +138,46 @@ it('séries faites avant une date (record à battre)', () => {
   addSet(db, USER, { ...base(s, dc), setNumber: 1, weightKg: 80, reps: 8 });
   expect(setsBefore(db, USER, [dc], '2000-01-01T00:00:00.000Z').size).toBe(0);
   expect(setsBefore(db, USER, [dc], '2999-01-01T00:00:00.000Z').get(dc)).toHaveLength(1);
+});
+
+it('séance démarrée sur un autre appareil : état reconstruit depuis la séance type', () => {
+  const templateId = saveTemplate(db, USER, {
+    name: 'Push A',
+    weekdays: [],
+    items: [
+      { exerciseId: dc, targetSets: 4, targetRepsMin: 8, targetRepsMax: 10, restSeconds: 150 },
+      { exerciseId: squat, targetSets: 3, targetRepsMin: 5, targetRepsMax: 5, restSeconds: 180 },
+    ],
+  });
+  const { sessionId } = startFromTemplate(db, USER, templateId);
+  addSet(db, USER, { ...base(sessionId, dc), setNumber: 1, weightKg: 80, reps: 8 });
+  // L'autre appareil n'a que les lignes synchronisées, pas l'état de l'écran.
+  db.delete(workoutState).run();
+
+  const state = restoreWorkoutState(db, sessionId);
+  expect(state?.plan.map((p) => [p.exerciseId, p.targetSets, p.restSeconds])).toEqual([
+    [dc, 4, 150],
+    [squat, 3, 180],
+  ]);
+  expect(getWorkoutState(db, sessionId)?.plan).toHaveLength(2);
+});
+
+it('séance démarrée ailleurs sans séance type : plan tiré des séries faites', () => {
+  const sessionId = startSession(db, USER, { templateId: null, name: 'Libre' });
+  addSet(db, USER, { ...base(sessionId, squat), setNumber: 1, weightKg: 100, reps: 5 });
+  addSet(db, USER, { ...base(sessionId, squat), setNumber: 2, weightKg: 100, reps: 5 });
+  addSet(db, USER, { ...base(sessionId, dc, 1), setNumber: 1, weightKg: 80, reps: 8 });
+  db.delete(workoutState).run();
+
+  expect(restoreWorkoutState(db, sessionId)?.plan).toEqual([
+    { exerciseId: squat, targetSets: 2, repsMin: null, repsMax: null, restSeconds: 120 },
+    { exerciseId: dc, targetSets: 1, repsMin: null, repsMax: null, restSeconds: 120 },
+  ]);
+});
+
+it('séance terminée : rien à reconstruire', () => {
+  const sessionId = startSession(db, USER, { templateId: null, name: 'Libre' });
+  addSet(db, USER, { ...base(sessionId, dc), setNumber: 1, weightKg: 80, reps: 8 });
+  endWorkout(db, sessionId);
+  expect(restoreWorkoutState(db, sessionId)).toBeUndefined();
 });

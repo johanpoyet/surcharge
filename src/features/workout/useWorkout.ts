@@ -21,6 +21,7 @@ import {
 } from './repository';
 import { requestSync } from '@/sync';
 import { endRestActivities, startRestActivity } from './restActivity';
+import { restoreWorkoutState } from './start';
 import { cancelRestNotification, scheduleRestEnd } from './restNotifications';
 import { draftKey, type WorkoutPlanItem, type WorkoutUiState } from './state';
 
@@ -44,8 +45,8 @@ const omit = <T>(record: Record<string, T>, key: string): Record<string, T> => {
 /** État et actions de l'écran de séance en cours (SPEC 8.2). */
 export function useWorkout(sessionId: string) {
   const userId = useAuth().session?.user.id ?? '';
-  const [state, setState] = useState<WorkoutUiState | undefined>(() =>
-    getWorkoutState(db, sessionId),
+  const [state, setState] = useState<WorkoutUiState | undefined>(
+    () => getWorkoutState(db, sessionId) ?? restoreWorkoutState(db, sessionId),
   );
   // L'état est persisté à chaque changement : la séance survit à la fermeture de l'app.
   useEffect(() => {

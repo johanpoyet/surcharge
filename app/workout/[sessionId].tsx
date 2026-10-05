@@ -5,7 +5,7 @@ import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { Gesture, GestureDetector, Directions } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   Button,
@@ -38,6 +38,7 @@ export default function WorkoutScreen() {
   const workout = useWorkout(sessionId);
   const unit = useProfile().profile?.weightUnit ?? 'kg';
   const now = useNow();
+  const insets = useSafeAreaInsets();
   const [editing, setEditing] = useState<{ id: string; draft: SetDraft; setNumber: number } | null>(
     null,
   );
@@ -56,15 +57,17 @@ export default function WorkoutScreen() {
 
   const { state, session, progress } = workout;
   if (!state || !session || session.endedAt) {
+    // Insets explicites : en plein écran modal, l'écran de secours passait sous la barre d'état.
     return (
-      <SafeAreaView className="flex-1 bg-bg px-screen">
+      <View className="flex-1 bg-bg px-screen" style={{ paddingTop: insets.top + 8 }}>
         <IconButton
           icon={ChevronDown}
           accessibilityLabel={t.minimize}
           onPress={() => router.back()}
         />
         <Text className="mt-6 font-body text-15 text-muted">{t.notFound}</Text>
-      </SafeAreaView>
+        <Button label={t.backHome} className="mt-6" onPress={() => router.replace('/')} />
+      </View>
     );
   }
 

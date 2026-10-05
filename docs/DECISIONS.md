@@ -361,3 +361,13 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   `staleDate` = fin du repos. La notification « Repos terminé » est conservée.
 - **Composant isolé** (`'widget'`) : il ne peut rien importer, couleurs (tokens) et textes (i18n)
   passés en props ; police système arrondie (Barlow n'est pas embarquée dans l'extension).
+
+## Séance démarrée sur un autre appareil (branche `fix/seance-autre-appareil`)
+
+- L'état de l'écran de séance (`workout_state` : plan, brouillons, repos) est **local** et n'est
+  pas synchronisé. Une séance en cours synchronisée depuis un autre appareil affichait « Cette
+  séance est terminée » sans issue. L'état est maintenant **reconstruit** à l'ouverture : plan de
+  la séance type si les séries déjà faites y correspondent, sinon exercices des séries faites
+  (repos 2 min, sans cible de reps). Les brouillons et le repos en cours ne sont pas repris.
+- Écran de secours (séance vraiment introuvable) : marge haute explicite et bouton « Retour à
+  l'accueil ».
