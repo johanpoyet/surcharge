@@ -6,7 +6,7 @@ set -e
 
 MESSAGE="${1:?Message obligatoire : npm run update:prod -- \"description\"}"
 
-npx eas-cli@latest update --channel production --environment production --message "$MESSAGE"
+npx eas-cli@latest update --channel production --environment production --platform ios --message "$MESSAGE"
 
 # Jeton Sentry : même fichier que pour les builds (jamais commité).
 set -a
