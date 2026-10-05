@@ -344,3 +344,20 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - `npm run update:prod -- "message"` publie et envoie les source maps à Sentry.
 - Politique de confidentialité : Expo ajouté (données techniques de la vérification).
 
+
+## Chrono de repos en Live Activity (branche `seance/live-activity`)
+
+- **`expo-widgets` + `@expo/ui`** (accord de Johan, hors SPEC section 2) : solution officielle
+  Expo ; `expo-live-activity` (Software Mansion) est archivé depuis juin 2026.
+- **Extension `ExpoWidgetsTarget`** (`fr.johanpoyet.surcharge.widgets`), groupe d'apps
+  `group.fr.johanpoyet.surcharge`. Pas de push : la Live Activity est démarrée et arrêtée par l'app.
+- **Contenu** : Dynamic Island (icône chrono + compte à rebours volt ; dépliée : « Repos »,
+  compte à rebours, série suivante, barre) et bandeau de l'écran verrouillé sur fond `bg`, quel
+  que soit le mode iOS (texte foncé illisible sinon). Compte à rebours natif (`timerInterval`) :
+  aucune mise à jour à envoyer pendant le repos. Appui = ouverture de la séance
+  (`surcharge://workout/<id>`).
+- **Fin** : repos passé (au retour dans l'app), série validée, repos passé ou séance terminée ;
+  au montage de la séance sans repos en cours, un chrono resté affiché est retiré.
+  `staleDate` = fin du repos. La notification « Repos terminé » est conservée.
+- **Composant isolé** (`'widget'`) : il ne peut rien importer, couleurs (tokens) et textes (i18n)
+  passés en props ; police système arrondie (Barlow n'est pas embarquée dans l'extension).

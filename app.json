@@ -83,6 +83,13 @@
           "organization": "johan-ea",
           "project": "surcharge"
         }
+      ],
+      [
+        "expo-widgets",
+        {
+          "bundleIdentifier": "fr.johanpoyet.surcharge.widgets",
+          "groupIdentifier": "group.fr.johanpoyet.surcharge"
+        }
       ]
     ],
     "experiments": {

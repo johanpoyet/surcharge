@@ -20,6 +20,7 @@ import {
   updateSet,
 } from './repository';
 import { requestSync } from '@/sync';
+import { endRestActivities, startRestActivity } from './restActivity';
 import { cancelRestNotification, scheduleRestEnd } from './restNotifications';
 import { draftKey, type WorkoutPlanItem, type WorkoutUiState } from './state';
 
@@ -50,6 +51,10 @@ export function useWorkout(sessionId: string) {
   useEffect(() => {
     if (state) saveWorkoutState(db, sessionId, state);
   }, [sessionId, state]);
+  // App relancée sans repos en cours : retire un chrono resté affiché (app fermée pendant le repos).
+  useEffect(() => {
+    if (!getWorkoutState(db, sessionId)?.rest) endRestActivities();
+  }, [sessionId]);
 
   const { data: sessionRows } = useLiveQuery(
     liveDb.select().from(sessions).where(eq(sessions.id, sessionId)),
@@ -126,12 +131,15 @@ export function useWorkout(sessionId: string) {
 
   const startRest = (seconds: number, nextOrder: number, nextSetNumber: number) => {
     const exerciseName = progress[nextOrder]?.exercise?.name ?? '';
+    const startedAt = Date.now();
+    const endsAt = startedAt + seconds * 1000;
+    startRestActivity({ sessionId, startedAt, endsAt, nextSetNumber, exerciseName });
     setState(
       (s) =>
         s && {
           ...s,
           rest: {
-            endsAt: Date.now() + seconds * 1000,
+            endsAt,
             durationSeconds: seconds,
             nextOrder,
             nextSetNumber,
@@ -150,6 +158,7 @@ export function useWorkout(sessionId: string) {
 
   const stopRest = () => {
     cancelRestNotification(state?.rest?.notificationId);
+    endRestActivities();
     setState((s) => s && { ...s, rest: null });
   };
 
@@ -172,6 +181,7 @@ export function useWorkout(sessionId: string) {
     });
     void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     cancelRestNotification(state.rest?.notificationId);
+    endRestActivities();
 
     // Suite : même exercice s'il reste des séries, sinon le prochain exercice pas terminé.
     let nextOrder: number | null = order;
@@ -210,6 +220,7 @@ export function useWorkout(sessionId: string) {
 
   const finish = (): 'finished' | 'discarded' => {
     cancelRestNotification(state?.rest?.notificationId);
+    endRestActivities();
     const result = endWorkout(db, sessionId);
     // Fin de séance : on envoie tout de suite (SPEC 7).
     requestSync();

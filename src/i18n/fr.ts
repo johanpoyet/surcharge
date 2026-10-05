@@ -232,6 +232,8 @@ export const fr = {
       notificationTitle: 'Repos terminé',
       notificationBody: (n: number, exercise: string) => `Série ${n} de ${exercise}`,
       done: 'Repos terminé',
+      activityTitle: 'Repos',
+      activityNext: (n: number, exercise: string) => `Ensuite : série ${n} · ${exercise}`,
     },
     finishTitle: 'Terminer la séance ?',
     finishRemaining: (n: number) =>
