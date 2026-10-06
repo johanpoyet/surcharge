@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
 import {
@@ -11,7 +11,7 @@ import {
   Stepper,
   TextField,
 } from '@/components/ui';
-import type { Equipment, Exercise, MuscleGroup } from '@/db/schema';
+import type { Discipline, Equipment, Exercise, MuscleGroup, TrackingType } from '@/db/schema';
 import { defaultWeightStep } from '@/db/seed';
 import { fr } from '@/i18n/fr';
 import type { WeightUnit } from '@/lib/database.types';
@@ -19,11 +19,14 @@ import { formatNumber } from '@/lib/format';
 import { fromKg, toKg } from '@/lib/units';
 import { zodResolver } from '@/lib/zodResolver';
 import { deleteLocalPhoto } from '../photos';
-import { equipmentOptions, muscleOptions } from '../labels';
+import { disciplineOptions, equipmentOptions, muscleOptions } from '../labels';
 import { exerciseFormSchema, type ExerciseFormValues } from '../schema';
+import { usesWeight } from '../tracking';
 import { usePhotoPicker } from '../usePhotoPicker';
+import { TrackingPreview, TrackingTypePicker } from './TrackingTypePicker';
 
 const t = fr.exercises.form;
+const tt = fr.exercises.tracking;
 
 export type ExerciseFormResult = {
   name: string;
@@ -32,6 +35,8 @@ export type ExerciseFormResult = {
   weightStepKg: number;
   note: string | null;
   photoLocalUri: string | null;
+  trackingType: TrackingType;
+  discipline: Discipline;
 };
 
 type ExerciseFormProps = {
@@ -41,6 +46,8 @@ type ExerciseFormProps = {
   onSubmit: (values: ExerciseFormResult) => void;
   onCancel: () => void;
   onDelete?: () => void;
+  /** L'exercice a des séries enregistrées : son type de suivi ne peut plus changer. */
+  trackingLocked?: boolean;
 };
 
 /** Pas des boutons dans l'unité affichée, arrondi au demi. */
@@ -60,6 +67,7 @@ export function ExerciseForm({
   onSubmit,
   onCancel,
   onDelete,
+  trackingLocked = false,
 }: ExerciseFormProps) {
   const photos = usePhotoPicker();
   // Photos prises pendant ce formulaire : supprimées si elles ne sont pas gardées.
@@ -71,6 +79,7 @@ export function ExerciseForm({
     control,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm<ExerciseFormValues>({
     resolver: zodResolver(exerciseFormSchema),
@@ -81,8 +90,11 @@ export function ExerciseForm({
       weightStep: stepInUnit(initial?.weightStep ?? defaultWeightStep('barbell'), unit),
       note: initial?.note ?? '',
       photoLocalUri: initial?.photoLocalUri ?? null,
+      trackingType: initial?.trackingType ?? 'weight_reps',
+      discipline: initial?.discipline ?? 'strength',
     },
   });
+  const trackingType = useWatch({ control, name: 'trackingType' });
 
   const save = (values: ExerciseFormValues) => {
     const keep = values.photoLocalUri;
@@ -97,6 +109,8 @@ export function ExerciseForm({
       weightStepKg: Math.round(toKg(values.weightStep, unit) * 100) / 100,
       note: values.note || null,
       photoLocalUri: keep,
+      trackingType: values.trackingType,
+      discipline: values.discipline,
     });
   };
 
@@ -151,6 +165,41 @@ export function ExerciseForm({
       />
 
       <View className="gap-2">
+        <SectionLabel>{tt.section}</SectionLabel>
+        <Controller
+          control={control}
+          name="trackingType"
+          render={({ field: { onChange, value } }) => (
+            <TrackingTypePicker value={value} onChange={onChange} locked={trackingLocked} />
+          )}
+        />
+      </View>
+
+      <TrackingPreview type={trackingType} unit={unit} />
+
+      <View className="gap-2">
+        <SectionLabel>{tt.discipline}</SectionLabel>
+        <Controller
+          control={control}
+          name="discipline"
+          render={({ field: { onChange, value } }) => (
+            <ChipGroup
+              options={disciplineOptions}
+              value={value}
+              onChange={(next) => {
+                onChange(next);
+                // Course, cross-training, Hyrox : « Autre » par défaut si rien n'est choisi.
+                if (next !== 'strength') {
+                  if (!getValues('muscle')) setValue('muscle', 'other');
+                  if (!getValues('equipment')) setValue('equipment', 'other');
+                }
+              }}
+            />
+          )}
+        />
+      </View>
+
+      <View className="gap-2">
         <SectionLabel>{t.muscle}</SectionLabel>
         <Controller
           control={control}
@@ -191,31 +240,33 @@ export function ExerciseForm({
         ) : null}
       </View>
 
-      <View className="gap-2">
-        <SectionLabel>{t.step}</SectionLabel>
-        <View className="flex-row items-center gap-3">
-          <Controller
-            control={control}
-            name="weightStep"
-            render={({ field: { onChange, value } }) => (
-              <Stepper
-                size="md"
-                value={value}
-                onChange={(next) => {
-                  stepTouched.current = true;
-                  onChange(next);
-                }}
-                step={0.5}
-                min={0.5}
-                max={unit === 'lb' ? 50 : 25}
-                unit={fr.units[unit]}
-                format={(v) => formatNumber(v, 1)}
-              />
-            )}
-          />
-          <Text className="flex-1 font-body text-13 leading-[18px] text-muted">{t.stepHint}</Text>
+      {usesWeight(trackingType) ? (
+        <View className="gap-2">
+          <SectionLabel>{t.step}</SectionLabel>
+          <View className="flex-row items-center gap-3">
+            <Controller
+              control={control}
+              name="weightStep"
+              render={({ field: { onChange, value } }) => (
+                <Stepper
+                  size="md"
+                  value={value}
+                  onChange={(next) => {
+                    stepTouched.current = true;
+                    onChange(next);
+                  }}
+                  step={0.5}
+                  min={0.5}
+                  max={unit === 'lb' ? 50 : 25}
+                  unit={fr.units[unit]}
+                  format={(v) => formatNumber(v, 1)}
+                />
+              )}
+            />
+            <Text className="flex-1 font-body text-13 leading-[18px] text-muted">{t.stepHint}</Text>
+          </View>
         </View>
-      </View>
+      ) : null}
 
       <Controller
         control={control}

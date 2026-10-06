@@ -27,6 +27,8 @@ export default function NewExerciseScreen() {
           weightStep: values.weightStepKg,
           note: values.note,
           photoLocalUri: values.photoLocalUri,
+          trackingType: values.trackingType,
+          discipline: values.discipline,
         });
         toast.show(fr.exercises.form.created);
         router.back();

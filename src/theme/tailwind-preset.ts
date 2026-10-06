@@ -23,6 +23,7 @@ const preset = {
       colors: {
         ...colors,
         'volt-subtle': voltAlpha.subtle,
+        'volt-selected': voltAlpha.selected,
         'volt-soft': voltAlpha.soft,
         'volt-border': voltAlpha.border,
         'onVolt-tag': onVoltAlpha.tag,

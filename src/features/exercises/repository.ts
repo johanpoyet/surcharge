@@ -5,14 +5,16 @@ import {
   exercises,
   sessions,
   sessionSets,
+  type Discipline,
   type Equipment,
   type Exercise,
   type MuscleGroup,
+  type TrackingType,
 } from '@/db/schema';
 import { DEFAULT_EXERCISES, defaultWeightStep } from '@/db/seed';
 import { nowIso } from '@/db/time';
 import { newId } from '@/lib/id';
-import { enqueue } from '@/sync/outbox';
+import { enqueue, type Tx } from '@/sync/outbox';
 
 import { insertCatalogExercise } from './catalog';
 
@@ -23,6 +25,8 @@ export type ExerciseInput = {
   weightStep?: number;
   note?: string | null;
   photoLocalUri?: string | null;
+  trackingType?: TrackingType;
+  discipline?: Discipline;
 };
 
 export function createExercise(db: AppDatabase, userId: string, input: ExerciseInput): string {
@@ -39,6 +43,8 @@ export function createExercise(db: AppDatabase, userId: string, input: ExerciseI
         weightStep: input.weightStep ?? defaultWeightStep(input.equipment),
         note: input.note ?? null,
         photoLocalUri: input.photoLocalUri ?? null,
+        trackingType: input.trackingType ?? 'weight_reps',
+        discipline: input.discipline ?? 'strength',
         createdAt: now,
         updatedAt: now,
         dirty: true,
@@ -55,9 +61,13 @@ export function updateExercise(
   patch: Partial<ExerciseInput> & { photoPath?: string | null },
 ): void {
   db.transaction((tx) => {
+    // Type de suivi verrouillé dès qu'il y a des séries (SPEC_V2 §5.2) : historique cohérent.
+    const { trackingType, ...rest } = patch;
+    const keepTracking = trackingType !== undefined && !exerciseHasSets(tx, id);
     tx.update(exercises)
       .set({
-        ...patch,
+        ...rest,
+        ...(keepTracking ? { trackingType } : {}),
         ...(patch.name !== undefined ? { name: patch.name.trim() } : {}),
         // Nouvelle photo (ou photo retirée) : la version en ligne n'est plus la bonne.
         ...(patch.photoLocalUri !== undefined && patch.photoPath === undefined
@@ -71,6 +81,25 @@ export function updateExercise(
     enqueue(tx, 'exercises', id, 'upsert');
   });
 }
+
+/** L'exercice a au moins une série enregistrée (non supprimée). */
+export function exerciseHasSets(db: Tx, exerciseId: string): boolean {
+  return (
+    db
+      .select({ id: sessionSets.id })
+      .from(sessionSets)
+      .where(and(eq(sessionSets.exerciseId, exerciseId), isNull(sessionSets.deletedAt)))
+      .limit(1)
+      .all().length > 0
+  );
+}
+
+/** Nombre de séries d'un exercice (verrouillage du type de suivi dans le formulaire). */
+export const exerciseSetCountQuery = (db: AppDatabase, exerciseId: string) =>
+  db
+    .select({ count: sql<number>`count(*)` })
+    .from(sessionSets)
+    .where(and(eq(sessionSets.exerciseId, exerciseId), isNull(sessionSets.deletedAt)));
 
 /** Suppression douce : la ligne reste pour l'historique des séances et la synchro. */
 export function deleteExercise(db: AppDatabase, id: string): void {
@@ -160,6 +189,8 @@ export function seedDefaultExercises(db: AppDatabase, userId: string): number {
   });
 }
 
+const ok = sql`(${sessionSets.difficulty} is null or ${sessionSets.difficulty} <> 'fail')`;
+
 /** Charge max réussie et dernière série, par exercice et par séance (liste des exercices). */
 export const exerciseSessionStatsQuery = (db: AppDatabase, userId: string) =>
   db
@@ -170,6 +201,15 @@ export const exerciseSessionStatsQuery = (db: AppDatabase, userId: string) =>
         number | null
       >`max(case when ${sessionSets.reps} > 0 and (${sessionSets.difficulty} is null or ${sessionSets.difficulty} <> 'fail') then ${sessionSets.weightKg} end)`,
       lastAt: sql<string>`max(${sessionSets.completedAt})`,
+      // Types de suivi V2 (séries hors échec) : meilleure allure (s/km), durée, reps, calories,
+      // charge portée.
+      bestPace: sql<
+        number | null
+      >`min(case when ${ok} and ${sessionSets.distanceM} > 0 and ${sessionSets.durationS} > 0 then ${sessionSets.durationS} * 1000.0 / ${sessionSets.distanceM} end)`,
+      maxDurationS: sql<number | null>`max(case when ${ok} then ${sessionSets.durationS} end)`,
+      maxReps: sql<number | null>`max(case when ${ok} then ${sessionSets.reps} end)`,
+      maxCalories: sql<number | null>`max(case when ${ok} then ${sessionSets.calories} end)`,
+      maxCarryKg: sql<number | null>`max(case when ${ok} then ${sessionSets.weightKg} end)`,
     })
     .from(sessionSets)
     .where(and(eq(sessionSets.userId, userId), isNull(sessionSets.deletedAt)))
@@ -188,6 +228,9 @@ export const exerciseHistoryQuery = (db: AppDatabase, exerciseId: string) =>
       reps: sessionSets.reps,
       difficulty: sessionSets.difficulty,
       completedAt: sessionSets.completedAt,
+      distanceM: sessionSets.distanceM,
+      durationS: sessionSets.durationS,
+      calories: sessionSets.calories,
     })
     .from(sessionSets)
     .innerJoin(sessions, eq(sessions.id, sessionSets.sessionId))

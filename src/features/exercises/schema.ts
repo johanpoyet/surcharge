@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
+import type { Discipline, TrackingType } from '@/db/schema';
 import { fr } from '@/i18n/fr';
-import { EQUIPMENTS, MUSCLES } from './labels';
+import { DISCIPLINES, EQUIPMENTS, MUSCLES } from './labels';
+import { TRACKING_TYPES } from './tracking';
 
 const t = fr.exercises.form;
 
@@ -13,6 +15,8 @@ export const exerciseFormSchema = z.object({
   weightStep: z.number().positive(),
   note: z.string().trim().max(200),
   photoLocalUri: z.string().nullable(),
+  trackingType: z.enum(TRACKING_TYPES as [TrackingType, ...TrackingType[]]),
+  discipline: z.enum(DISCIPLINES as [Discipline, ...Discipline[]]),
 });
 
 export type ExerciseFormValues = z.infer<typeof exerciseFormSchema>;

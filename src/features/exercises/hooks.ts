@@ -9,6 +9,7 @@ import {
   activeExercisesQuery,
   exerciseHistoryQuery,
   exerciseSessionStatsQuery,
+  exerciseSetCountQuery,
   groupHistory,
   type HistorySession,
 } from './repository';
@@ -38,4 +39,10 @@ export function useExercise(id: string): Exercise | undefined {
 export function useExerciseHistory(id: string): HistorySession[] {
   const { data } = useLiveQuery(exerciseHistoryQuery(liveDb, id), [id]);
   return useMemo(() => groupHistory(data), [data]);
+}
+
+/** L'exercice a des séries enregistrées (type de suivi verrouillé). */
+export function useExerciseHasSets(id: string): boolean {
+  const { data } = useLiveQuery(exerciseSetCountQuery(liveDb, id), [id]);
+  return (data[0]?.count ?? 0) > 0;
 }

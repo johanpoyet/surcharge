@@ -66,6 +66,8 @@ export const letterSpacings = {
 // Opacités du volt utilisées sur fond sombre (bandeau de conseil, pastilles, fond d'emplacement photo)
 export const voltAlpha = {
   subtle: 'rgba(215,255,58,0.06)',
+  // Carte sélectionnée (type de suivi d'un exercice)
+  selected: 'rgba(215,255,58,0.08)',
   soft: 'rgba(215,255,58,0.12)',
   border: 'rgba(215,255,58,0.35)',
 } as const;

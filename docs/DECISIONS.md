@@ -530,3 +530,26 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Éditeur V1 des séances types** : en attendant les éditeurs de blocs (Phase D), tous ses
   exercices vont dans le bloc Musculation. ⚠️ Phase D : `setTemplateExercises` remplace toutes
   les lignes d'une séance type, il devra être limité à un bloc.
+
+## V2 — Phase C (exercices et types de suivi)
+
+- **Formulaire d'exercice** : la maquette `exercice-type-suivi` ne montre que le nom, le type de
+  suivi, l'aperçu et la discipline. Les champs V1 (photo, muscle, équipement, pas, note) sont
+  gardés (même formulaire pour tous les exercices) ; ordre : photo, nom, type de suivi, aperçu,
+  discipline, muscle, équipement, pas (seulement pour les types avec charge), note. Muscle et
+  équipement restent obligatoires (colonnes `not null`) : « Autre » est présélectionné quand on
+  choisit une discipline autre que la muscu. Disciplines proposées : les 4 de la maquette.
+- **Verrouillage du type de suivi** : désactivé avec une explication dans le formulaire **et**
+  ignoré par `updateExercise` si l'exercice a une série non supprimée.
+- **Records par type** (`src/features/exercises/tracking.ts`) : distance + temps = meilleur temps
+  sur la **distance de référence** (la plus pratiquée, à égalité la plus longue) ; temps = plus
+  longue durée ; reps = plus de reps ; calories = plus de calories ; charge + distance = plus
+  grosse charge, à égalité plus longue distance. Les séries « échec » ne comptent pas.
+- **Détail** : « Charge × reps » garde l'écran V1 à l'identique. Autres types : tuiles Record /
+  Allure (course) ou Dernière fois / Séances, courbes Temps · Allure · Distance (course), Durée,
+  Reps max, Calories, Charge · Distance ; pas de bloc de ressenti ni de conseil (V2 : conseil de
+  charge seulement en charge × reps).
+- **Bibliothèque** : valeur de la dernière séance selon le type (meilleure allure, durée, reps,
+  calories, charge portée) et tendance dans le sens du progrès (↑ = allure plus rapide…).
+- ⚠️ La saisie des séries non « charge × reps » arrive en Phase E : d'ici là, un tel exercice
+  ajouté à une séance type serait saisi en kg × reps par l'écran V1 (build de dev uniquement).

@@ -1,4 +1,4 @@
-import { normalizeSearch, sortByLastUse, summarizeExercises } from '../summary';
+import { normalizeSearch, sortByLastUse, summarizeExercises, typedSummary } from '../summary';
 
 const row = (exerciseId: string, sessionId: string, maxKg: number | null, lastAt: string) => ({
   exerciseId,
@@ -14,7 +14,7 @@ describe('summarizeExercises', () => {
       row('dc', 's2', 82.5, '2026-09-28T10:00:00Z'),
       row('squat', 's1', 110, '2026-09-21T10:30:00Z'),
     ]);
-    expect(summaries.get('dc')).toEqual({
+    expect(summaries.get('dc')).toMatchObject({
       lastUsedAt: '2026-09-28T10:00:00Z',
       lastMaxKg: 82.5,
       trend: { kind: 'record' },
@@ -55,4 +55,23 @@ describe('sortByLastUse', () => {
 it('recherche sans accents ni casse', () => {
   expect(normalizeSearch('  Élévations ')).toBe('elevations');
   expect(normalizeSearch('Presse à cuisses 45°')).toContain('presse a cuisses');
+});
+
+describe('typedSummary (types de suivi V2)', () => {
+  it('course : meilleure allure de la dernière séance, une allure qui baisse est un progrès', () => {
+    const summaries = summarizeExercises([
+      { ...row('run', 's1', null, '2026-09-21T10:00:00Z'), bestPace: 240 },
+      { ...row('run', 's2', null, '2026-09-28T10:00:00Z'), bestPace: 230 },
+    ]);
+    expect(typedSummary('distance_time', summaries.get('run')!)).toEqual({
+      metric: 'pace',
+      value: 230,
+      trend: { kind: 'record' },
+    });
+  });
+
+  it('calories : pas de valeur sans série', () => {
+    const summaries = summarizeExercises([row('bike', 's1', null, '2026-09-21T10:00:00Z')]);
+    expect(typedSummary('calories', summaries.get('bike')!)).toBeNull();
+  });
 });

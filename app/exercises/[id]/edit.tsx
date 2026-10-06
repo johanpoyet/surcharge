@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 import { useToast } from '@/components/ui';
 import { db } from '@/db/client';
 import { ExerciseForm } from '@/features/exercises/components/ExerciseForm';
-import { useExercise } from '@/features/exercises/hooks';
+import { useExercise, useExerciseHasSets } from '@/features/exercises/hooks';
 import { deleteExercise, updateExercise } from '@/features/exercises/repository';
 import { useProfile } from '@/features/profile/hooks';
 import { fr } from '@/i18n/fr';
@@ -15,6 +15,7 @@ export default function EditExerciseScreen() {
   const toast = useToast();
   const { id } = useLocalSearchParams<{ id: string }>();
   const exercise = useExercise(id);
+  const hasSets = useExerciseHasSets(id);
   const unit = useProfile().profile?.weightUnit ?? 'kg';
 
   // Le formulaire s'initialise une fois l'exercice lu en base.
@@ -41,6 +42,7 @@ export default function EditExerciseScreen() {
       unit={unit}
       onCancel={() => router.back()}
       onDelete={confirmDelete}
+      trackingLocked={hasSets}
       onSubmit={(values) => {
         updateExercise(db, exercise.id, {
           name: values.name,
@@ -49,6 +51,8 @@ export default function EditExerciseScreen() {
           weightStep: values.weightStepKg,
           note: values.note,
           photoLocalUri: values.photoLocalUri,
+          trackingType: values.trackingType,
+          discipline: values.discipline,
         });
         toast.show(t.saved);
         router.back();

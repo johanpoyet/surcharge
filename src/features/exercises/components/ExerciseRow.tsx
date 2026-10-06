@@ -7,7 +7,8 @@ import type { WeightUnit } from '@/lib/database.types';
 import { cn } from '@/lib/cn';
 import { formatRelativeDay } from '@/lib/dates';
 import { formatWeight } from '@/lib/format';
-import type { ExerciseSummary } from '../summary';
+import { typedSummary, type ExerciseSummary } from '../summary';
+import { formatMetric, type TrackingMetric, type ValueTrend } from '../tracking';
 import { ExerciseThumb } from './ExerciseThumb';
 
 const t = fr.exercises;
@@ -31,6 +32,30 @@ function trendLabel(trend: Trend, unit: WeightUnit): { text: string; className: 
   }
 }
 
+/** Tendance d'un exercice non « charge × reps » : ↑ = progrès (temps qui baisse, reps qui montent…). */
+function valueTrendLabel(
+  trend: ValueTrend,
+  metric: TrackingMetric,
+  unit: WeightUnit,
+): { text: string; className: string } {
+  switch (trend.kind) {
+    case 'record':
+      return { text: t.trend.record, className: 'font-body-bold text-volt' };
+    case 'better':
+      return {
+        text: t.trend.up(formatMetric(metric, trend.delta, unit)),
+        className: 'font-body-bold text-volt',
+      };
+    case 'same':
+      return { text: t.trend.same, className: 'font-body-semibold text-muted' };
+    case 'worse':
+      return {
+        text: t.trend.down(formatMetric(metric, trend.delta, unit)),
+        className: 'font-body-bold text-diffHard',
+      };
+  }
+}
+
 type ExerciseRowProps = {
   exercise: Exercise;
   summary: ExerciseSummary | undefined;
@@ -45,14 +70,24 @@ export function ExerciseRow({ exercise, summary, unit, onPress }: ExerciseRowPro
     summary ? formatRelativeDay(summary.lastUsedAt) : t.equipment[exercise.equipment],
   ].join(' · ');
 
-  // Au poids du corps, la charge est le lest : « +10 kg ».
-  const max = summary?.lastMaxKg;
-  const bodyweight = exercise.equipment === 'bodyweight';
-  const maxLabel =
-    max === undefined || max === null || (bodyweight && max === 0)
-      ? null
-      : `${bodyweight ? '+' : ''}${formatWeight(max, unit)}`;
-  const trend = summary?.trend ? trendLabel(summary.trend, unit) : null;
+  let maxLabel: string | null = null;
+  let trend: { text: string; className: string } | null = null;
+  if (exercise.trackingType === 'weight_reps') {
+    // Au poids du corps, la charge est le lest : « +10 kg ».
+    const max = summary?.lastMaxKg;
+    const bodyweight = exercise.equipment === 'bodyweight';
+    maxLabel =
+      max === undefined || max === null || (bodyweight && max === 0)
+        ? null
+        : `${bodyweight ? '+' : ''}${formatWeight(max, unit)}`;
+    trend = summary?.trend ? trendLabel(summary.trend, unit) : null;
+  } else if (summary) {
+    const typed = typedSummary(exercise.trackingType, summary);
+    if (typed) {
+      maxLabel = formatMetric(typed.metric, typed.value, unit);
+      trend = typed.trend ? valueTrendLabel(typed.trend, typed.metric, unit) : null;
+    }
+  }
 
   return (
     <Pressable

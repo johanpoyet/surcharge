@@ -21,9 +21,17 @@ import { usePhotoPicker } from '@/features/exercises/usePhotoPicker';
 import { useProfile } from '@/features/profile/hooks';
 import { FeelingCard } from '@/features/exercises/components/FeelingCard';
 import { ProgressChartCard } from '@/features/exercises/components/ProgressChartCard';
+import { TrackingChartCard } from '@/features/exercises/components/TrackingChartCard';
+import {
+  bestPace,
+  formatSet,
+  shortSetValue,
+  trackingRecord,
+  usesWeight,
+} from '@/features/exercises/tracking';
 import { bestEstimated1RM, recordSet } from '@/features/stats/calc';
 import { difficultyAt, exerciseSeries } from '@/features/stats/series';
-import { loadAdvice } from '@/features/workout/logic';
+import { formatClock, loadAdvice } from '@/features/workout/logic';
 import { fr } from '@/i18n/fr';
 import { cn } from '@/lib/cn';
 import { formatMonth, formatSessionDay, formatShortDay } from '@/lib/dates';
@@ -76,8 +84,16 @@ export default function ExerciseDetailScreen() {
     );
   }
 
+  const type = exercise.trackingType;
+  // Charge × reps : écran V1 inchangé. Autres types : records, courbe et historique adaptés.
+  const v1 = type === 'weight_reps';
   const allSets = history.flatMap((session) => session.sets);
   const record = recordSet(allSets);
+  const typedRecord = v1 ? null : trackingRecord(type, allSets);
+  const typedRecordValue = typedRecord ? shortSetValue(type, typedRecord, unit) : null;
+  const lastBest = history[0] ? trackingRecord(type, history[0].sets) : null;
+  const lastBestValue = !v1 && lastBest ? shortSetValue(type, lastBest, unit) : null;
+  const pace = type === 'distance_time' ? bestPace(allSets) : null;
   const oneRm = bestEstimated1RM(allSets);
   const firstSession = history[history.length - 1];
   const series = exerciseSeries(
@@ -137,30 +153,68 @@ export default function ExerciseDetailScreen() {
           <View className="mt-2.5 flex-row flex-wrap gap-1.5">
             <Tag label={fr.exercises.muscles[exercise.muscle]} tone="volt" />
             <Tag label={fr.exercises.equipment[exercise.equipment]} tone="text" />
-            <Tag label={t.step(stepLabel)} tone="muted" />
+            {usesWeight(type) ? <Tag label={t.step(stepLabel)} tone="muted" /> : null}
+            {v1 ? null : <Tag label={fr.exercises.tracking.types[type].title} tone="muted" />}
           </View>
         </View>
 
-        <View className="flex-row gap-2">
-          <StatTile
-            label={t.record}
-            value={record ? formatWeight(record.weightKg, unit) : t.noData}
-            caption={
-              record ? t.recordCaption(record.reps, formatShortDay(record.completedAt)) : undefined
-            }
-            accent={record !== null}
-          />
-          <StatTile
-            label={t.oneRm}
-            value={oneRm !== null ? formatWeight(oneRm, unit) : t.noData}
-            caption={t.oneRmCaption}
-          />
-          <StatTile
-            label={t.sessions}
-            value={String(history.length)}
-            caption={firstSession ? t.since(formatMonth(firstSession.startedAt)) : t.noSessions}
-          />
-        </View>
+        {v1 ? (
+          <View className="flex-row gap-2">
+            <StatTile
+              label={t.record}
+              value={record ? formatWeight(record.weightKg, unit) : t.noData}
+              caption={
+                record
+                  ? t.recordCaption(record.reps, formatShortDay(record.completedAt))
+                  : undefined
+              }
+              accent={record !== null}
+            />
+            <StatTile
+              label={t.oneRm}
+              value={oneRm !== null ? formatWeight(oneRm, unit) : t.noData}
+              caption={t.oneRmCaption}
+            />
+            <StatTile
+              label={t.sessions}
+              value={String(history.length)}
+              caption={firstSession ? t.since(formatMonth(firstSession.startedAt)) : t.noSessions}
+            />
+          </View>
+        ) : (
+          <View className="flex-row gap-2">
+            <StatTile
+              label={t.record}
+              value={typedRecordValue?.value ?? t.noData}
+              caption={
+                typedRecord && typedRecordValue
+                  ? typedRecordValue.detail
+                    ? t.recordAt(typedRecordValue.detail, formatShortDay(typedRecord.completedAt))
+                    : formatShortDay(typedRecord.completedAt)
+                  : undefined
+              }
+              accent={typedRecord !== null}
+            />
+            {type === 'distance_time' ? (
+              <StatTile
+                label={t.bestPace}
+                value={pace !== null ? formatClock(Math.round(pace)) : t.noData}
+                caption={pace !== null ? `${fr.units.perKm} · ${t.bestPaceCaption}` : undefined}
+              />
+            ) : (
+              <StatTile
+                label={t.last}
+                value={lastBestValue?.value ?? t.noData}
+                caption={lastBestValue?.detail ?? undefined}
+              />
+            )}
+            <StatTile
+              label={t.sessions}
+              value={String(history.length)}
+              caption={firstSession ? t.since(formatMonth(firstSession.startedAt)) : t.noSessions}
+            />
+          </View>
+        )}
 
         {exercise.note ? (
           <Card>
@@ -168,9 +222,13 @@ export default function ExerciseDetailScreen() {
           </Card>
         ) : null}
 
-        <ProgressChartCard series={series} unit={unit} />
+        {v1 ? (
+          <ProgressChartCard series={series} unit={unit} />
+        ) : (
+          <TrackingChartCard type={type} sessions={[...history].reverse()} unit={unit} />
+        )}
 
-        {lastSession && workingWeight !== null ? (
+        {v1 && lastSession && workingWeight !== null ? (
           <FeelingCard
             weightLabel={formatWeight(workingWeight, unit)}
             counts={feeling.counts}
@@ -204,7 +262,9 @@ export default function ExerciseDetailScreen() {
                       <DifficultyBadge difficulty={set.difficulty} size="sm" />
                     ) : null}
                     <Text className="font-body text-13 text-text">
-                      {t.set(formatNumber(fromKg(set.weightKg, unit)), set.reps)}
+                      {v1
+                        ? t.set(formatNumber(fromKg(set.weightKg, unit)), set.reps)
+                        : formatSet(type, set, unit)}
                     </Text>
                   </View>
                 ))}
