@@ -5,10 +5,10 @@ import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { Gesture, GestureDetector, Directions } from 'react-native-gesture-handler';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   Button,
+  FullScreen,
   Heading,
   IconButton,
   Overline,
@@ -38,7 +38,6 @@ export default function WorkoutScreen() {
   const workout = useWorkout(sessionId);
   const unit = useProfile().profile?.weightUnit ?? 'kg';
   const now = useNow();
-  const insets = useSafeAreaInsets();
   const [editing, setEditing] = useState<{ id: string; draft: SetDraft; setNumber: number } | null>(
     null,
   );
@@ -57,9 +56,8 @@ export default function WorkoutScreen() {
 
   const { state, session, progress } = workout;
   if (!state || !session || session.endedAt) {
-    // Insets explicites : en plein écran modal, l'écran de secours passait sous la barre d'état.
     return (
-      <View className="flex-1 bg-bg px-screen" style={{ paddingTop: insets.top + 8 }}>
+      <FullScreen className="px-screen pt-2">
         <IconButton
           icon={ChevronDown}
           accessibilityLabel={t.minimize}
@@ -67,7 +65,7 @@ export default function WorkoutScreen() {
         />
         <Text className="mt-6 font-body text-15 text-muted">{t.notFound}</Text>
         <Button label={t.backHome} className="mt-6" onPress={() => router.replace('/')} />
-      </View>
+      </FullScreen>
     );
   }
 
@@ -175,7 +173,7 @@ export default function WorkoutScreen() {
   const fills = progress.map((p) => (p.planned ? p.done.length / p.planned : 0));
 
   return (
-    <SafeAreaView className="flex-1 bg-bg">
+    <FullScreen>
       <View className="gap-3 px-screen pt-1">
         <View className="flex-row items-center justify-between">
           <IconButton
@@ -341,6 +339,6 @@ export default function WorkoutScreen() {
         ) : null}
         <Button label={primaryLabel} onPress={onPrimary} />
       </View>
-    </SafeAreaView>
+    </FullScreen>
   );
 }

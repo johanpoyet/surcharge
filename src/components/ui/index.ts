@@ -4,6 +4,7 @@ export { Checkbox } from './Checkbox';
 export { Chip, ChipGroup, type ChipOption } from './Chip';
 export { ChoiceButton } from './ChoiceButton';
 export { DifficultyBadge, DifficultyPicker } from './Difficulty';
+export { FullScreen } from './FullScreen';
 export { IconButton } from './IconButton';
 export { KeyboardScreen } from './KeyboardScreen';
 export { BrandWatermark, Logo } from './Logo';

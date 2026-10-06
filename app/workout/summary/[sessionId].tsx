@@ -4,9 +4,8 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Trophy } from 'lucide-react-native';
 import { useMemo } from 'react';
 import { ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, Card, Heading, Overline, StatTile } from '@/components/ui';
+import { Button, Card, FullScreen, Heading, Overline, StatTile } from '@/components/ui';
 import { db, liveDb } from '@/db/client';
 import { sessions, type SessionSet } from '@/db/schema';
 import { useAuth } from '@/features/auth/AuthProvider';
@@ -50,7 +49,7 @@ export default function WorkoutSummaryScreen() {
     : 0;
 
   return (
-    <SafeAreaView className="flex-1 bg-bg">
+    <FullScreen>
       <ScrollView contentContainerClassName="gap-4 px-screen pb-6 pt-6">
         <View>
           <Overline className="text-13">{session?.name ?? ''}</Overline>
@@ -90,6 +89,6 @@ export default function WorkoutSummaryScreen() {
 
         <Button label={t.done} className="mt-2" onPress={() => router.dismissTo('/')} />
       </ScrollView>
-    </SafeAreaView>
+    </FullScreen>
   );
 }

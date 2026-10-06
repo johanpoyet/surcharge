@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { cn } from '@/lib/cn';
+import { FullScreen } from './FullScreen';
 
 type KeyboardScreenProps = {
   children: ReactNode;
@@ -21,7 +20,7 @@ export function KeyboardScreen({
   scrollEnabled = true,
 }: KeyboardScreenProps) {
   return (
-    <SafeAreaView className="flex-1 bg-bg">
+    <FullScreen>
       {background}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -36,6 +35,6 @@ export function KeyboardScreen({
           {children}
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </FullScreen>
   );
 }
