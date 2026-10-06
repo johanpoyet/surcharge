@@ -69,8 +69,9 @@ scripts/           update-production.sh    website/      pages légales (build +
 ## État du projet (06/10/2026)
 
 - V1 (SPEC.md, phases 0 à 10) terminée. **iOS** : 1.0.0 publiée sur l'App Store ; 1.1.0
-  (build 8 : Live Activity, EAS Update, correctifs, écran de mise à jour obligatoire) soumise,
-  sortie automatique après validation. Code livré : branche `release/1.1.0`.
+  (build 8 : Live Activity, EAS Update, correctifs, écran de mise à jour obligatoire) publiée le
+  06/10/2026. Code livré : branche `release/1.1.0` (tag `v1.1.0`). `app_config.min_supported_version`
+  = "1.0.0" en prod : personne n'est bloqué tant que Johan ne relève pas cette valeur.
   **Android** : APK signé distribué à quelques amis (pas de Play Store).
 - Les mises à jour JavaScript passent par EAS Update (`runtimeVersion` = version d'app.json :
   seuls les builds de la même version les reçoivent). Tout changement natif (module, plugin,
