@@ -111,7 +111,7 @@ secret du client OAuth Web (Supabase), clé API Resend (SMTP Supabase), jeton Se
   Numéro de build de l'extension Live Activity : `CURRENT_PROJECT_VERSION` de la cible
   `ExpoWidgetsTarget` dans `project.pbxproj` (son `Info.plist` est généré).
 - **Supabase** : migrations `npx supabase db push` (ou SQL Editor) après test PGlite ; derniers
-  numéros : `0005`. Réglages faits dans le tableau de bord (non versionnés) : Confirm email
+  numéros : `0006`. Réglages faits dans le tableau de bord (non versionnés) : Confirm email
   désactivé, Skip nonce checks (Google), SMTP Resend + modèle « Reset Password »
   (`supabase/templates/recovery.html`), longueur min. du mot de passe 8, Redirect URLs
   `surcharge://**`.

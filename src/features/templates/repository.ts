@@ -3,6 +3,7 @@ import { and, asc, eq, isNull } from 'drizzle-orm';
 import type { AppDatabase } from '@/db/client';
 import {
   exercises,
+  templateBlocks,
   templateExercises,
   weeklySchedule,
   workoutTemplates,
@@ -13,6 +14,8 @@ import { nowIso } from '@/db/time';
 import { newId } from '@/lib/id';
 import { assignWeekday, weekdaysForTemplate } from '@/features/planning/repository';
 import { enqueue, type Tx } from '@/sync/outbox';
+
+import { strengthBlockFor } from './blocks';
 
 export type TemplateExerciseInput = {
   /** Présent pour une ligne existante (modification), absent pour un ajout. */
@@ -50,6 +53,7 @@ export function createTemplate(
       })
       .run();
     enqueue(tx, 'workout_templates', id, 'upsert');
+    strengthBlockFor(tx, userId, id);
     writeItems(tx, userId, id, items);
   });
   return id;
@@ -92,6 +96,18 @@ export function deleteTemplate(db: AppDatabase, id: string): void {
         .where(eq(templateExercises.id, row.id))
         .run();
       enqueue(tx, 'template_exercises', row.id, 'delete');
+    }
+    const blocks = tx
+      .select({ id: templateBlocks.id })
+      .from(templateBlocks)
+      .where(and(eq(templateBlocks.templateId, id), isNull(templateBlocks.deletedAt)))
+      .all();
+    for (const block of blocks) {
+      tx.update(templateBlocks)
+        .set({ deletedAt: now, updatedAt: now, dirty: true })
+        .where(eq(templateBlocks.id, block.id))
+        .run();
+      enqueue(tx, 'template_blocks', block.id, 'delete');
     }
     // Les jours où elle était prévue redeviennent des jours de repos.
     const template = tx
@@ -136,6 +152,8 @@ function writeItems(
   items: readonly TemplateExerciseInput[],
 ): void {
   const now = nowIso();
+  // Éditeur V1 : tous les exercices vont dans le bloc Musculation de la séance type.
+  const blockId = items.some((item) => !item.id) ? strengthBlockFor(tx, userId, templateId) : null;
   items.forEach((item, position) => {
     const values = {
       exerciseId: item.exerciseId,
@@ -152,7 +170,7 @@ function writeItems(
       tx.update(templateExercises).set(values).where(eq(templateExercises.id, id)).run();
     } else {
       tx.insert(templateExercises)
-        .values({ ...values, id, userId, templateId, createdAt: now })
+        .values({ ...values, id, userId, templateId, blockId, createdAt: now })
         .run();
     }
     enqueue(tx, 'template_exercises', id, 'upsert');
@@ -202,6 +220,7 @@ export function saveTemplate(db: AppDatabase, userId: string, draft: TemplateDra
         })
         .run();
       enqueue(tx, 'workout_templates', id, 'upsert');
+      strengthBlockFor(tx, userId, id);
       writeItems(tx, userId, id, draft.items);
     }
 

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import type { AppDatabase } from '@/db/client';
+import { upgradeLocalData } from '@/features/multisport/upgrade';
 import { downloadMissingPhotos, uploadPendingPhotos } from './photos';
 import { pullAll } from './pull';
 import { pushOutbox } from './push';
@@ -23,7 +24,8 @@ export const useSyncStatus = create<SyncStatus>(() => ({
 let running: Promise<boolean> | null = null;
 
 /**
- * Synchro complète (SPEC 7) : photos à envoyer, push de l'outbox, pull, photos à télécharger.
+ * Synchro complète (SPEC 7) : photos à envoyer, push de l'outbox, pull, reprise V2 des données,
+ * photos à télécharger.
  * Un seul passage à la fois ; ne bloque jamais l'interface (les erreurs sont absorbées).
  */
 export function runSync(
@@ -36,8 +38,11 @@ export function runSync(
   running = (async () => {
     try {
       await uploadPendingPhotos(db, userId).catch(() => 0);
-      const pushed = await pushOutbox(db, remote, userId);
+      let pushed = await pushOutbox(db, remote, userId);
       await pullAll(db, remote, userId);
+      // Après le pull : reprise V2 des données (y compris celles d'une ancienne version), envoyée
+      // dans la foulée.
+      if (upgradeLocalData(db, userId) > 0) pushed = await pushOutbox(db, remote, userId);
       await downloadMissingPhotos(db, userId).catch(() => 0);
       return pushed.failed === 0;
     } catch {

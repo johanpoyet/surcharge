@@ -112,7 +112,13 @@ it('push : toutes les tables dans l’ordre, outbox vidée, lignes plus « dirty
   });
 
   const result = await pushOutbox(db, remote.api, USER);
-  expect(result).toEqual({ pushed: 6, failed: 0 });
+  // exercice, séance type, son bloc Musculation, ligne de séance type, jour, séance, série
+  expect(result).toEqual({ pushed: 7, failed: 0 });
+  // Clés étrangères côté Supabase : le bloc part avant les exercices qui y sont rattachés.
+  const [block] = remote.rows('template_blocks');
+  const [item] = remote.rows('template_exercises');
+  expect(item?.block_id).toBe(block?.id);
+  expect(String(block?.updated_at) < String(item?.updated_at)).toBe(true);
   expect(pending()).toHaveLength(0);
   expect(getExercise(db, exerciseId)?.dirty).toBe(false);
   expect(remote.rows('session_sets')[0]).toMatchObject({

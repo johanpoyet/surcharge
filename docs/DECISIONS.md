@@ -493,3 +493,40 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   un APK `versionCode` 2. Tous les utilisateurs qui passent à la 1.1.0 ont donc l'écran ; pas
   d'OTA nécessaire. `release/1.2.0` est devenue inutile (le passage en 1.2.0 reste dans `v2`).
   Migrations `0004` (absente de l'historique de la prod, rejouable) et `0005` appliquées en prod.
+
+## V2 — Phase B (modèle de données multi-sport)
+
+- **Migration serveur `0006_multisport.sql`** (la `0002` de SPEC_V2, renumérotée : `0002` à
+  `0005` existaient déjà). Testée sur PGlite avec une simulation de Supabase (rôles, `auth.uid()`,
+  `moddatetime`, `storage`) et un jeu de données V1 : reprise, reprise rejouée, écriture d'une
+  ancienne version, RLS entre deux comptes, suppression de compte en cascade.
+- **Écarts avec le SQL de SPEC_V2 §3** :
+  - le bloc Musculation repris d'une séance type a **l'id de la séance type** (au lieu de
+    `gen_random_uuid()`) : la reprise locale de chaque appareil retombe sur la même ligne, sans
+    doublon, y compris pour une séance type créée plus tard par une ancienne version ;
+  - le bloc d'une séance type supprimée est créé supprimé ;
+  - triggers `set_updated_at_insert` (0003) et index `(user_id, updated_at)` ajoutés aux deux
+    nouvelles tables, comme pour les autres tables synchronisées ;
+  - `reps` reste aussi obligatoire : 0 pour une série sans reps (course, temps, calories).
+- **Compatibilité des anciennes versions** : leur pull ne lit que les colonnes qu'elles
+  connaissent ; leur push (upsert PostgREST) n'envoie que les leurs, donc ne remet jamais
+  `block_id` à null. Un exercice ajouté à une séance type par une ancienne version arrive sans
+  `block_id` : la reprise locale V2 le rattache au bloc Musculation.
+- **Reprise locale** (`upgradeLocalData`), idempotente, lancée **après chaque pull** (et envoyée
+  dans la foulée) : bloc Musculation pour les séances types sans bloc, rattachement des exercices
+  sans bloc, `catalog_key` des exercices par défaut retrouvés par leur nom d'origine (un exercice
+  renommé reste « perso »), catalogue des disciplines du profil autres que la muscu. Les séries V1
+  restent sans `block_id` (bloc Musculation implicite à l'affichage).
+- **Catalogue** : clés canoniques pour les 34 exercices par défaut (`bench_press`, `squat`…),
+  5 exercices de course, 10 de cross-training, 9 Hyrox (course + 8 stations). Identifiants
+  **déterministes** (`stableId(user, 'exercise', clé)`, UUID v8 calculé par FNV-1a) pour que deux
+  appareils hors ligne ne créent pas de doublon. Le catalogue d'une discipline n'est ajouté que
+  quand elle est choisie (profil) : pas d'exercices Hyrox dans la bibliothèque d'un pratiquant de
+  muscu (SPEC_V2 §5.5 : les disciplines filtrent le catalogue).
+- **Charges Hyrox à vérifier sur hyrox.com** (`src/features/hyrox/catalog.ts`, `// TODO vérifier`) :
+  Sled Push 102 / 152 / 152 / 202 kg (Open F / Open H / Pro F / Pro H, traîneau compris),
+  Sled Pull 78 / 103 / 103 / 153 kg, Farmers 2 × 16 / 24 / 24 / 32 kg, Sandbag 10 / 20 / 20 / 30 kg,
+  Wall Balls 4 / 6 / 6 / 9 kg. Doubles : charges Open Homme par défaut ; « custom » : pas de charge.
+- **Éditeur V1 des séances types** : en attendant les éditeurs de blocs (Phase D), tous ses
+  exercices vont dans le bloc Musculation. ⚠️ Phase D : `setTemplateExercises` remplace toutes
+  les lignes d'une séance type, il devra être limité à un bloc.
