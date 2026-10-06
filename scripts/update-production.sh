@@ -6,11 +6,16 @@ set -e
 
 MESSAGE="${1:?Message obligatoire : npm run update:prod -- \"description\"}"
 
-npx eas-cli@latest update --channel production --environment production --platform ios --message "$MESSAGE"
-
 # Jeton Sentry : même fichier que pour les builds (jamais commité).
 set -a
 . ./.env.sentry-build-plugin
 set +a
-SENTRY_URL=https://de.sentry.io/ SENTRY_ORG=johan-ea SENTRY_PROJECT=surcharge \
-  npx sentry-expo-upload-sourcemaps dist
+
+# Une plateforme à la fois (« all » inclurait le web, que l'app n'a pas) ; `dist` est réécrit à
+# chaque export, d'où l'envoi des source maps juste après.
+for PLATFORM in ios android; do
+  npx eas-cli@latest update --channel production --environment production \
+    --platform "$PLATFORM" --message "$MESSAGE"
+  SENTRY_URL=https://de.sentry.io/ SENTRY_ORG=johan-ea SENTRY_PROJECT=surcharge \
+    npx sentry-expo-upload-sourcemaps dist
+done

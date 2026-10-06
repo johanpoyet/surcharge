@@ -77,7 +77,7 @@ vérification Apple.
 npm run update:prod -- "fix(planning): description"
 ```
 
-Le script publie sur le canal `production` (environnement EAS `production`) puis envoie les source
+Le script publie pour iOS puis Android sur le canal `production` (environnement EAS `production`) puis envoie les source
 maps à Sentry. Seuls les builds de la **même version** (`runtimeVersion` = `version` d'`app.json`)
 reçoivent la mise à jour, téléchargée au lancement et appliquée au lancement suivant. Tout
 changement natif (module, permission, plugin, icône) demande un build et une nouvelle version.
