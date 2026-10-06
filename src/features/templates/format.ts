@@ -1,5 +1,7 @@
 // Saisie et affichage des cibles d'une séance type (maquette creer-seance).
 
+import { fr } from '@/i18n/fr';
+
 export type RepsTarget = { min: number | null; max: number | null };
 
 const MAX_REPS = 100;
@@ -57,4 +59,10 @@ export function estimateMinutes(
     0,
   );
   return Math.round(seconds / 60 / 5) * 5;
+}
+
+/** 90 → « 1 h 30 », 55 → « 55 min » (durée estimée d'une séance type). */
+export function formatEstimate(minutes: number): string {
+  if (minutes < 60) return fr.templates.blocks.minutes(minutes);
+  return fr.templates.blocks.hours(Math.floor(minutes / 60), minutes % 60);
 }

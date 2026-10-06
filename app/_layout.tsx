@@ -68,6 +68,7 @@ function RootNavigator() {
         <Stack.Screen name="templates/new" options={{ presentation: 'fullScreenModal' }} />
         <Stack.Screen name="templates/[id]" options={{ presentation: 'fullScreenModal' }} />
         <Stack.Screen name="templates/pick-exercises" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="templates/block" options={{ presentation: 'modal' }} />
         <Stack.Screen
           name="workout/[sessionId]"
           options={{ presentation: 'fullScreenModal', gestureEnabled: false }}

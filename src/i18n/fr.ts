@@ -142,8 +142,8 @@ export const fr = {
     create: 'Créer une séance',
     empty: 'Aucune séance type pour le moment.',
     emptyCta: 'Créer ma première séance',
-    summary: (exercises: number, minutes: number) =>
-      `${exercises} ${exercises > 1 ? 'exos' : 'exo'} · ~${minutes} min`,
+    summary: (exercises: number, duration: string) =>
+      `${exercises} ${exercises > 1 ? 'exos' : 'exo'} · ~${duration}`,
     actions: 'Actions',
     actionsTitle: (name: string) => name,
     edit: 'Modifier',
@@ -182,6 +182,122 @@ export const fr = {
       discardConfirm: 'Abandonner',
       keepEditing: 'Continuer',
       saved: 'Séance enregistrée',
+    },
+    // Séances types en blocs (SPEC_V2 §5.1).
+    blocks: {
+      count: (n: number) => `Blocs · ${n}`,
+      totals: (duration: string, km: string | null) =>
+        km ? `~${duration} · ${km} km de course` : `~${duration}`,
+      hours: (h: number, m: number) =>
+        m === 0 ? `${h} h` : `${h} h ${String(m).padStart(2, '0')}`,
+      minutes: (m: number) => `${m} min`,
+      tags: {
+        warmup: 'Échauffement',
+        strength: 'Muscu',
+        cardio: 'Course / cardio',
+        circuit: 'Circuit',
+        hyrox: 'Hyrox',
+      },
+      add: 'Ajouter un bloc',
+      sheetTitle: 'Ajouter un bloc',
+      sheetHint: 'Une séance peut mélanger plusieurs types de blocs.',
+      options: {
+        warmup: { title: 'Échauffement', hint: 'Durée et consignes · footing, mobilité' },
+        strength: { title: 'Musculation', hint: 'Séries × reps × charge, ressenti' },
+        cardio: {
+          title: 'Course / cardio',
+          hint: 'Distance, temps, allure · footing, fractionné, rameur',
+        },
+        circuit: { title: 'Circuit / WOD', hint: 'AMRAP, EMOM, For Time, Tabata' },
+        hyrox: { title: 'Hyrox', hint: 'Course complète, demi-course ou station seule' },
+      },
+      menu: 'Options du bloc',
+      edit: 'Modifier',
+      rename: 'Renommer',
+      moveUp: 'Monter',
+      moveDown: 'Descendre',
+      duplicate: 'Dupliquer',
+      delete: 'Supprimer',
+      cancel: 'Annuler',
+      deleteTitle: 'Supprimer ce bloc ?',
+      deleteMessage: 'Ses exercices sont retirés de la séance.',
+      exercisesSets: (exercises: number, sets: number) =>
+        `${exercises} ${exercises > 1 ? 'exercices' : 'exercice'} · ${sets} ${sets > 1 ? 'séries' : 'série'}`,
+      noExercises: 'Aucun exercice pour l’instant.',
+      warmupDefault: 'Échauffement libre',
+      hyroxSubtitle: 'Format officiel · chronométré',
+      hyroxTitle: { full: '8 × (1 km + station)', half: '4 × (1 km + station)' },
+      run: 'Course',
+      runPlus: 'Course + ',
+      segmentMeta: (run: string | null, station: string) => (run ? `${run} · ${station}` : station),
+      moreSegments: (n: number, names: string) => `+ ${n} segments (${names})`,
+      lessSegments: 'Masquer les segments',
+      division: 'Catégorie : ',
+      divisions: {
+        open_men: 'Open Homme',
+        open_women: 'Open Femme',
+        pro_men: 'Pro Homme',
+        pro_women: 'Pro Femme',
+        doubles: 'Doubles',
+        custom: 'Libre',
+      },
+      officialWeights: 'Charges officielles',
+      freeWeights: 'Charges libres',
+      transitionsOn: 'Transitions chronométrées',
+      reps: (n: number) => `${n} reps`,
+      weight: (count: number | undefined, weight: string) =>
+        count && count > 1 ? `${count} × ${weight}` : weight,
+      circuitFormats: { amrap: 'AMRAP', emom: 'EMOM', for_time: 'For Time', tabata: 'Tabata' },
+      circuitSummary: {
+        amrap: (min: string) => `AMRAP · ${min}`,
+        emom: (rounds: number, interval: string) => `EMOM · ${rounds} × ${interval}`,
+        for_time: (rounds: number, cap: string | null) =>
+          `For Time · ${rounds} ${rounds > 1 ? 'tours' : 'tour'}${cap ? ` · max ${cap}` : ''}`,
+        tabata: (rounds: number, work: number, rest: number) =>
+          `Tabata · ${rounds} × ${work}/${rest} s`,
+      },
+      itemSummary: (sets: number, target: string) => (sets > 1 ? `${sets} × ${target}` : target),
+      restSuffix: (rest: string) => `récup ${rest}`,
+      errors: {
+        noBlocks: 'Ajoute au moins un bloc.',
+        emptyBlock: 'Ajoute au moins un exercice dans chaque bloc Musculation, Course ou Circuit.',
+      },
+      editor: {
+        done: 'OK',
+        name: 'Nom du bloc (facultatif)',
+        duration: 'Durée',
+        note: 'Consignes',
+        notePlaceholder: 'Footing léger + mobilité',
+        format: 'Format',
+        division: 'Catégorie',
+        station: 'Station',
+        halfStations: 'Les 4 premières stations de la course officielle.',
+        hyroxFormats: { full: 'Complet', half: 'Demi', station: 'Station seule' },
+        transitions: 'Chronométrer les transitions',
+        transitionsHint:
+          'Un tap de plus en arrivant à chaque station : le récap sépare les transitions.',
+        segments: (n: number) => `Segments · ${n}`,
+        durationAmrap: 'Durée',
+        rounds: 'Tours',
+        interval: 'Toutes les',
+        timeCap: 'Temps limite',
+        noTimeCap: 'Sans limite',
+        work: 'Effort',
+        rest: 'Repos',
+        movements: 'Mouvements d’un tour',
+        exercises: 'Exercices',
+        addMovements: 'Ajouter des mouvements',
+        addExercises: 'Ajouter des exercices',
+        target: {
+          sets: 'Séries',
+          distance: 'Distance',
+          duration: 'Durée',
+          calories: 'Calories',
+          reps: 'Reps',
+          rest: 'Récup',
+          weight: 'Charge',
+        },
+      },
     },
     picker: {
       title: 'Ajouter des exercices',
@@ -276,8 +392,8 @@ export const fr = {
     done: 'Faite',
     onlyThisDay: 'Juste ce jour',
     offPlan: 'Hors planning',
-    exercisesMinutes: (n: number, minutes: number) =>
-      `${n} ${n > 1 ? 'exos' : 'exo'} · ~${minutes} min`,
+    exercisesMinutes: (n: number, duration: string) =>
+      `${n} ${n > 1 ? 'exos' : 'exo'} · ~${duration}`,
     dayA11y: (day: string, plan: string) => `${day} : ${plan}. Toucher pour changer.`,
     repeat: 'Répéter chaque semaine',
     repeatOn: "L'app te propose la bonne séance chaque jour",
@@ -298,8 +414,8 @@ export const fr = {
       overline: 'Séance du jour',
       planned: 'Prévue au planning',
       changed: 'Changée pour aujourd’hui',
-      meta: (exercises: number, minutes: number, muscles: string) =>
-        [`${exercises} ${exercises > 1 ? 'exercices' : 'exercice'}`, `~${minutes} min`, muscles]
+      meta: (exercises: number, duration: string, muscles: string) =>
+        [`${exercises} ${exercises > 1 ? 'exercices' : 'exercice'}`, `~${duration}`, muscles]
           .filter(Boolean)
           .join(' · '),
       start: 'Démarrer',

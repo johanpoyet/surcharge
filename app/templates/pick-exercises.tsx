@@ -12,7 +12,7 @@ import { useExercises } from '@/features/exercises/hooks';
 import { muscleOptions } from '@/features/exercises/labels';
 import { normalizeSearch } from '@/features/exercises/summary';
 import { useProfile } from '@/features/profile/hooks';
-import { useTemplateDraft } from '@/features/templates/draftStore';
+import { defaultItem, useTemplateDraft } from '@/features/templates/draftStore';
 import { fr } from '@/i18n/fr';
 import { cn } from '@/lib/cn';
 import { colors } from '@/theme/tokens';
@@ -23,14 +23,17 @@ const FILTERS = [{ value: 'all' as const, label: fr.exercises.all }, ...muscleOp
 
 export default function PickExercisesScreen() {
   const exercises = useExercises();
-  const inDraft = useTemplateDraft((state) => state.items);
+  // Bloc qui reçoit les exercices choisis (Musculation, Course / cardio ou Circuit).
+  const target = useTemplateDraft((state) =>
+    state.blocks.find((block) => block.key === state.pickBlockKey),
+  );
   const addExercises = useTemplateDraft((state) => state.addExercises);
   const restSeconds = useProfile().profile?.defaultRestSeconds ?? 120;
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
   const [selected, setSelected] = useState<string[]>([]);
 
-  const already = useMemo(() => new Set(inDraft.map((i) => i.exerciseId)), [inDraft]);
+  const already = useMemo(() => new Set((target?.items ?? []).map((i) => i.exerciseId)), [target]);
   const visible = useMemo(() => {
     const search = normalizeSearch(query);
     return exercises.filter(
@@ -46,7 +49,17 @@ export default function PickExercisesScreen() {
     );
 
   const submit = () => {
-    addExercises(selected, restSeconds);
+    const byId = new Map(exercises.map((e) => [e.id, e]));
+    addExercises(
+      selected.map((id) =>
+        defaultItem(
+          target?.type ?? 'strength',
+          id,
+          byId.get(id)?.trackingType ?? 'weight_reps',
+          restSeconds,
+        ),
+      ),
+    );
     router.back();
   };
 

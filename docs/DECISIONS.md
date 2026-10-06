@@ -553,3 +553,33 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   calories, charge portée) et tendance dans le sens du progrès (↑ = allure plus rapide…).
 - ⚠️ La saisie des séries non « charge × reps » arrive en Phase E : d'ici là, un tel exercice
   ajouté à une séance type serait saisi en kg × reps par l'écran V1 (build de dev uniquement).
+
+## V2 — Phase D (séances types en blocs)
+
+- **Éditeur** (maquettes `seance-multi-blocs`, `ajouter-bloc`) : une séance neuve commence par un
+  bloc Musculation vide (le cas le plus courant, comme en V1). Le bloc Musculation embarque
+  l'éditeur V1 dans sa carte (SPEC_V2 §5.1) ; les autres blocs montrent un résumé et s'éditent
+  dans une modale (`templates/block`). Les modifications vont dans le brouillon et ne sont
+  enregistrées qu'avec « Enregistrer la séance ».
+- **Feuille « Ajouter un bloc »** : les 4 choix de la maquette **plus « Échauffement »** (absent de
+  la maquette, nécessaire pour « Simu Hyrox » et prévu par SPEC_V2 §4.2).
+- **Ordre des blocs** : par le menu ⋯ (Monter / Descendre), pas par glisser-déposer : la carte
+  Musculation contient déjà une liste réordonnable (listes imbriquées peu fiables). Menu ⋯ :
+  Modifier (ou Renommer pour la muscu), Monter, Descendre, Dupliquer, Supprimer (confirmation).
+- **Hyrox** : les segments sont générés depuis le catalogue (`hyroxSegments`), sans lignes
+  `template_exercises`. Demi = les 4 premières stations ; station seule = sans course ;
+  catégorie « Libre » = pas de charges. Enregistrer un bloc Hyrox ajoute les exercices Hyrox du
+  catalogue à la bibliothèque (le moteur de séance s'appuie dessus).
+- **Course / cardio** : « 6 × 400 m, récup 1:30 » = une ligne `template_exercises` (séries,
+  distance ou durée cible, repos). `CardioConfig.intervals` (SPEC_V2 §4.2) n'est pas utilisé.
+- **Circuit** : les mouvements d'un tour sont des lignes `template_exercises` (1 série, cible
+  reps / distance / calories / durée selon le type de suivi) ; format et paramètres dans `config`.
+- **Configs validées avec zod** à la lecture (`parseBlockConfig`) : invalide → valeur par défaut.
+- **Positions des exercices** continues d'un bloc à l'autre : une ancienne version affiche les
+  exercices d'une séance type V2 dans l'ordre de la séance.
+- **Durée estimée** (SPEC_V2 §4.6) : course sans durée cible comptée à 6:00 /km ; Hyrox à durée
+  fixe (la moyenne de l'utilisateur viendra avec l'historique, Phase F). Affichée « ~1 h 30 »
+  partout (éditeur, Mes séances, planning, accueil). « X km de course » = courses Hyrox + exercices
+  de la discipline Course des blocs cardio.
+- **En attendant le moteur multi-blocs (Phase E)**, l'écran de séance V1 ne démarre que les
+  exercices des blocs Musculation d'une séance type.

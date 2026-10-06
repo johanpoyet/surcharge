@@ -3,6 +3,7 @@ import { fr as frLocale } from 'date-fns/locale';
 import { Check, GripVertical, Plus } from 'lucide-react-native';
 import { Pressable, Text, View } from 'react-native';
 
+import { formatEstimate } from '@/features/templates/format';
 import { fr } from '@/i18n/fr';
 import { cn } from '@/lib/cn';
 import { toLocalDateString } from '@/lib/format';
@@ -76,7 +77,9 @@ export function WeekView({
                     {title}
                   </Text>
                   <Text className="font-body text-13 text-muted">
-                    {info ? t.exercisesMinutes(info.exerciseCount, info.minutes) : t.offPlan}
+                    {info
+                      ? t.exercisesMinutes(info.exerciseCount, formatEstimate(info.minutes))
+                      : t.offPlan}
                     {info && plan.source === 'override' ? ` · ${t.onlyThisDay}` : ''}
                   </Text>
                 </View>

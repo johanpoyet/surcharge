@@ -14,6 +14,7 @@ export { ProgressSegments } from './ProgressSegments';
 export { ReorderableList } from './ReorderableList';
 export { SearchField } from './SearchField';
 export { SegmentedControl, type SegmentOption } from './SegmentedControl';
+export { Sheet } from './Sheet';
 export { StatTile } from './StatTile';
 export { Stepper } from './Stepper';
 export { Switch } from './Switch';

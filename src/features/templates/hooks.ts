@@ -6,8 +6,10 @@ import type { WorkoutTemplate } from '@/db/schema';
 import { useAuth } from '@/features/auth/AuthProvider';
 import {
   activeTemplatesQuery,
+  templateBlocksQuery,
   templateItemsQuery,
   weeklyScheduleQuery,
+  type TemplateBlockRow,
   type TemplateItemRow,
 } from './repository';
 
@@ -43,6 +45,17 @@ export function useTemplateWeekdays(): Map<string, number[]> {
     for (const row of data) {
       map.set(row.templateId, [...(map.get(row.templateId) ?? []), row.weekday].sort());
     }
+    return map;
+  }, [data]);
+}
+
+/** Blocs des séances types, regroupés par séance type (dans l'ordre). */
+export function useTemplateBlocks(): Map<string, TemplateBlockRow[]> {
+  const userId = useUserId();
+  const { data } = useLiveQuery(templateBlocksQuery(liveDb, userId), [userId]);
+  return useMemo(() => {
+    const map = new Map<string, TemplateBlockRow[]>();
+    for (const row of data) map.set(row.templateId, [...(map.get(row.templateId) ?? []), row]);
     return map;
   }, [data]);
 }

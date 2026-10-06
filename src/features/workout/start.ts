@@ -1,5 +1,5 @@
 import type { AppDatabase } from '@/db/client';
-import { getTemplate, listTemplateExercises } from '@/features/templates/repository';
+import { getTemplate, listTemplateBlocks } from '@/features/templates/repository';
 import {
   getSession,
   getActiveSession,
@@ -12,8 +12,15 @@ import { initialState, type WorkoutPlanItem, type WorkoutUiState } from './state
 /** Repos par défaut d'un exercice reconstruit sans séance type (SPEC : 2 min). */
 const DEFAULT_REST_SECONDS = 120;
 
+/**
+ * Plan de la séance : exercices des blocs Musculation (l'écran de séance V1). Les autres blocs
+ * auront leur moteur en Phase E de la V2.
+ */
 function templatePlan(db: AppDatabase, templateId: string): WorkoutPlanItem[] {
-  return listTemplateExercises(db, templateId).map((item) => ({
+  const items = listTemplateBlocks(db, templateId)
+    .filter((block) => block.type === 'strength')
+    .flatMap((block) => block.items);
+  return items.map((item) => ({
     exerciseId: item.exerciseId,
     targetSets: item.targetSets,
     repsMin: item.targetRepsMin,

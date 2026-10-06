@@ -30,9 +30,9 @@ export const fonts = {
   bodyBold: 'Barlow_700Bold',
 } as const;
 
-// Tailles de police en px. SPEC + tailles relevées dans les maquettes (56, 44, 40, 38, 32, 24, 18, 10).
+// Tailles de police en px. SPEC + tailles relevées dans les maquettes (56, 44, 40, 38, 32, 28, 24, 18, 10).
 export const fontSizes = {
-  display: [60, 56, 48, 44, 40, 38, 34, 32, 30, 26, 24, 22, 20],
+  display: [60, 56, 48, 44, 40, 38, 34, 32, 30, 28, 26, 24, 22, 20],
   body: [18, 17, 16, 15, 14, 13, 12, 11, 10],
 } as const;
 
@@ -71,6 +71,9 @@ export const voltAlpha = {
   soft: 'rgba(215,255,58,0.12)',
   border: 'rgba(215,255,58,0.35)',
 } as const;
+
+// Fond assombri derrière une feuille du bas (maquette ajouter-bloc)
+export const scrim = 'rgba(5,5,5,0.8)';
 
 // Noir transparent sur fond volt (filigrane et tag de la carte « Séance du jour »)
 export const onVoltAlpha = {

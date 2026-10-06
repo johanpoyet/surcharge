@@ -4,6 +4,7 @@ import {
   fontSizes,
   letterSpacings,
   onVoltAlpha,
+  scrim,
   radii,
   spacing,
   voltAlpha,
@@ -27,6 +28,7 @@ const preset = {
         'volt-soft': voltAlpha.soft,
         'volt-border': voltAlpha.border,
         'onVolt-tag': onVoltAlpha.tag,
+        scrim,
       },
       fontFamily: {
         display: [fonts.display],

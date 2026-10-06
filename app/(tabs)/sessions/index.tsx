@@ -9,8 +9,14 @@ import { db } from '@/db/client';
 import type { WorkoutTemplate } from '@/db/schema';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { PlanningPanel } from '@/features/planning/components/PlanningPanel';
-import { estimateMinutes } from '@/features/templates/format';
-import { useTemplateItems, useTemplates, useTemplateWeekdays } from '@/features/templates/hooks';
+import { estimateTemplate } from '@/features/templates/estimate';
+import { formatEstimate } from '@/features/templates/format';
+import {
+  useTemplateBlocks,
+  useTemplateItems,
+  useTemplates,
+  useTemplateWeekdays,
+} from '@/features/templates/hooks';
 import { deleteTemplate, duplicateTemplate } from '@/features/templates/repository';
 import { useStartWorkout } from '@/features/workout/useStartWorkout';
 import { fr } from '@/i18n/fr';
@@ -28,6 +34,7 @@ export default function SessionsScreen() {
   const templates = useTemplates();
   const { start } = useStartWorkout();
   const items = useTemplateItems();
+  const blocks = useTemplateBlocks();
   const weekdays = useTemplateWeekdays();
   const [tab, setTab] = useState<Tab>('planning');
 
@@ -97,7 +104,8 @@ export default function SessionsScreen() {
             const rows = items.get(item.id) ?? [];
             const days = (weekdays.get(item.id) ?? []).map((d) => fr.weekdays.short[d - 1]);
             const muscles = [...new Set(rows.map((r) => fr.exercises.muscles[r.muscle]))];
-            const summary = [t.summary(rows.length, estimateMinutes(rows)), days.join(', ')]
+            const { minutes } = estimateTemplate(blocks.get(item.id) ?? [], rows);
+            const summary = [t.summary(rows.length, formatEstimate(minutes)), days.join(', ')]
               .filter(Boolean)
               .join(' · ');
             return (

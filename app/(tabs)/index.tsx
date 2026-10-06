@@ -18,6 +18,7 @@ import { useBodyWeights, useProfile } from '@/features/profile/hooks';
 import { recordSets, regularityWeeks } from '@/features/stats/regularity';
 import { useActiveSession, useAllSets, useCompletedSessions } from '@/features/workout/hooks';
 import { useStartWorkout } from '@/features/workout/useStartWorkout';
+import { formatEstimate } from '@/features/templates/format';
 import { fr } from '@/i18n/fr';
 import { toLocalDateString } from '@/lib/format';
 import { useNow } from '@/lib/useNow';
@@ -82,7 +83,11 @@ export default function HomeScreen() {
           ? {
               kind: 'planned',
               name: planned.name,
-              meta: t.day.meta(planned.exerciseCount, planned.minutes, planned.muscles.join(', ')),
+              meta: t.day.meta(
+                planned.exerciseCount,
+                formatEstimate(planned.minutes),
+                planned.muscles.join(', '),
+              ),
               changed: plan.source === 'override',
             }
           : { kind: 'rest' };

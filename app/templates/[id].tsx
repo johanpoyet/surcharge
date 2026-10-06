@@ -5,12 +5,8 @@ import { db } from '@/db/client';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { TemplateEditor } from '@/features/templates/components/TemplateEditor';
 import { useTemplateDraft } from '@/features/templates/draftStore';
-import { formatRepsTarget, formatRest } from '@/features/templates/format';
-import {
-  getTemplate,
-  listTemplateExercises,
-  templateWeekdays,
-} from '@/features/templates/repository';
+import { draftFromBlocks } from '@/features/templates/draftConvert';
+import { getTemplate, listTemplateBlocks, templateWeekdays } from '@/features/templates/repository';
 
 export default function EditTemplateScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -28,13 +24,7 @@ export default function EditTemplateScreen() {
       templateId: id,
       name: template.name,
       weekdays: templateWeekdays(db, userId, id),
-      items: listTemplateExercises(db, id).map((row) => ({
-        id: row.id,
-        exerciseId: row.exerciseId,
-        targetSets: row.targetSets,
-        repsText: formatRepsTarget({ min: row.targetRepsMin, max: row.targetRepsMax }),
-        restText: formatRest(row.restSeconds),
-      })),
+      blocks: draftFromBlocks(listTemplateBlocks(db, id)),
     });
   }, [id, load, session?.user.id]);
 

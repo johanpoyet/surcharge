@@ -3,19 +3,26 @@ import { Plus } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import { Alert, Pressable, Text, TextInput, View } from 'react-native';
 
-import { Button, KeyboardScreen, Overline, ReorderableList, useToast } from '@/components/ui';
+import { Button, KeyboardScreen, Overline, useToast } from '@/components/ui';
 import { db } from '@/db/client';
+import type { BlockType } from '@/db/schema';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { useExercises } from '@/features/exercises/hooks';
+import { useProfile } from '@/features/profile/hooks';
 import { fr } from '@/i18n/fr';
+import { formatNumber } from '@/lib/format';
 import { colors } from '@/theme/tokens';
+import { blocksFromDraft } from '../draftConvert';
 import { useTemplateDraft } from '../draftStore';
-import { estimateMinutes, parseRepsTarget, parseRest } from '../format';
+import { estimateTemplateMinutes, runningKm } from '../estimate';
+import { formatEstimate, parseRest } from '../format';
 import { saveTemplate } from '../repository';
-import { TemplateItemCard } from './TemplateItemCard';
+import { AddBlockSheet } from './AddBlockSheet';
+import { BlockCard } from './BlockCard';
 import { WeekdayPicker } from './WeekdayPicker';
 
 const t = fr.templates.editor;
+const tb = fr.templates.blocks;
 const NAME_MAX = 40;
 
 function SectionLabel({ children }: { children: string }) {
@@ -24,45 +31,49 @@ function SectionLabel({ children }: { children: string }) {
   );
 }
 
-/** Création / modification d'une séance type (maquette creer-seance). Lit l'état dans useTemplateDraft. */
+/**
+ * Création / modification d'une séance type en blocs (maquettes seance-multi-blocs et
+ * ajouter-bloc). Lit l'état dans useTemplateDraft.
+ */
 export function TemplateEditor({ mode }: { mode: 'create' | 'edit' }) {
   const toast = useToast();
   const { session } = useAuth();
   const draft = useTemplateDraft();
   const exercises = useExercises();
+  const unit = useProfile().profile?.weightUnit ?? 'kg';
   const [error, setError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   const byId = useMemo(() => new Map(exercises.map((e) => [e.id, e])), [exercises]);
 
-  const parsed = draft.items.map((item) => ({
-    item,
-    reps: parseRepsTarget(item.repsText),
-    rest: parseRest(item.restText),
+  const estimateBlocks = draft.blocks.map((block) => ({
+    type: block.type,
+    config: block.config,
+    items: block.items.map((item) => ({
+      targetSets: item.targetSets,
+      restSeconds: parseRest(item.restText) ?? 0,
+      targetDistanceM: item.targetDistanceM,
+      targetDurationS: item.targetDurationS,
+      running: byId.get(item.exerciseId)?.discipline === 'running',
+    })),
   }));
-  const totalSets = draft.items.reduce((sum, i) => sum + i.targetSets, 0);
-  const minutes = estimateMinutes(
-    parsed.map((p) => ({ targetSets: p.item.targetSets, restSeconds: p.rest ?? 0 })),
-  );
+  const minutes = estimateTemplateMinutes(estimateBlocks);
+  const km = runningKm(estimateBlocks);
 
   const save = () => {
     if (!session) return;
     const name = draft.name.trim();
     if (!name || name.length > NAME_MAX) return setError(t.nameRequired);
-    if (draft.items.length === 0) return setError(t.noExercises);
-    if (parsed.some((p) => p.reps === null || p.rest === null)) return setError(t.invalidItems);
+    const result = blocksFromDraft(draft.blocks);
+    if ('error' in result) {
+      return setError(result.error === 'invalidItems' ? t.invalidItems : tb.errors[result.error]);
+    }
     saveTemplate(db, session.user.id, {
       id: draft.templateId,
       name,
       weekdays: draft.weekdays,
-      items: parsed.map(({ item, reps, rest }) => ({
-        id: item.id,
-        exerciseId: item.exerciseId,
-        targetSets: item.targetSets,
-        targetRepsMin: reps?.min ?? null,
-        targetRepsMax: reps?.max ?? null,
-        restSeconds: rest ?? 0,
-      })),
+      blocks: result.blocks,
     });
     toast.show(t.saved);
     router.back();
@@ -74,6 +85,19 @@ export function TemplateEditor({ mode }: { mode: 'create' | 'edit' }) {
       { text: t.keepEditing, style: 'cancel' },
       { text: t.discardConfirm, style: 'destructive', onPress: () => router.back() },
     ]);
+  };
+
+  const addBlock = (type: BlockType) => {
+    setAdding(false);
+    setError(null);
+    const key = draft.addBlock(type);
+    // Musculation : on choisit tout de suite les exercices ; les autres blocs ont leur éditeur.
+    if (type === 'strength') {
+      draft.setPickTarget(key);
+      router.push('/templates/pick-exercises');
+    } else {
+      router.push({ pathname: '/templates/block', params: { key } });
+    }
   };
 
   return (
@@ -100,7 +124,7 @@ export function TemplateEditor({ mode }: { mode: 'create' | 'edit' }) {
           keyboardAppearance="dark"
           selectionColor={colors.volt}
           returnKeyType="done"
-          className="h-14 border-b-2 border-volt font-display text-40 text-text"
+          className="h-14 border-b-2 border-volt font-display text-40 uppercase text-text"
         />
       </View>
 
@@ -111,41 +135,34 @@ export function TemplateEditor({ mode }: { mode: 'create' | 'edit' }) {
 
       <View className="mt-1 flex-row items-baseline justify-between">
         <Text className="font-display text-22 uppercase text-text">
-          {t.exercises(draft.items.length)}
+          {tb.count(draft.blocks.length)}
         </Text>
-        <Text className="font-body text-13 text-muted">{t.totals(totalSets, minutes)}</Text>
+        <Text className="font-body text-13 text-muted">
+          {tb.totals(formatEstimate(minutes), km > 0 ? formatNumber(km, 1) : null)}
+        </Text>
       </View>
 
-      <ReorderableList
-        items={draft.items}
-        keyOf={(item) => item.key}
-        onMove={draft.moveItem}
-        onDragChange={setDragging}
-        renderItem={(item, index, gesture) => (
-          <TemplateItemCard
-            item={item}
-            exercise={byId.get(item.exerciseId)}
-            handleGesture={gesture}
+      <View className="gap-2">
+        {draft.blocks.map((block, index) => (
+          <BlockCard
+            key={block.key}
+            block={block}
             index={index}
-            count={draft.items.length}
-            onChange={(patch) => {
-              draft.updateItem(item.key, patch);
-              setError(null);
-            }}
-            onRemove={() => draft.removeItem(item.key)}
-            onMove={(to) => draft.moveItem(index, to)}
+            count={draft.blocks.length}
+            exercises={byId}
+            unit={unit}
+            onDragChange={setDragging}
           />
-        )}
-      />
-
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => router.push('/templates/pick-exercises')}
-        className="h-[52px] flex-row items-center justify-center gap-2 rounded-input border-[1.5px] border-dashed border-volt active:opacity-80"
-      >
-        <Plus size={18} color={colors.volt} strokeWidth={2.5} />
-        <Text className="font-body-bold text-15 text-volt">{t.add}</Text>
-      </Pressable>
+        ))}
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => setAdding(true)}
+          className="h-[52px] flex-row items-center justify-center gap-2 rounded-cta border-[1.5px] border-dashed border-volt active:opacity-80"
+        >
+          <Plus size={18} color={colors.volt} strokeWidth={2.6} />
+          <Text className="font-body-bold text-15 text-volt">{tb.add}</Text>
+        </Pressable>
+      </View>
 
       <View className="min-h-4 flex-1" />
       {error ? (
@@ -154,6 +171,8 @@ export function TemplateEditor({ mode }: { mode: 'create' | 'edit' }) {
         </Text>
       ) : null}
       <Button label={t.submit} onPress={save} />
+
+      <AddBlockSheet visible={adding} onClose={() => setAdding(false)} onAdd={addBlock} />
     </KeyboardScreen>
   );
 }

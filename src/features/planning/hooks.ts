@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 
 import { liveDb } from '@/db/client';
 import { useAuth } from '@/features/auth/AuthProvider';
-import { estimateMinutes } from '@/features/templates/format';
-import { useTemplateItems, useTemplates } from '@/features/templates/hooks';
+import { estimateTemplate } from '@/features/templates/estimate';
+import { useTemplateBlocks, useTemplateItems, useTemplates } from '@/features/templates/hooks';
 import { weeklyScheduleQuery } from '@/features/templates/repository';
 import { fr } from '@/i18n/fr';
 import { overridesQuery } from './repository';
@@ -24,6 +24,7 @@ export function usePlanning() {
   const { data: overrideRows } = useLiveQuery(overridesQuery(liveDb, userId), [userId]);
   const templates = useTemplates();
   const items = useTemplateItems();
+  const blocks = useTemplateBlocks();
 
   return useMemo(() => {
     const weekly = new Map(weeklyRows.map((r) => [r.weekday, r.templateId]));
@@ -37,12 +38,12 @@ export function usePlanning() {
             id: t.id,
             name: t.name,
             exerciseCount: rows.length,
-            minutes: estimateMinutes(rows),
+            minutes: estimateTemplate(blocks.get(t.id) ?? [], rows).minutes,
             muscles: [...new Set(rows.map((r) => fr.exercises.muscles[r.muscle].toLowerCase()))],
           },
         ];
       }),
     );
     return { weekly, overrides, templates: infos, templateList: templates };
-  }, [items, overrideRows, templates, weeklyRows]);
+  }, [blocks, items, overrideRows, templates, weeklyRows]);
 }
