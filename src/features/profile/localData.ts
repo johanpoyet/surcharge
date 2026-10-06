@@ -7,9 +7,11 @@ import {
   outbox,
   profiles,
   scheduleOverrides,
+  sessionBlocks,
   sessions,
   sessionSets,
   syncState,
+  templateBlocks,
   templateExercises,
   weeklySchedule,
   workoutState,
@@ -21,8 +23,10 @@ export function clearLocalData(db: AppDatabase): void {
   db.transaction((tx) => {
     for (const table of [
       sessionSets,
+      sessionBlocks,
       sessions,
       templateExercises,
+      templateBlocks,
       weeklySchedule,
       scheduleOverrides,
       workoutTemplates,

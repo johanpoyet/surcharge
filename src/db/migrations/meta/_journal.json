@@ -15,6 +15,13 @@
       "when": 1790714674568,
       "tag": "0001_etat_seance",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791304441944,
+      "tag": "0002_multisport",
+      "breakpoints": true
     }
   ]
 }
