@@ -124,7 +124,7 @@ export function TemplateEditor({ mode }: { mode: 'create' | 'edit' }) {
           keyboardAppearance="dark"
           selectionColor={colors.volt}
           returnKeyType="done"
-          className="h-14 border-b-2 border-volt font-display text-40 uppercase text-text"
+          className="h-14 border-b-2 border-volt font-display text-40 text-text"
         />
       </View>
 
