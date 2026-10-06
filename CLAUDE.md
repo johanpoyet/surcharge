@@ -108,7 +108,7 @@ secret du client OAuth Web (Supabase), clé API Resend (SMTP Supabase), jeton Se
 - **APK Android** : voir README (JDK 17 obligatoire, `-PreactNativeArchitectures=arm64-v8a`,
   incrémenter `android.versionCode`, actuellement 1).
 - **Supabase** : migrations `npx supabase db push` (ou SQL Editor) après test PGlite ; derniers
-  numéros : `0004`. Réglages faits dans le tableau de bord (non versionnés) : Confirm email
+  numéros : `0005`. Réglages faits dans le tableau de bord (non versionnés) : Confirm email
   désactivé, Skip nonce checks (Google), SMTP Resend + modèle « Reset Password »
   (`supabase/templates/recovery.html`), longueur min. du mot de passe 8, Redirect URLs
   `surcharge://**`.
