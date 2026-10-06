@@ -58,7 +58,7 @@ function Ring({ fraction, label, time }: { fraction: number; label: string; time
         />
       </Svg>
       <Text className="font-body-semibold text-13 uppercase tracking-wide text-muted">{label}</Text>
-      <Text className="font-display text-80 text-text" accessibilityLabel={time}>
+      <Text className="px-3 font-display text-80 text-text" accessibilityLabel={time}>
         {time}
       </Text>
     </View>
@@ -209,7 +209,9 @@ export function CircuitView({ workout, now, unit }: CircuitViewProps) {
               onPress={() => workout.addRound(1)}
               className="h-[88px] flex-1 items-center justify-center rounded-card bg-volt active:opacity-90"
             >
-              <Text className="font-display text-44 uppercase text-onVolt">{t.rounds(rounds)}</Text>
+              <Text className="px-2 font-display text-44 uppercase text-onVolt">
+                {t.rounds(rounds)}
+              </Text>
               <Text className="font-body-bold text-13 text-onVolt">{t.tapRound}</Text>
             </Pressable>
           </View>

@@ -103,7 +103,7 @@ export function BlockIntro({ workout }: { workout: Workout }) {
     <View className="flex-1 justify-center gap-5 px-screen">
       <View className="items-center gap-2.5 rounded-[22px] bg-surface p-6">
         <Tag block={block} />
-        <Text className="text-center font-display text-40 uppercase text-text">
+        <Text className="px-2 text-center font-display text-40 uppercase text-text">
           {blockTitle(block)}
         </Text>
         {detail ? <Text className="font-body text-15 text-muted">{detail}</Text> : null}
@@ -138,7 +138,10 @@ export function WarmupView({ workout, now }: { workout: Workout; now: number }) 
         {config.note ? (
           <Text className="text-center font-body-bold text-17 text-text">{config.note}</Text>
         ) : null}
-        <Text className="font-display text-96 text-text" accessibilityLabel={formatClock(elapsed)}>
+        <Text
+          className="px-3 font-display text-96 text-text"
+          accessibilityLabel={formatClock(elapsed)}
+        >
           {formatClock(elapsed)}
         </Text>
         <Text className="font-body text-15 text-muted">
@@ -195,7 +198,7 @@ export function BlockDone({
         <Text className="font-body-bold text-12 uppercase tracking-overline text-onVolt">
           {block.type === 'hyrox' ? t.hyrox.finished : t.done}
         </Text>
-        <Text className="text-center font-display text-40 uppercase text-onVolt">
+        <Text className="px-2 text-center font-display text-40 uppercase text-onVolt">
           {result ?? blockTitle(block)}
         </Text>
       </View>

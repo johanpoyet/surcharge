@@ -124,12 +124,12 @@ export function HyroxView({ workout, now, unit }: HyroxViewProps) {
                 ? t.stationOf(current.item.segment.round, stations)
                 : t.runOf(current.item.segment?.round ?? 1, stations)}
           </Text>
-          <Text className="text-center font-display text-40 uppercase text-text">
+          <Text className="px-2 text-center font-display text-40 uppercase text-text">
             {transition ? t.toStation(nameOf(current)) : nameOf(current)}
           </Text>
           <Text className="font-body text-15 text-muted">{detail(current)}</Text>
           <Text
-            className="mt-2 font-display text-96 text-text"
+            className="mt-2 px-3 font-display text-96 text-text"
             accessibilityLabel={formatClock(elapsedS)}
           >
             {formatClock(elapsedS)}

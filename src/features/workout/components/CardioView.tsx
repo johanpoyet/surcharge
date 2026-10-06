@@ -179,7 +179,7 @@ export function CardioView({
                     <View className="flex-row items-center gap-2">
                       <Timer size={iconSizes.lg} color={colors.volt} strokeWidth={2} />
                       <Text
-                        className="font-display text-80 text-text"
+                        className="px-3 font-display text-80 text-text"
                         accessibilityLabel={formatClock(elapsedS)}
                       >
                         {formatClock(elapsedS)}
