@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Surcharge – WOD en cours</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0A0A0A}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #0A0A0A; color: #F5F5F0; font-family: 'Barlow', sans-serif; padding: 52px 20px 30px; display: flex; flex-direction: column; gap: 14px">
+
+  <div style="display: flex; align-items: center; justify-content: space-between">
+    <button aria-label="Réduire la séance" style="width: 44px; height: 44px; border-radius: 12px; border: none; background: #151515; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5F5F0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+    <div style="text-align: center">
+      <div style="font-size: 13px; font-weight: 600; color: #9A9A92; text-transform: uppercase; letter-spacing: 0.14em">WOD du jeudi</div>
+      <div style="font-size: 13px; color: #9A9A92">Bloc 2 / 3</div>
+    </div>
+    <button style="height: 44px; padding: 0 14px; border-radius: 12px; border: 1px solid #2A2A2A; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 14px">Pause</button>
+  </div>
+
+  <div style="display: flex; justify-content: center">
+    <span style="height: 32px; padding: 0 14px; border-radius: 8px; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 18px; text-transform: uppercase; display: flex; align-items: center">AMRAP 12 min</span>
+  </div>
+
+  <div style="position: relative; width: 260px; height: 260px; align-self: center">
+    <svg width="260" height="260" viewBox="0 0 260 260" aria-hidden="true">
+      <circle cx="130" cy="130" r="116" fill="none" stroke="#1F1F1F" stroke-width="14"></circle>
+      <circle cx="130" cy="130" r="116" fill="none" stroke="#D7FF3A" stroke-width="14" stroke-linecap="round" stroke-dasharray="470 729" transform="rotate(-90 130 130)"></circle>
+    </svg>
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center">
+      <div style="font-size: 13px; font-weight: 600; letter-spacing: 0.12em; color: #9A9A92">RESTANT</div>
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 80px; line-height: 1">04:16</div>
+    </div>
+  </div>
+
+  <div style="border-radius: 18px; background: #151515; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+    <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9A92">Un tour</div>
+    <div style="display: flex; justify-content: space-between; font-size: 16px"><span><b>10</b> Wall balls</span><span style="color: #9A9A92">9 kg</span></div>
+    <div style="display: flex; justify-content: space-between; font-size: 16px"><span><b>10</b> Box jumps</span><span style="color: #9A9A92">60 cm</span></div>
+    <div style="display: flex; justify-content: space-between; font-size: 16px"><span><b>200 m</b> Rameur</span><span style="color: #9A9A92"></span></div>
+  </div>
+
+  <div style="flex-grow: 1"></div>
+
+  <div style="display: flex; align-items: center; gap: 10px">
+    <button aria-label="Retirer un tour" style="width: 64px; height: 88px; border-radius: 18px; border: none; background: #151515; color: #F5F5F0; font-size: 30px">−</button>
+    <button style="flex-grow: 1; height: 88px; border: none; border-radius: 18px; background: #D7FF3A; color: #0A0A0A; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-style: italic; text-transform: uppercase">
+      <span style="font-weight: 800; font-size: 44px; line-height: 1">5 tours</span>
+      <span style="font-family: 'Barlow', sans-serif; font-style: normal; font-weight: 700; font-size: 13px; text-transform: none">Touche pour +1 tour</span>
+    </button>
+  </div>
+  <div style="text-align: center; font-size: 13px; color: #9A9A92">Dernière fois : 7 tours + 12 reps · rythme actuel ≈ 7 tours</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

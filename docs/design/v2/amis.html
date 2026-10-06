@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Surcharge – Amis</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0A0A0A}a{color:#D7FF3A}</style>
+</helmet>
+<div style="width: 390px; height: 1120px; box-sizing: border-box; position: relative; overflow: hidden; background: #0A0A0A; color: #F5F5F0; font-family: 'Barlow', sans-serif">
+  <div style="padding: 58px 20px 120px; display: flex; flex-direction: column; gap: 14px">
+
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 34px; line-height: 1; text-transform: uppercase">Amis</div>
+      <a href="F_AjoutAmi.dc.html" aria-label="Ajouter un ami" style="width: 44px; height: 44px; border-radius: 12px; background: #D7FF3A; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"></circle><path d="M2 21c1-4 3.5-6 7-6s6 2 7 6M19 8v6M16 11h6"></path></svg></a>
+    </div>
+
+    <a href="#" style="height: 56px; border-radius: 14px; background: #151515; border: 1px solid #2A2A2A; padding: 0 14px; display: flex; align-items: center; gap: 12px; color: #F5F5F0; text-decoration: none">
+      <span style="width: 32px; height: 32px; border-radius: 50%; background: #D7FF3A; color: #0A0A0A; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center">2</span>
+      <span style="flex-grow: 1; font-weight: 600; font-size: 15px">Demandes d'amis en attente</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A9A92" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+    </a>
+
+    <div style="border-radius: 20px; background: #151515; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; align-items: baseline; justify-content: space-between">
+        <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 24px; text-transform: uppercase">Classement de la semaine</div>
+      </div>
+      <div style="display: flex; gap: 6px">
+        <button aria-pressed="true" style="height: 34px; padding: 0 12px; border: none; border-radius: 9px; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 13px">Assiduité</button>
+        <button aria-pressed="false" style="height: 34px; padding: 0 12px; border: 1px solid #2A2A2A; border-radius: 9px; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 13px">Progression</button>
+        <button aria-pressed="false" style="height: 34px; padding: 0 12px; border: 1px solid #2A2A2A; border-radius: 9px; background: transparent; color: #F5F5F0; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 13px">Records</button>
+      </div>
+      <div style="font-size: 13px; color: #9A9A92; margin-top: -4px">Séances faites par rapport à ton propre objectif hebdo. Remis à zéro chaque lundi.</div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <a href="F_ProfilAmi.dc.html" style="height: 58px; border-radius: 12px; background: #0A0A0A; padding: 0 12px; display: flex; align-items: center; gap: 12px; color: #F5F5F0; text-decoration: none">
+          <span style="width: 20px; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; color: #D7FF3A">1</span>
+          <span style="width: 38px; height: 38px; border-radius: 11px; background: #2A2A2A; font-weight: 700; display: flex; align-items: center; justify-content: center">T</span>
+          <span style="flex-grow: 1"><span style="display: block; font-weight: 700; font-size: 15px">Théo</span><span style="display: block; height: 5px; border-radius: 3px; background: #2A2A2A; margin-top: 6px; width: 120px"><span style="display: block; width: 100%; height: 5px; border-radius: 3px; background: #D7FF3A"></span></span></span>
+          <span style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px">5/4</span>
+        </a>
+        <div style="height: 58px; border-radius: 12px; background: rgba(215,255,58,0.08); border: 1px solid rgba(215,255,58,0.4); box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; gap: 12px">
+          <span style="width: 20px; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; color: #D7FF3A">2</span>
+          <span style="width: 38px; height: 38px; border-radius: 11px; background: #D7FF3A; color: #0A0A0A; font-weight: 700; display: flex; align-items: center; justify-content: center">J</span>
+          <span style="flex-grow: 1"><span style="display: block; font-weight: 700; font-size: 15px">Toi</span><span style="display: block; height: 5px; border-radius: 3px; background: #2A2A2A; margin-top: 6px; width: 120px"><span style="display: block; width: 100%; height: 5px; border-radius: 3px; background: #D7FF3A"></span></span></span>
+          <span style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px">3/3</span>
+        </div>
+        <div style="height: 58px; border-radius: 12px; background: #0A0A0A; padding: 0 12px; display: flex; align-items: center; gap: 12px">
+          <span style="width: 20px; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; color: #9A9A92">3</span>
+          <span style="width: 38px; height: 38px; border-radius: 11px; background: #2A2A2A; font-weight: 700; display: flex; align-items: center; justify-content: center">I</span>
+          <span style="flex-grow: 1"><span style="display: block; font-weight: 700; font-size: 15px">Inès</span><span style="display: block; height: 5px; border-radius: 3px; background: #2A2A2A; margin-top: 6px; width: 120px"><span style="display: block; width: 66%; height: 5px; border-radius: 3px; background: #F5F5F0"></span></span></span>
+          <span style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px">2/3</span>
+        </div>
+        <div style="height: 58px; border-radius: 12px; background: #0A0A0A; padding: 0 12px; display: flex; align-items: center; gap: 12px">
+          <span style="width: 20px; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; color: #9A9A92">4</span>
+          <span style="width: 38px; height: 38px; border-radius: 11px; background: #2A2A2A; font-weight: 700; display: flex; align-items: center; justify-content: center">M</span>
+          <span style="flex-grow: 1"><span style="display: block; font-weight: 700; font-size: 15px">Malik</span><span style="display: block; height: 5px; border-radius: 3px; background: #2A2A2A; margin-top: 6px; width: 120px"><span style="display: block; width: 25%; height: 5px; border-radius: 3px; background: #F5F5F0"></span></span></span>
+          <span style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px">1/4</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; text-transform: uppercase; margin-top: 4px">Activité</div>
+
+    <div style="border-radius: 16px; background: #151515; padding: 14px; display: flex; gap: 12px; align-items: flex-start">
+      <span style="width: 38px; height: 38px; flex-shrink: 0; border-radius: 11px; background: #2A2A2A; font-weight: 700; display: flex; align-items: center; justify-content: center">I</span>
+      <div style="flex-grow: 1">
+        <div style="font-size: 15px; line-height: 1.35"><b>Inès</b> a battu son record au <b>squat</b></div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px"><span style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; color: #D7FF3A">100 kg × 3</span><span style="font-size: 13px; color: #9A9A92">il y a 2 h</span></div>
+      </div>
+      <button style="height: 36px; padding: 0 12px; border: 1px solid #D7FF3A; border-radius: 10px; background: transparent; color: #D7FF3A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 13px">Bravo</button>
+    </div>
+    <div style="border-radius: 16px; background: #151515; padding: 14px; display: flex; gap: 12px; align-items: flex-start">
+      <span style="width: 38px; height: 38px; flex-shrink: 0; border-radius: 11px; background: #2A2A2A; font-weight: 700; display: flex; align-items: center; justify-content: center">T</span>
+      <div style="flex-grow: 1">
+        <div style="font-size: 15px; line-height: 1.35"><b>Théo</b> a terminé une <b>Simu Hyrox</b></div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px"><span style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px">1:24:10</span><span style="font-size: 13px; color: #9A9A92">hier</span></div>
+      </div>
+      <button style="height: 36px; padding: 0 12px; border: none; border-radius: 10px; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 13px">Bravo ✓</button>
+    </div>
+    <div style="border-radius: 16px; background: #151515; padding: 14px; display: flex; gap: 12px; align-items: center">
+      <span style="width: 38px; height: 38px; flex-shrink: 0; border-radius: 11px; background: #2A2A2A; font-weight: 700; display: flex; align-items: center; justify-content: center">M</span>
+      <div style="flex-grow: 1; font-size: 15px; line-height: 1.35"><b>Malik</b> a enchaîné <b>6 semaines</b> de régularité</div>
+      <button style="height: 36px; padding: 0 12px; border: 1px solid #D7FF3A; border-radius: 10px; background: transparent; color: #D7FF3A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 13px">Bravo</button>
+    </div>
+  </div>
+
+  <nav style="position: absolute; left: 0; right: 0; bottom: 0; height: 88px; box-sizing: border-box; padding: 10px 14px 24px; background: #0A0A0A; border-top: 1px solid #1F1F1F; display: flex; align-items: center; justify-content: space-between">
+    <a href="#" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #9A9A92; text-decoration: none; font-size: 12px; font-weight: 600"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg>Accueil</a>
+    <a href="#" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #9A9A92; text-decoration: none; font-size: 12px; font-weight: 600"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>Entraîn.</a>
+    <button aria-label="Démarrer une séance" style="width: 58px; height: 58px; margin-top: -26px; border: 4px solid #0A0A0A; border-radius: 16px; background: #D7FF3A; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+    <a href="#" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #D7FF3A; text-decoration: none; font-size: 12px; font-weight: 600"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M2 20c.8-3.5 3.3-5.5 7-5.5s6.2 2 7 5.5M16 14.5c3 0 5 1.5 6 4.5"></path></svg>Amis</a>
+    <a href="#" style="width: 64px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #9A9A92; text-decoration: none; font-size: 12px; font-weight: 600"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4-6 8-6s7 2 8 6"></path></svg>Profil</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1120}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

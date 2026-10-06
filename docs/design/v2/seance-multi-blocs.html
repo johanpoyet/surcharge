@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Surcharge – Séance multi-blocs</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,700;1,800&amp;family=Barlow:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#0A0A0A}a{color:#D7FF3A}</style>
+</helmet>
+<div style="width: 390px; height: 1060px; box-sizing: border-box; position: relative; overflow: hidden; background: #0A0A0A; color: #F5F5F0; font-family: 'Barlow', sans-serif; padding: 52px 20px 34px; display: flex; flex-direction: column; gap: 16px">
+
+  <div style="display: flex; align-items: center; justify-content: space-between">
+    <a href="#" style="height: 44px; display: flex; align-items: center; color: #9A9A92; text-decoration: none; font-weight: 600; font-size: 15px">Annuler</a>
+    <div style="font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #9A9A92">Nouvelle séance</div>
+    <button style="height: 44px; padding: 0; border: none; background: transparent; color: #D7FF3A; font-family: 'Barlow', sans-serif; font-weight: 700; font-size: 15px">Enregistrer</button>
+  </div>
+
+  <label style="display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9A92">Nom de la séance
+    <input value="Simu Hyrox" style="height: 56px; padding: 0; border: none; border-bottom: 2px solid #D7FF3A; background: transparent; color: #F5F5F0; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 42px; text-transform: uppercase; letter-spacing: 0">
+  </label>
+
+  <div style="display: flex; align-items: baseline; justify-content: space-between; margin-top: 4px">
+    <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; text-transform: uppercase">Blocs · 3</div>
+    <div style="font-size: 13px; color: #9A9A92">~1 h 30 · 8 km de course</div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px">
+
+    <div style="border-radius: 16px; background: #151515; padding: 12px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <span style="height: 24px; padding: 0 8px; border-radius: 6px; background: #2A2A2A; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; display: flex; align-items: center">ÉCHAUFFEMENT</span>
+        <span style="flex-grow: 1"></span>
+        <span style="font-size: 13px; color: #9A9A92">10 min</span>
+      </div>
+      <div style="font-size: 17px; font-weight: 700">Footing léger + mobilité</div>
+    </div>
+
+    <div style="border-radius: 16px; background: #151515; border: 1.5px solid #D7FF3A; padding: 12px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <span style="height: 24px; padding: 0 8px; border-radius: 6px; background: #D7FF3A; color: #0A0A0A; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; display: flex; align-items: center">HYROX</span>
+        <span style="flex-grow: 1; font-size: 13px; color: #9A9A92">Format officiel · chronométré</span>
+        <button aria-label="Options du bloc" style="width: 36px; height: 36px; border: none; border-radius: 8px; background: transparent; color: #9A9A92; font-size: 20px">⋯</button>
+      </div>
+      <div style="font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 26px; line-height: 1; text-transform: uppercase">8 × (1 km + station)</div>
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="display: grid; grid-template-columns: 24px 1fr auto; gap: 8px; align-items: center; height: 34px; padding: 0 8px; border-radius: 8px; background: #0A0A0A; font-size: 14px"><span style="color: #9A9A92; font-weight: 700">1</span><span>Course + <b>SkiErg</b></span><span style="color: #9A9A92">1 km · 1000 m</span></div>
+        <div style="display: grid; grid-template-columns: 24px 1fr auto; gap: 8px; align-items: center; height: 34px; padding: 0 8px; border-radius: 8px; background: #0A0A0A; font-size: 14px"><span style="color: #9A9A92; font-weight: 700">2</span><span>Course + <b>Sled Push</b></span><span style="color: #9A9A92">1 km · 50 m</span></div>
+        <div style="display: grid; grid-template-columns: 24px 1fr auto; gap: 8px; align-items: center; height: 34px; padding: 0 8px; border-radius: 8px; background: #0A0A0A; font-size: 14px"><span style="color: #9A9A92; font-weight: 700">3</span><span>Course + <b>Sled Pull</b></span><span style="color: #9A9A92">1 km · 50 m</span></div>
+        <div style="display: grid; grid-template-columns: 24px 1fr auto; gap: 8px; align-items: center; height: 34px; padding: 0 8px; border-radius: 8px; background: #0A0A0A; font-size: 14px"><span style="color: #9A9A92; font-weight: 700">4</span><span>Course + <b>Burpee Broad Jumps</b></span><span style="color: #9A9A92">1 km · 80 m</span></div>
+        <button style="height: 34px; border: none; border-radius: 8px; background: transparent; color: #D7FF3A; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 14px; text-align: left; padding: 0 8px">+ 4 segments (Row, Farmers, Lunges, Wall Balls)</button>
+      </div>
+      <div style="display: flex; gap: 6px">
+        <span style="height: 30px; padding: 0 10px; border-radius: 8px; background: #0A0A0A; font-size: 13px; display: flex; align-items: center">Catégorie : <b style="margin-left: 4px">Open Homme</b></span>
+        <span style="height: 30px; padding: 0 10px; border-radius: 8px; background: #0A0A0A; font-size: 13px; display: flex; align-items: center">Charges officielles</span>
+      </div>
+    </div>
+
+    <div style="border-radius: 16px; background: #151515; padding: 12px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <span style="height: 24px; padding: 0 8px; border-radius: 6px; background: #2A2A2A; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; display: flex; align-items: center">MUSCU</span>
+        <span style="flex-grow: 1"></span>
+        <span style="font-size: 13px; color: #9A9A92">2 exercices · 6 séries</span>
+      </div>
+      <div style="font-size: 15px; line-height: 1.6"><b>Gainage</b> · 3 × 45 s<br><b>Hip thrust</b> · 3 × 10</div>
+    </div>
+
+    <a href="W_AjoutBloc.dc.html" style="height: 52px; border-radius: 14px; border: 1.5px dashed #D7FF3A; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font-weight: 700; font-size: 15px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Ajouter un bloc</a>
+  </div>
+
+  <div style="flex-grow: 1"></div>
+  <button style="height: 58px; flex-shrink: 0; border: none; border-radius: 14px; background: #D7FF3A; color: #0A0A0A; font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-weight: 800; font-size: 22px; text-transform: uppercase">Enregistrer la séance</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1060}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
