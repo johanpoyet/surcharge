@@ -91,6 +91,14 @@
           "bundleIdentifier": "fr.johanpoyet.surcharge.widgets",
           "groupIdentifier": "group.fr.johanpoyet.surcharge"
         }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false
+        }
       ]
     ],
     "experiments": {

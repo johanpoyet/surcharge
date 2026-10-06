@@ -28,6 +28,29 @@ export async function scheduleRestEnd(
   }
 }
 
+// iOS garde au plus 64 notifications programmées par app.
+const MAX_SIGNALS = 60;
+
+/**
+ * Signaux d'un bloc chronométré (changements d'intervalle EMOM / Tabata, fin d'AMRAP) :
+ * notifications locales programmées, qui sonnent même app en arrière-plan (SPEC_V2 §5.3).
+ */
+export async function scheduleSignals(
+  title: string,
+  signals: readonly { inSeconds: number; body: string }[],
+): Promise<string[]> {
+  const ids: string[] = [];
+  for (const signal of signals.filter((s) => s.inSeconds >= 1).slice(0, MAX_SIGNALS)) {
+    const id = await scheduleRestEnd(signal.inSeconds, title, signal.body);
+    if (id) ids.push(id);
+  }
+  return ids;
+}
+
+export function cancelSignals(ids: readonly string[] | undefined): void {
+  for (const id of ids ?? []) cancelRestNotification(id);
+}
+
 export function cancelRestNotification(id: string | null | undefined): void {
   if (id) void Notifications.cancelScheduledNotificationAsync(id).catch(() => undefined);
 }

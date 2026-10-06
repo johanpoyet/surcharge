@@ -18,6 +18,8 @@ import {
   saveWorkoutState,
   setsBefore,
   startSession,
+  listSessionBlocks,
+  updateSessionBlock,
 } from '../repository';
 import { restoreWorkoutState, startFromTemplate } from '../start';
 
@@ -54,9 +56,13 @@ it('démarre depuis une séance type avec un plan figé, et reprend une séance 
   const first = startFromTemplate(db, USER, templateId);
   expect(first.resumed).toBe(false);
   expect(getSession(db, first.sessionId)?.name).toBe('Push A');
-  expect(getWorkoutState(db, first.sessionId)?.plan).toEqual([
-    { exerciseId: dc, targetSets: 4, repsMin: 8, repsMax: 10, restSeconds: 120 },
+  const state = getWorkoutState(db, first.sessionId);
+  expect(state?.plan).toMatchObject([
+    { exerciseId: dc, targetSets: 4, repsMin: 8, repsMax: 10, restSeconds: 120, blockIndex: 0 },
   ]);
+  // Un bloc Musculation, copié dans session_blocks.
+  expect(state?.blocks).toMatchObject([{ type: 'strength', templateBlockId: templateId }]);
+  expect(listSessionBlocks(db, first.sessionId)).toHaveLength(1);
   expect(startFromTemplate(db, USER, templateId)).toEqual({
     sessionId: first.sessionId,
     resumed: true,
@@ -180,4 +186,76 @@ it('séance terminée : rien à reconstruire', () => {
   addSet(db, USER, { ...base(sessionId, dc), setNumber: 1, weightKg: 80, reps: 8 });
   endWorkout(db, sessionId);
   expect(restoreWorkoutState(db, sessionId)).toBeUndefined();
+});
+
+describe('séance en blocs (V2)', () => {
+  it('« Simu Hyrox » : échauffement, 16 segments Hyrox, muscu ; ordres uniques', () => {
+    const templateId = saveTemplate(db, USER, {
+      name: 'Simu Hyrox',
+      weekdays: [],
+      blocks: [
+        { type: 'warmup', name: null, config: { durationMin: 10 }, items: [] },
+        { type: 'hyrox', name: null, config: { format: 'full', division: 'open_men' }, items: [] },
+        {
+          type: 'strength',
+          name: null,
+          config: {},
+          items: [
+            {
+              exerciseId: dc,
+              targetSets: 3,
+              targetRepsMin: 10,
+              targetRepsMax: 10,
+              restSeconds: 60,
+            },
+          ],
+        },
+      ],
+    });
+    const { sessionId } = startFromTemplate(db, USER, templateId);
+    const state = getWorkoutState(db, sessionId)!;
+    expect(state.blocks?.map((b) => b.type)).toEqual(['warmup', 'hyrox', 'strength']);
+    expect(state.plan).toHaveLength(17);
+    expect(state.plan[0]).toMatchObject({
+      blockIndex: 1,
+      targetDistanceM: 1000,
+      segment: { kind: 'run', round: 1 },
+    });
+    expect(state.plan[3]).toMatchObject({
+      segment: { kind: 'station', round: 2, weightKg: 152 },
+      targetDistanceM: 50,
+    });
+    expect(state.plan[16]).toMatchObject({ exerciseId: dc, blockIndex: 2 });
+    expect(listSessionBlocks(db, sessionId).map((b) => [b.position, b.type])).toEqual([
+      [0, 'warmup'],
+      [1, 'hyrox'],
+      [2, 'strength'],
+    ]);
+  });
+
+  it('une séance faite uniquement de blocs sans séries (circuit) est gardée', () => {
+    const templateId = saveTemplate(db, USER, {
+      name: 'WOD',
+      weekdays: [],
+      blocks: [
+        {
+          type: 'circuit',
+          name: null,
+          config: { format: 'amrap', durationS: 720 },
+          items: [
+            { exerciseId: dc, targetSets: 1, targetRepsMin: 10, targetRepsMax: 10, restSeconds: 0 },
+          ],
+        },
+      ],
+    });
+    const { sessionId } = startFromTemplate(db, USER, templateId);
+    const [block] = listSessionBlocks(db, sessionId);
+    updateSessionBlock(db, block!.id, {
+      startedAt: new Date().toISOString(),
+      endedAt: new Date().toISOString(),
+      result: { rounds: 7, extraReps: 12 },
+    });
+    expect(endWorkout(db, sessionId)).toBe('finished');
+    expect(listSessionBlocks(db, sessionId)[0]?.result).toEqual({ rounds: 7, extraReps: 12 });
+  });
 });

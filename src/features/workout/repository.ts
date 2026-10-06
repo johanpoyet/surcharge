@@ -1,13 +1,27 @@
 import { and, asc, desc, eq, gt, inArray, isNotNull, isNull, lt, ne } from 'drizzle-orm';
 
 import type { AppDatabase } from '@/db/client';
-import { sessions, sessionSets, workoutState, type Session, type SessionSet } from '@/db/schema';
+import {
+  sessionBlocks,
+  sessions,
+  sessionSets,
+  workoutState,
+  type JsonObject,
+  type Session,
+  type SessionBlock,
+  type SessionSet,
+} from '@/db/schema';
 import { nowIso } from '@/db/time';
 import { newId } from '@/lib/id';
 import { enqueue } from '@/sync/outbox';
 import type { Difficulty } from './difficulty';
 import type { PreviousSet } from './logic';
-import { initialState, type WorkoutPlanItem, type WorkoutUiState } from './state';
+import {
+  initialState,
+  type PlannedBlock,
+  type WorkoutPlanItem,
+  type WorkoutUiState,
+} from './state';
 
 export function startSession(
   db: AppDatabase,
@@ -66,6 +80,11 @@ export type SetInput = {
   weightKg: number;
   reps: number;
   difficulty: Difficulty | null;
+  /** V2 : bloc de la séance et mesures des types de suivi sans charge (weight_kg = 0). */
+  blockId?: string | null;
+  distanceM?: number | null;
+  durationS?: number | null;
+  calories?: number | null;
 };
 
 export function addSet(db: AppDatabase, userId: string, input: SetInput): string {
@@ -122,14 +141,29 @@ export function listSessionSets(db: AppDatabase, sessionId: string): SessionSet[
     .all();
 }
 
-/** Démarre une séance : ligne `sessions` (nom copié) + état de l'écran avec le plan figé. */
+/**
+ * Démarre une séance : ligne `sessions` (nom copié), lignes `session_blocks` (config copiée) et
+ * état de l'écran avec le plan figé.
+ */
 export function startWorkout(
   db: AppDatabase,
   userId: string,
-  { templateId, name, plan }: { templateId: string | null; name: string; plan: WorkoutPlanItem[] },
+  {
+    templateId,
+    name,
+    plan,
+    blocks,
+  }: {
+    templateId: string | null;
+    name: string;
+    plan: WorkoutPlanItem[];
+    /** V2 : blocs de la séance type, dans l'ordre (sans : séance V1). */
+    blocks?: Omit<PlannedBlock, 'id'>[];
+  },
 ): string {
   const id = newId();
   const now = nowIso();
+  const planned = blocks?.map((block) => ({ ...block, id: newId() }));
   db.transaction((tx) => {
     tx.insert(sessions)
       .values({
@@ -144,11 +178,102 @@ export function startWorkout(
       })
       .run();
     enqueue(tx, 'sessions', id, 'upsert');
+    planned?.forEach((block, position) => {
+      tx.insert(sessionBlocks)
+        .values({
+          id: block.id,
+          userId,
+          sessionId: id,
+          templateBlockId: block.templateBlockId,
+          position,
+          type: block.type,
+          name: block.name,
+          config: block.config,
+          createdAt: now,
+          updatedAt: now,
+          dirty: true,
+        })
+        .run();
+      enqueue(tx, 'session_blocks', block.id, 'upsert');
+    });
     tx.insert(workoutState)
-      .values({ sessionId: id, state: JSON.stringify(initialState(plan)), updatedAt: now })
+      .values({ sessionId: id, state: JSON.stringify(initialState(plan, planned)), updatedAt: now })
       .run();
   });
   return id;
+}
+
+/** Début, fin et résultat d'un bloc de la séance (SPEC_V2 §4.4). */
+export function updateSessionBlock(
+  db: AppDatabase,
+  id: string,
+  patch: { startedAt?: string | null; endedAt?: string | null; result?: JsonObject },
+): void {
+  if (!id) return;
+  db.transaction((tx) => {
+    tx.update(sessionBlocks)
+      .set({ ...patch, updatedAt: nowIso(), dirty: true })
+      .where(eq(sessionBlocks.id, id))
+      .run();
+    enqueue(tx, 'session_blocks', id, 'upsert');
+  });
+}
+
+export function getSessionBlock(db: AppDatabase, id: string): SessionBlock | undefined {
+  return id ? db.select().from(sessionBlocks).where(eq(sessionBlocks.id, id)).get() : undefined;
+}
+
+export function listSessionBlocks(db: AppDatabase, sessionId: string): SessionBlock[] {
+  return db
+    .select()
+    .from(sessionBlocks)
+    .where(and(eq(sessionBlocks.sessionId, sessionId), isNull(sessionBlocks.deletedAt)))
+    .orderBy(asc(sessionBlocks.position))
+    .all();
+}
+
+export type LastBlock = { block: SessionBlock; sets: SessionSet[] };
+
+/**
+ * Dernière fois qu'un bloc a été fait (SPEC_V2 §4.5) : dernier bloc terminé du même bloc de séance
+ * type, à défaut du même type et de la même config. Ses séries dans l'ordre de la séance.
+ */
+export function lastBlock(
+  db: AppDatabase,
+  userId: string,
+  block: PlannedBlock,
+  excludeSessionId: string,
+): LastBlock | null {
+  const candidates = db
+    .select({ block: sessionBlocks })
+    .from(sessionBlocks)
+    .innerJoin(sessions, eq(sessions.id, sessionBlocks.sessionId))
+    .where(
+      and(
+        eq(sessionBlocks.userId, userId),
+        eq(sessionBlocks.type, block.type),
+        ne(sessionBlocks.sessionId, excludeSessionId),
+        isNotNull(sessionBlocks.endedAt),
+        isNull(sessionBlocks.deletedAt),
+        isNull(sessions.deletedAt),
+      ),
+    )
+    .orderBy(desc(sessionBlocks.endedAt))
+    .all()
+    .map((row) => row.block);
+  const config = JSON.stringify(block.config);
+  const found =
+    (block.templateBlockId
+      ? candidates.find((c) => c.templateBlockId === block.templateBlockId)
+      : undefined) ?? candidates.find((c) => JSON.stringify(c.config) === config);
+  if (!found) return null;
+  const sets = db
+    .select()
+    .from(sessionSets)
+    .where(and(eq(sessionSets.blockId, found.id), isNull(sessionSets.deletedAt)))
+    .orderBy(asc(sessionSets.exerciseOrder), asc(sessionSets.setNumber))
+    .all();
+  return { block: found, sets };
 }
 
 export function getWorkoutState(db: AppDatabase, sessionId: string): WorkoutUiState | undefined {
@@ -169,9 +294,14 @@ export function saveWorkoutState(db: AppDatabase, sessionId: string, state: Work
     .run();
 }
 
-/** Termine la séance ; sans aucune série, elle est supprimée plutôt qu'enregistrée vide. */
+/**
+ * Termine la séance ; sans aucune série ni bloc terminé (un circuit n'a pas de séries), elle est
+ * supprimée plutôt qu'enregistrée vide.
+ */
 export function endWorkout(db: AppDatabase, sessionId: string): 'finished' | 'discarded' {
-  const hasSets = listSessionSets(db, sessionId).length > 0;
+  const hasSets =
+    listSessionSets(db, sessionId).length > 0 ||
+    listSessionBlocks(db, sessionId).some((block) => block.endedAt !== null);
   const now = nowIso();
   db.transaction((tx) => {
     tx.update(sessions)

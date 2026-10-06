@@ -583,3 +583,42 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   de la discipline Course des blocs cardio.
 - **En attendant le moteur multi-blocs (Phase E)**, l'écran de séance V1 ne démarre que les
   exercices des blocs Musculation d'une séance type.
+
+## V2 — Phase E (moteur de séance multi-blocs)
+
+- **Démarrage** : une séance type crée une ligne `session_blocks` par bloc (config copiée,
+  `template_block_id`) et un plan figé où chaque ligne connaît son bloc. Un bloc Hyrox donne une
+  ligne par segment (exercice Hyrox du catalogue, distance, charge de la division). L'ordre des
+  lignes est l'`exercise_order` des séries : unique dans la séance. Une séance V1 en cours au
+  moment de la mise à jour garde son état (un seul bloc Musculation implicite).
+- **Chronos** : uniquement des horodatages (début, pause, total des pauses) persistés dans
+  `workout_state` ; temps d'un segment ou d'un bloc = maintenant − début − pauses. Juste après une
+  fermeture forcée, en arrière-plan et après une pause.
+- **Blocs minutés** (échauffement, Hyrox, circuit) : écran d'intro avec « Démarrer le bloc » (le
+  chrono part au tap, pas à l'ouverture), « Passer ce bloc », Pause / Reprendre dans l'en-tête
+  (panneau avec Reprendre, Terminer le bloc, Terminer la séance), puis « Bloc terminé » avec le
+  résultat et « Bloc suivant ». Les blocs Musculation et Course gardent « Terminer » dans l'en-tête.
+- **Hyrox** : un tap enregistre le segment (`session_sets` : `duration_s`, distance, charge de la
+  division en `weight_kg`, reps des wall balls, `block_id`). Transitions chronométrées : tap
+  « J'arrive à la station » avant chaque station, temps gardés dans l'état puis dans
+  `result.transitionsS`. Annulation du dernier tap pendant 5 s (bandeau « Annuler » au-dessus du
+  bouton, à la place du toast : il reste à portée du pouce). Barre de 16 cases : le segment en
+  cours est à moitié rempli.
+- **Comparaison** (SPEC_V2 §4.5) : `lastBlock` = dernier bloc terminé du même bloc de séance type,
+  sinon même type et même config ; écart par segment et en direct, avec le signe −/+.
+- **Circuits** : AMRAP (+1 tour / −, reps du tour entamé à la fin → `{rounds, extraReps}`), For
+  Time (`{totalS, capped}`), EMOM / Tabata (`{completedRounds}`, 0 tour de repos après le dernier
+  effort Tabata). Les mouvements d'un tour n'ont pas de séries enregistrées.
+- **Signaux** : bip (`expo-audio`, SPEC_V2 §9) + vibration à chaque changement d'intervalle au
+  premier plan ; notifications locales programmées pour l'arrière-plan (au plus 60, limite iOS),
+  annulées en pause et reprogrammées à la reprise. Bips générés pour l'app (`assets/sounds/`).
+  Plugin `expo-audio` **sans micro, sans enregistrement Android, sans lecture en arrière-plan**
+  (pas de permission inutile pour la vérification Apple). Lecture même en mode silencieux,
+  mélangée à la musique.
+- **Cardio** : le chrono de la série part et s'arrête d'un tap ; l'arrêt enregistre la série
+  (distance réglable, durée, allure affichée) puis lance la récup. Calories / reps : stepper.
+- **Fin de séance** : les blocs commencés sont fermés avec ce qui a été fait (Hyrox partiel) ; une
+  séance sans séries mais avec un bloc terminé (circuit) n'est plus supprimée.
+- ⚠️ **Stats (Phase F)** : les records et le volume V1 ne tiennent pas encore compte du type de
+  suivi (ex. wall balls 6 kg × 100 compté comme une série de muscu). Le récap V1 s'affiche en fin de
+  séance en attendant les récaps Hyrox / circuit / cardio.

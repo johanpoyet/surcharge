@@ -1,35 +1,32 @@
 import { useKeepAwake } from 'expo-keep-awake';
 import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { Gesture, GestureDetector, Directions } from 'react-native-gesture-handler';
+import { ChevronDown } from 'lucide-react-native';
+import { useEffect } from 'react';
+import { Alert, Text, View } from 'react-native';
 
-import {
-  Button,
-  FullScreen,
-  Heading,
-  IconButton,
-  Overline,
-  PhotoSlot,
-  ProgressSegments,
-  useToast,
-} from '@/components/ui';
+import { Button, FullScreen, IconButton, Overline, useToast } from '@/components/ui';
 import { useProfile } from '@/features/profile/hooks';
-import { ActiveSetCard } from '@/features/workout/components/ActiveSetCard';
-import { AdviceBanner } from '@/features/workout/components/AdviceBanner';
-import { RestBar } from '@/features/workout/components/RestBar';
-import { columnClasses, SetRow } from '@/features/workout/components/SetRow';
-import { formatClock, lastTimeSummary, loadAdvice, type SetDraft } from '@/features/workout/logic';
+import {
+  BlockDone,
+  BlockIntro,
+  blockTitle,
+  PausedPanel,
+  WarmupView,
+} from '@/features/workout/components/BlockPanels';
+import { CardioView } from '@/features/workout/components/CardioView';
+import { CircuitView } from '@/features/workout/components/CircuitView';
+import { HyroxView } from '@/features/workout/components/HyroxView';
+import { StrengthView } from '@/features/workout/components/StrengthView';
+import { formatClock } from '@/features/workout/logic';
 import { useWorkout } from '@/features/workout/useWorkout';
 import { fr } from '@/i18n/fr';
-import { cn } from '@/lib/cn';
-import { formatNumber, formatWeight } from '@/lib/format';
-import { fromKg } from '@/lib/units';
 import { useNow } from '@/lib/useNow';
 
 const t = fr.workout;
+
+/** Blocs chronométrés d'un bout à l'autre (bouton « Démarrer », pause, résultat). */
+const TIMED = new Set(['warmup', 'hyrox', 'circuit']);
 
 export default function WorkoutScreen() {
   useKeepAwake();
@@ -38,9 +35,6 @@ export default function WorkoutScreen() {
   const workout = useWorkout(sessionId);
   const unit = useProfile().profile?.weightUnit ?? 'kg';
   const now = useNow();
-  const [editing, setEditing] = useState<{ id: string; draft: SetDraft; setNumber: number } | null>(
-    null,
-  );
 
   const rest = workout.state?.rest ?? null;
   const restRemaining = rest ? Math.ceil((rest.endsAt - now) / 1000) : 0;
@@ -54,7 +48,7 @@ export default function WorkoutScreen() {
     }
   }, [rest, restRemaining, toast, workout]);
 
-  const { state, session, progress } = workout;
+  const { state, session } = workout;
   if (!state || !session || session.endedAt) {
     return (
       <FullScreen className="px-screen pt-2">
@@ -69,55 +63,14 @@ export default function WorkoutScreen() {
     );
   }
 
-  const current = progress[state.current];
-  const count = progress.length;
-  const weightText = (kg: number) => `${formatNumber(fromKg(kg, unit))}`;
-  const setLabel = (kg: number, reps: number) => t.setValue(weightText(kg), reps);
-  const previousFor = (setNumber: number) => {
-    const p = current?.previous.find((s) => s.setNumber === setNumber);
-    return p ? setLabel(p.weightKg, p.reps) : t.noPrevious;
-  };
-
-  const last = current ? lastTimeSummary(current.previous) : null;
-  const advice = current
-    ? loadAdvice(current.previous, current.item.repsMax, current.exercise?.weightStep ?? 2.5)
-    : null;
-
-  const activeSetNumber = editing ? editing.setNumber : (current?.activeSetNumber ?? null);
-  const activeDraft = editing
-    ? editing.draft
-    : activeSetNumber && current
-      ? workout.draftFor(current.order, activeSetNumber)
-      : null;
-
-  const changeDraft = (patch: Partial<SetDraft>) => {
-    if (editing) setEditing({ ...editing, draft: { ...editing.draft, ...patch } });
-    else if (current && activeSetNumber) workout.setDraft(current.order, activeSetNumber, patch);
-  };
-
-  const nextUnfinished = progress.find(
-    (p) => p.order !== state.current && p.done.length < p.planned,
-  );
-  const allDone = workout.remainingSets === 0;
-
-  const onPrimary = () => {
-    if (editing) {
-      workout.editSet(editing.id, editing.draft);
-      setEditing(null);
-      return;
-    }
-    if (current?.activeSetNumber) return workout.validate();
-    if (nextUnfinished) return workout.setCurrent(nextUnfinished.order);
-    confirmFinish();
-  };
-
-  const primaryLabel = editing
-    ? t.update(editing.setNumber)
-    : current?.activeSetNumber
-      ? t.validate(current.activeSetNumber)
-      : nextUnfinished
-        ? t.next
-        : t.end;
+  const index = workout.currentBlock;
+  const block = workout.blocks[index];
+  const run = workout.runOf(index);
+  const multi = workout.blocks.length > 1;
+  const next = workout.blocks[index + 1];
+  const nextBlockName = next ? blockTitle(next) : null;
+  const timed = !!block && TIMED.has(block.type);
+  const running = timed && run.startedAt !== null && run.endedAt === null;
 
   const finishNow = () => {
     const result = workout.finish();
@@ -130,66 +83,94 @@ export default function WorkoutScreen() {
   };
 
   const confirmFinish = () => {
-    const done = workout.sets.length;
-    if (done > 0 && allDone) return finishNow();
-    Alert.alert(
-      t.finishTitle,
-      done === 0 ? t.finishEmpty : t.finishRemaining(workout.remainingSets),
-      [
-        { text: t.keepGoing, style: 'cancel' },
-        {
-          text: t.finishConfirm,
-          style: done === 0 ? 'destructive' : 'default',
-          onPress: finishNow,
-        },
-      ],
-    );
+    const done =
+      workout.sets.length + workout.blocks.filter((_, i) => workout.runOf(i).endedAt).length;
+    const remaining = [
+      workout.remainingSets > 0 ? t.finishRemaining(workout.remainingSets) : null,
+      workout.unfinishedBlocks > 0 ? t.blocks.unfinished(workout.unfinishedBlocks) : null,
+    ]
+      .filter(Boolean)
+      .join(' ');
+    if (done > 0 && !remaining) return finishNow();
+    Alert.alert(t.finishTitle, done === 0 ? t.finishEmpty : remaining, [
+      { text: t.keepGoing, style: 'cancel' },
+      {
+        text: t.finishConfirm,
+        style: done === 0 ? 'destructive' : 'default',
+        onPress: finishNow,
+      },
+    ]);
   };
-
-  const go = (delta: number) => {
-    setEditing(null);
-    workout.setCurrent(state.current + delta);
-  };
-  const swipe = Gesture.Race(
-    Gesture.Fling()
-      .direction(Directions.LEFT)
-      .runOnJS(true)
-      .onEnd(() => go(1)),
-    Gesture.Fling()
-      .direction(Directions.RIGHT)
-      .runOnJS(true)
-      .onEnd(() => go(-1)),
-  );
-
-  const restNext = rest ? progress[rest.nextOrder] : undefined;
-  const restLabel =
-    rest && restNext
-      ? rest.nextOrder === state.current
-        ? t.rest.nextSet(rest.nextSetNumber)
-        : (restNext.exercise?.name ?? '').toLowerCase()
-      : '';
 
   const elapsed = (now - new Date(session.startedAt).getTime()) / 1000;
-  const fills = progress.map((p) => (p.planned ? p.done.length / p.planned : 0));
+
+  const body = (() => {
+    if (!block || block.type === 'strength') {
+      return (
+        <StrengthView
+          workout={workout}
+          unit={unit}
+          restRemaining={restRemaining}
+          nextBlockName={nextBlockName}
+          onFinish={confirmFinish}
+        />
+      );
+    }
+    if (block.type === 'cardio') {
+      return (
+        <CardioView
+          workout={workout}
+          now={now}
+          unit={unit}
+          restRemaining={restRemaining}
+          nextBlockName={nextBlockName}
+          onFinish={confirmFinish}
+        />
+      );
+    }
+    if (run.endedAt !== null) {
+      return <BlockDone workout={workout} nextBlockName={nextBlockName} onFinish={confirmFinish} />;
+    }
+    if (run.startedAt === null) return <BlockIntro workout={workout} />;
+    if (run.pausedAt !== null) return <PausedPanel workout={workout} onFinish={confirmFinish} />;
+    if (block.type === 'hyrox') return <HyroxView workout={workout} now={now} unit={unit} />;
+    if (block.type === 'circuit') return <CircuitView workout={workout} now={now} unit={unit} />;
+    return <WarmupView workout={workout} now={now} />;
+  })();
 
   return (
     <FullScreen>
-      <View className="gap-3 px-screen pt-1">
-        <View className="flex-row items-center justify-between">
-          <IconButton
-            icon={ChevronDown}
-            accessibilityLabel={t.minimize}
-            onPress={() => router.back()}
-          />
-          <View className="items-center">
-            <Overline className="text-13">{session.name}</Overline>
-            <Text
-              className="font-display text-26 text-volt"
-              accessibilityLabel={formatClock(elapsed)}
-            >
-              {formatClock(elapsed)}
+      <View className="flex-row items-center justify-between px-screen pt-1">
+        <IconButton
+          icon={ChevronDown}
+          accessibilityLabel={t.minimize}
+          onPress={() => router.back()}
+        />
+        <View className="flex-1 items-center px-2">
+          <Overline className="text-13" numberOfLines={1}>
+            {running && block?.type === 'hyrox' ? t.blocks.total(session.name) : session.name}
+          </Overline>
+          <Text
+            className="font-display text-26 text-volt"
+            accessibilityLabel={formatClock(elapsed)}
+          >
+            {formatClock(elapsed)}
+          </Text>
+          {multi ? (
+            <Text className="font-body text-13 text-muted">
+              {t.blocks.blockOf(index + 1, workout.blocks.length)}
             </Text>
-          </View>
+          ) : null}
+        </View>
+        {running ? (
+          <Button
+            label={run.pausedAt !== null ? t.blocks.resume : t.blocks.pause}
+            variant="secondary"
+            size="sm"
+            className="h-11"
+            onPress={run.pausedAt !== null ? workout.resume : workout.pause}
+          />
+        ) : (
           <Button
             label={t.finish}
             variant="secondary"
@@ -197,148 +178,9 @@ export default function WorkoutScreen() {
             className="h-11"
             onPress={confirmFinish}
           />
-        </View>
-        <ProgressSegments count={count} progress={0} fills={fills} />
+        )}
       </View>
-
-      <GestureDetector gesture={swipe}>
-        <ScrollView
-          contentContainerClassName="gap-3 px-screen pb-4 pt-3"
-          keyboardShouldPersistTaps="handled"
-        >
-          {current ? (
-            <>
-              <View className="flex-row items-center gap-3.5">
-                <PhotoSlot variant="thumb" uri={current.exercise?.photoLocalUri} />
-                <View className="flex-1">
-                  <View className="flex-row items-center justify-between">
-                    <Text className="font-body text-13 text-muted">
-                      {t.exerciseOf(state.current + 1, count)}
-                    </Text>
-                    <View className="flex-row gap-1">
-                      <IconButton
-                        icon={ChevronLeft}
-                        size="sm"
-                        tone="ghost"
-                        accessibilityLabel={t.previousExercise}
-                        disabled={state.current === 0}
-                        onPress={() => go(-1)}
-                      />
-                      <IconButton
-                        icon={ChevronRight}
-                        size="sm"
-                        tone="ghost"
-                        accessibilityLabel={t.nextExercise}
-                        disabled={state.current >= count - 1}
-                        onPress={() => go(1)}
-                      />
-                    </View>
-                  </View>
-                  <Heading size={30}>{current.exercise?.name ?? ''}</Heading>
-                  <Text className="mt-1 font-body text-14 text-muted">
-                    {last
-                      ? t.lastTime(last.sets, last.reps, formatWeight(last.weightKg, unit))
-                      : t.firstTime}
-                  </Text>
-                </View>
-              </View>
-
-              {advice ? (
-                <AdviceBanner advice={advice} weightLabel={formatWeight(advice.weightKg, unit)} />
-              ) : null}
-
-              <View className="flex-row gap-2 px-2.5">
-                {(
-                  [
-                    [columnClasses.set, t.columns.set],
-                    [columnClasses.previous, t.columns.previous],
-                    [columnClasses.weight, t.weightColumn(fr.units[unit])],
-                    [columnClasses.reps, t.columns.reps],
-                  ] as const
-                ).map(([className, label]) => (
-                  <Text
-                    key={label}
-                    className={cn(
-                      className,
-                      'font-body-bold text-11 uppercase tracking-wide text-muted',
-                    )}
-                  >
-                    {label}
-                  </Text>
-                ))}
-                <View className={columnClasses.difficulty} />
-              </View>
-
-              <View className="gap-1.5">
-                {current.done.map((set) => (
-                  <SetRow
-                    key={set.id}
-                    set={set}
-                    previousLabel={previousFor(set.setNumber)}
-                    weightLabel={weightText(set.weightKg)}
-                    editing={editing?.id === set.id}
-                    onPress={() =>
-                      setEditing(
-                        editing?.id === set.id
-                          ? null
-                          : {
-                              id: set.id,
-                              setNumber: set.setNumber,
-                              draft: {
-                                weightKg: set.weightKg,
-                                reps: set.reps,
-                                difficulty: set.difficulty,
-                              },
-                            },
-                      )
-                    }
-                    onDelete={() => {
-                      if (editing?.id === set.id) setEditing(null);
-                      workout.removeSet(set.id);
-                    }}
-                  />
-                ))}
-
-                {activeSetNumber && activeDraft ? (
-                  <ActiveSetCard
-                    setNumber={activeSetNumber}
-                    previousLabel={
-                      previousFor(activeSetNumber) === t.noPrevious
-                        ? null
-                        : previousFor(activeSetNumber)
-                    }
-                    draft={activeDraft}
-                    weightStepKg={current.exercise?.weightStep ?? 2.5}
-                    unit={unit}
-                    onChange={changeDraft}
-                  />
-                ) : null}
-
-                <Pressable
-                  accessibilityRole="button"
-                  onPress={() => workout.addPlannedSet(current.order)}
-                  className="h-[42px] items-center justify-center rounded-input border border-dashed border-lineStrong active:opacity-80"
-                >
-                  <Text className="font-body-semibold text-14 text-muted">{t.addSet}</Text>
-                </Pressable>
-              </View>
-            </>
-          ) : null}
-        </ScrollView>
-      </GestureDetector>
-
-      <View className="gap-2.5 px-screen pb-2 pt-1">
-        {rest && restRemaining > 0 ? (
-          <RestBar
-            remainingSeconds={restRemaining}
-            durationSeconds={rest.durationSeconds}
-            nextLabel={restLabel}
-            onAdjust={workout.adjustRest}
-            onSkip={workout.stopRest}
-          />
-        ) : null}
-        <Button label={primaryLabel} onPress={onPrimary} />
-      </View>
+      {body}
     </FullScreen>
   );
 }
