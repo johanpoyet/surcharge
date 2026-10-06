@@ -38,6 +38,7 @@
     },
     "plugins": [
       "./plugins/withoutPushEntitlement",
+      "./plugins/withAndroidReleaseSigning",
       "expo-router",
       "expo-status-bar",
       "expo-font",

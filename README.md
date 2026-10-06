@@ -52,6 +52,22 @@ Profils dans `eas.json` : `development` (client de dev), `development-simulator`
 (TestFlight / test interne), `production`. Prérequis : compte Expo (`eas login`, `eas init`), compte
 Apple Developer, puis `eas build` et `eas submit`.
 
+## APK Android (testeurs)
+
+Prérequis : Android Studio (SDK), `brew install openjdk@17`, clé `~/surcharge-release.keystore` et
+`SURCHARGE_STORE_FILE`, `SURCHARGE_STORE_PASSWORD`, `SURCHARGE_KEY_ALIAS`,
+`SURCHARGE_KEY_PASSWORD` dans `~/.gradle/gradle.properties`.
+
+```bash
+export JAVA_HOME=$(brew --prefix openjdk@17)/libexec/openjdk.jdk/Contents/Home
+export ANDROID_HOME=$HOME/Library/Android/sdk
+npx expo prebuild --platform android --clean
+cd android && ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a
+# → android/app/build/outputs/apk/release/app-release.apk
+```
+
+Augmenter `android.versionCode` dans `app.json` à chaque nouvel APK.
+
 ## Mises à jour OTA (EAS Update)
 
 Correctif **JavaScript uniquement** (textes, écrans, logique) : pas de nouveau build ni de

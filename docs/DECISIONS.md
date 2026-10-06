@@ -380,3 +380,17 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **`FullScreen`** (design system) : marges prises sur la fenêtre (`useSafeAreaInsets`). Utilisé
   par l'écran de séance, le récap de fin et `KeyboardScreen` (connexion, inscription, onboarding,
   formulaires d'exercice et de séance type). Les onglets gardent `SafeAreaView` (pas de modale).
+
+## Android, première version (branche `android/premiere-version`)
+
+- **Distribution par APK** à quelques amis (pas de Play Store pour l'instant : la sortie publique
+  d'un compte personnel exige 12 testeurs pendant 14 jours). Les mises à jour JavaScript arrivent
+  par EAS Update comme sur iOS ; un changement natif demande de renvoyer un APK.
+- **Signature** : clé `~/surcharge-release.keystore` (alias `surcharge`), mots de passe dans
+  `~/.gradle/gradle.properties` (`SURCHARGE_*`), hors du dépôt ; plugin
+  `plugins/withAndroidReleaseSigning.js`. SHA-1 `01:42:D2:…:11:9D` déclarée dans un client OAuth
+  Android (Google Cloud) pour la connexion Google.
+- **APK arm64 seulement** (`-PreactNativeArchitectures=arm64-v8a`) : ~75 Mo au lieu de 180.
+- **JDK 17** (Homebrew `openjdk@17`) pour Gradle : le JDK 25 d'Android Studio fait échouer la
+  configuration CMake des modules natifs.
+- Apple masqué hors iOS (déjà en place) ; Live Activity : module iOS seulement (stub Android).
