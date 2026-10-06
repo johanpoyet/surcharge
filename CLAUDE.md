@@ -80,7 +80,11 @@ scripts/           update-production.sh    website/      pages légales (build +
 - Bundle / package `fr.johanpoyet.surcharge`, Apple Team `R7GAYTSBWH` (compte payant), App Store
   Connect app `6817838918`, nom « Surcharge : carnet de muscu ».
 - EAS `@johanpoyet/surcharge` (projectId dans app.json), canal `production`.
-- Supabase `myabomycwxyyorrxozbv` (Paris), offre gratuite ; clé publishable dans `.env`.
+- Supabase prod `myabomycwxyyorrxozbv` (Paris), organisation en Pro ; clés dans `.env.production`
+  (ignoré, **ne pas lire**). Supabase **dev** `bmstymcjxpustfzyjxpy` : `.env` et CLI liée. Règles de
+  protection de la prod : SPEC_V2.md §0.1. Expo charge `.env.production` pour tout bundle de
+  production (Release, TestFlight, `eas update`) : un build Release de la V2 vise donc la prod
+  sauf si les variables de `.env` sont exportées dans le shell.
 - Sentry org `johan-ea`, projet `surcharge` (UE) ; Google OAuth iOS / Web dans `src/config.ts`,
   client Android lié à la SHA-1 de la clé de release.
 - Contact public `surcharge@johanpoyet.fr` (redirection OVH ; ne jamais exposer l'adresse
