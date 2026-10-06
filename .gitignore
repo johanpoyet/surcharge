@@ -42,6 +42,8 @@ yarn-error.*
 
 # env
 .env
+# Clés Supabase de production (V2 : .env = projet dev)
+.env.production
 
 # Jeton Sentry (envoi des source maps), jamais commité
 .env.sentry-build-plugin

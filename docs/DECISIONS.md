@@ -446,3 +446,29 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Rendu sur simulateur pour vérifier un écran** : build Release + `simctl io screenshot`
   (DeviceHub sous Xcode 27 ne gère pas le glisser-déposer : `simctl addmedia` pour les photos).
 
+
+## V2 — Phase 0 (sécurisation, 06/10/2026)
+
+- **Supabase dev** : projet `surcharge-dev` (`bmstymcjxpustfzyjxpy`, Paris), organisation passée en
+  Pro (offre gratuite limitée à 2 projets actifs). `.env` pointe vers le dev ; les clés de prod sont
+  dans `.env.production` (ignoré par git, jamais lu par l'assistant). CLI liée au dev. Migrations
+  `0001` à `0004`, bucket `exercise-photos` et Edge Function `delete-account` recréés sur le dev ;
+  auth E-mail / Apple / Google recopiée de la prod. Pas de SMTP Resend sur le dev (SMTP par défaut
+  de Supabase, envoi limité aux membres de l'organisation).
+- **Piège `.env.production`** : Expo le charge (avant `.env`) dès que le bundle est fait en mode
+  production : build Release, TestFlight, `eas update`. Un build Release de la V2 se connecterait
+  donc à la prod. Pour tester la V2 en Release, exporter d'abord les variables de `.env` dans le
+  shell (elles passent avant les fichiers).
+- **Tag `v1.1.0`** sur `3ad2416` : code du build iOS 7 (rien n'a changé dans `src/`, `app/` ni
+  `package.json` depuis le correctif des marges `4b1d52a`) et de l'APK Android 1.1.0 ; contient le
+  script OTA iOS + Android. Point de départ des branches `hotfix/…`.
+- **Mise à jour forcée : absente de la 1.1.0** → Phase A nécessaire. Au tag `v1.1.0` : ni table
+  `app_config` ni `min_supported_version`, aucune lecture de version, aucun écran « mettre à
+  jour » ni lien vers les stores. `expo-updates` est en configuration par défaut (`app.json` :
+  `checkAutomatically: ON_LOAD`, `fallbackToCacheTimeout: 0`, aucun appel `Updates.*`) : il applique
+  les OTA au lancement suivant sans jamais bloquer.
+- **Piste pour la Phase A** : la 1.1.0 reçoit les OTA (runtime `1.1.0`, canal `production`) et
+  embarque déjà le module natif `expo-application` (dépendance indirecte, présent dans
+  `ios/Podfile.lock`). L'écran de mise à jour forcée pourrait donc lui être livré par OTA en plus
+  de la 1.2.0 (sous réserve de l'accord de Johan pour `eas update`). La 1.0.0 n'a pas
+  `expo-updates` : ses utilisateurs ne pourront jamais être forcés.
