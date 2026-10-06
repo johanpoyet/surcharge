@@ -14,6 +14,8 @@ import { nowIso } from '@/db/time';
 import { newId } from '@/lib/id';
 import { enqueue } from '@/sync/outbox';
 
+import { insertCatalogExercise } from './catalog';
+
 export type ExerciseInput = {
   name: string;
   muscle: MuscleGroup;
@@ -98,10 +100,6 @@ export function getExercise(db: AppDatabase, id: string): Exercise | undefined {
 }
 
 /**
- * Ajoute la bibliothèque par défaut si l'utilisateur n'a encore aucun exercice (même supprimé) :
- * ne s'exécute qu'une fois par compte. Retourne le nombre d'exercices créés.
- */
-/**
  * Bibliothèque vide (compte sans onboarding, tout supprimé…) : ajoute les exercices par défaut
  * dont le nom n'existe pas déjà parmi les exercices actifs. Retourne le nombre ajouté.
  */
@@ -119,6 +117,7 @@ export function addMissingDefaultExercises(db: AppDatabase, userId: string): num
     let added = 0;
     for (const seed of DEFAULT_EXERCISES) {
       if (existing.has(seed.name.toLowerCase())) continue;
+      // Nouvel id : l'exercice du catalogue d'origine (id stable) peut exister, supprimé.
       const id = newId();
       tx.insert(exercises)
         .values({
@@ -128,6 +127,9 @@ export function addMissingDefaultExercises(db: AppDatabase, userId: string): num
           muscle: seed.muscle,
           equipment: seed.equipment,
           weightStep: defaultWeightStep(seed.equipment),
+          trackingType: seed.trackingType,
+          discipline: seed.discipline,
+          catalogKey: seed.catalogKey,
           createdAt: now,
           updatedAt: now,
           dirty: true,
@@ -140,6 +142,10 @@ export function addMissingDefaultExercises(db: AppDatabase, userId: string): num
   });
 }
 
+/**
+ * Ajoute la bibliothèque par défaut si l'utilisateur n'a encore aucun exercice (même supprimé) :
+ * ne s'exécute qu'une fois par compte. Retourne le nombre d'exercices créés.
+ */
 export function seedDefaultExercises(db: AppDatabase, userId: string): number {
   return db.transaction((tx) => {
     const existing = tx
@@ -149,25 +155,7 @@ export function seedDefaultExercises(db: AppDatabase, userId: string): number {
       .limit(1)
       .all();
     if (existing.length > 0) return 0;
-
-    const now = nowIso();
-    for (const seed of DEFAULT_EXERCISES) {
-      const id = newId();
-      tx.insert(exercises)
-        .values({
-          id,
-          userId,
-          name: seed.name,
-          muscle: seed.muscle,
-          equipment: seed.equipment,
-          weightStep: defaultWeightStep(seed.equipment),
-          createdAt: now,
-          updatedAt: now,
-          dirty: true,
-        })
-        .run();
-      enqueue(tx, 'exercises', id, 'upsert');
-    }
+    for (const seed of DEFAULT_EXERCISES) insertCatalogExercise(tx, userId, seed);
     return DEFAULT_EXERCISES.length;
   });
 }
