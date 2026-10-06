@@ -394,3 +394,19 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **JDK 17** (Homebrew `openjdk@17`) pour Gradle : le JDK 25 d'Android Studio fait échouer la
   configuration CMake des modules natifs.
 - Apple masqué hors iOS (déjà en place) ; Live Activity : module iOS seulement (stub Android).
+
+## Mise à jour forcée (1.2.0, Phase A de la V2)
+
+- **Table `app_config`** (`0005_app_config.sql`) : `key` / `value jsonb`, lecture pour `anon` et
+  `authenticated`, aucune écriture depuis l'app (réglée dans le tableau de bord). Valeur de départ
+  `min_supported_version = "1.0.0"` (rien n'est bloqué).
+- **Vérification** au démarrage et à chaque retour au premier plan (`useUpdateRequired`), en
+  comparant `Application.nativeApplicationVersion` (version du binaire, pas celle d'une OTA) à
+  `min_supported_version`. **Jamais de blocage** hors ligne, en cas d'erreur, de version
+  illisible ou de table absente (une base sans la migration laisse l'app fonctionner).
+- **Écran bloquant** à la place de toute la navigation (une séance en cours reste dans SQLite et
+  reprend après la mise à jour). iOS : bouton vers la fiche App Store. Android : pas de Play
+  Store (APK distribué à la main), seulement la consigne d'installer la dernière version.
+- **Version unique** pour iOS et Android (les deux plateformes ont les mêmes numéros).
+- `expo-application` ajouté en dépendance directe (§9 de SPEC_V2) à la **même version** (57.0.3)
+  que celle déjà embarquée via `expo-notifications` : aucun changement natif.

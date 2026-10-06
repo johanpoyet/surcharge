@@ -18,6 +18,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { ToastProvider } from '@/components/ui';
 import { liveDb } from '@/db/client';
+import { UpdateRequiredScreen } from '@/features/appConfig/UpdateRequiredScreen';
+import { useUpdateRequired } from '@/features/appConfig/useUpdateRequired';
 import migrations from '@/db/migrations/migrations';
 import { AuthProvider, useAuth } from '@/features/auth/AuthProvider';
 import { configureNotifications } from '@/features/workout/restNotifications';
@@ -34,6 +36,7 @@ function RootNavigator() {
   const { session, initializing, onboardingPending } = useAuth();
   // Base locale : migrations Drizzle appliquées avant tout écran (SQLite = source de vérité).
   const migration = useMigrations(liveDb, migrations);
+  const updateRequired = useUpdateRequired();
   const ready = !initializing && (migration.success || migration.error !== undefined);
 
   useEffect(() => {
@@ -45,6 +48,7 @@ function RootNavigator() {
   }, [migration.error]);
 
   if (!ready) return null;
+  if (updateRequired) return <UpdateRequiredScreen />;
   if (migration.error) {
     return (
       <View className="flex-1 justify-center bg-bg px-screen">

@@ -525,6 +525,12 @@ export const fr = {
   errors: {
     database: 'Impossible de préparer les données de l’app. Ferme-la et rouvre-la.',
   },
+  forceUpdate: {
+    title: ['Mets à jour', 'Surcharge'],
+    body: 'Cette version n’est plus prise en charge. Installe la dernière pour continuer à noter tes séances : tes données sont conservées.',
+    button: 'Mettre à jour',
+    androidHint: 'Installe la dernière version de l’app pour continuer.',
+  },
   placeholders: {},
   tabs: {
     home: 'Accueil',

@@ -27,6 +27,12 @@ export type BodyWeightRow = Timestamps & {
   deleted_at: string | null;
 };
 
+/** Réglages publics de l'app (lecture seule côté client). */
+export type AppConfigRow = {
+  key: string;
+  value: unknown;
+};
+
 type Table<Row, Required extends keyof Row> = {
   Row: Row;
   Insert: Pick<Row, Required> & Partial<Row>;
@@ -39,6 +45,7 @@ export type Database = {
     Tables: {
       profiles: Table<ProfileRow, 'id' | 'first_name'>;
       body_weights: Table<BodyWeightRow, 'id' | 'user_id' | 'measured_on' | 'weight_kg'>;
+      app_config: Table<AppConfigRow, 'key' | 'value'>;
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
