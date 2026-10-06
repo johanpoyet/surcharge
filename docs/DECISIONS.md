@@ -563,9 +563,11 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   enregistrées qu'avec « Enregistrer la séance ».
 - **Feuille « Ajouter un bloc »** : les 4 choix de la maquette **plus « Échauffement »** (absent de
   la maquette, nécessaire pour « Simu Hyrox » et prévu par SPEC_V2 §4.2).
-- **Ordre des blocs** : par le menu ⋯ (Monter / Descendre), pas par glisser-déposer : la carte
-  Musculation contient déjà une liste réordonnable (listes imbriquées peu fiables). Menu ⋯ :
-  Modifier (ou Renommer pour la muscu), Monter, Descendre, Dupliquer, Supprimer (confirmation).
+- **Ordre des blocs** : glisser-déposer par une poignée ⋮⋮ à gauche de l'étiquette, comme les
+  exercices (demande de Johan ; d'abord fait par le menu ⋯). Chaque poignée a son propre geste :
+  la liste des exercices du bloc Musculation, imbriquée, ne gêne pas. Monter / Descendre restent
+  disponibles pour VoiceOver sur la poignée. Menu ⋯ : Modifier (ou Renommer pour la muscu),
+  Dupliquer, Supprimer (confirmation).
 - **Hyrox** : les segments sont générés depuis le catalogue (`hyroxSegments`), sans lignes
   `template_exercises`. Demi = les 4 premières stations ; station seule = sans course ;
   catégorie « Libre » = pas de charges. Enregistrer un bloc Hyrox ajoute les exercices Hyrox du

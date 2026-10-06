@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import { Alert, Pressable, Text, TextInput, View } from 'react-native';
 
-import { Button, KeyboardScreen, Overline, useToast } from '@/components/ui';
+import { Button, KeyboardScreen, Overline, ReorderableList, useToast } from '@/components/ui';
 import { db } from '@/db/client';
 import type { BlockType } from '@/db/schema';
 import { useAuth } from '@/features/auth/AuthProvider';
@@ -143,17 +143,23 @@ export function TemplateEditor({ mode }: { mode: 'create' | 'edit' }) {
       </View>
 
       <View className="gap-2">
-        {draft.blocks.map((block, index) => (
-          <BlockCard
-            key={block.key}
-            block={block}
-            index={index}
-            count={draft.blocks.length}
-            exercises={byId}
-            unit={unit}
-            onDragChange={setDragging}
-          />
-        ))}
+        <ReorderableList
+          items={draft.blocks}
+          keyOf={(block) => block.key}
+          onMove={draft.moveBlock}
+          onDragChange={setDragging}
+          renderItem={(block, index, gesture) => (
+            <BlockCard
+              block={block}
+              index={index}
+              count={draft.blocks.length}
+              exercises={byId}
+              unit={unit}
+              onDragChange={setDragging}
+              handleGesture={gesture}
+            />
+          )}
+        />
         <Pressable
           accessibilityRole="button"
           onPress={() => setAdding(true)}

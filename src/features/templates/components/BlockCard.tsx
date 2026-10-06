@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
-import { Ellipsis, Plus } from 'lucide-react-native';
+import { Ellipsis, GripVertical, Plus } from 'lucide-react-native';
 import { useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
+import { GestureDetector, type GestureType } from 'react-native-gesture-handler';
 
 import { IconButton, ReorderableList } from '@/components/ui';
 import type { Exercise } from '@/db/schema';
@@ -28,6 +29,8 @@ type BlockCardProps = {
   exercises: ReadonlyMap<string, Exercise>;
   unit: WeightUnit;
   onDragChange: (dragging: boolean) => void;
+  /** Poignée de la carte (glisser pour réordonner les blocs). */
+  handleGesture: GestureType;
 };
 
 function Tag({ label, accent }: { label: string; accent: boolean }) {
@@ -122,7 +125,15 @@ function HyroxBody({ block }: { block: DraftBlock }) {
 }
 
 /** Carte d'un bloc de la séance type (maquette seance-multi-blocs). */
-export function BlockCard({ block, index, count, exercises, unit, onDragChange }: BlockCardProps) {
+export function BlockCard({
+  block,
+  index,
+  count,
+  exercises,
+  unit,
+  onDragChange,
+  handleGesture,
+}: BlockCardProps) {
   const draft = useTemplateDraft();
   const hyrox = block.type === 'hyrox';
   const sets = block.items.reduce((sum, item) => sum + item.targetSets, 0);
@@ -157,10 +168,6 @@ export function BlockCard({ block, index, count, exercises, unit, onDragChange }
   const openMenu = () =>
     Alert.alert(block.name ?? t.tags[block.type], undefined, [
       { text: block.type === 'strength' ? t.rename : t.edit, onPress: () => openEditor(block.key) },
-      ...(index > 0 ? [{ text: t.moveUp, onPress: () => draft.moveBlock(index, index - 1) }] : []),
-      ...(index < count - 1
-        ? [{ text: t.moveDown, onPress: () => draft.moveBlock(index, index + 1) }]
-        : []),
       { text: t.duplicate, onPress: () => draft.duplicateBlock(block.key) },
       {
         text: t.delete,
@@ -210,6 +217,26 @@ export function BlockCard({ block, index, count, exercises, unit, onDragChange }
       className={cn('gap-2.5 rounded-cardSm bg-surface p-3', hyrox && 'border-[1.5px] border-volt')}
     >
       <View className="flex-row items-center gap-2.5">
+        <GestureDetector gesture={handleGesture}>
+          <View
+            accessible
+            accessibilityRole="adjustable"
+            accessibilityLabel={t.move(block.name ?? t.tags[block.type])}
+            accessibilityActions={[
+              ...(index > 0 ? [{ name: 'moveUp', label: t.moveUp }] : []),
+              ...(index < count - 1 ? [{ name: 'moveDown', label: t.moveDown }] : []),
+            ]}
+            onAccessibilityAction={(event) =>
+              draft.moveBlock(
+                index,
+                event.nativeEvent.actionName === 'moveUp' ? index - 1 : index + 1,
+              )
+            }
+            className="-ml-1 h-9 w-6 items-center justify-center"
+          >
+            <GripVertical size={18} color={colors.faint} strokeWidth={2} />
+          </View>
+        </GestureDetector>
         <Tag label={t.tags[block.type]} accent={hyrox} />
         <Text
           numberOfLines={1}

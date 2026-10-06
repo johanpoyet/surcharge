@@ -212,6 +212,7 @@ export const fr = {
         hyrox: { title: 'Hyrox', hint: 'Course complète, demi-course ou station seule' },
       },
       menu: 'Options du bloc',
+      move: (name: string) => `Déplacer le bloc ${name}`,
       edit: 'Modifier',
       rename: 'Renommer',
       moveUp: 'Monter',
