@@ -12,7 +12,7 @@ import {
   Switch,
   TextField,
 } from '@/components/ui';
-import { formatDistance } from '@/features/exercises/tracking';
+import { formatDistance, formatMeters } from '@/features/exercises/tracking';
 import { useExercises } from '@/features/exercises/hooks';
 import { HYROX_STATIONS, type HyroxDivision } from '@/features/hyrox/catalog';
 import { hyroxSegments } from '@/features/hyrox/segments';
@@ -120,7 +120,9 @@ function HyroxEditor({ block }: { block: DraftBlock }) {
         <View className="gap-1">
           {segments.map((segment, index) => {
             const target = segment.distanceM
-              ? formatDistance(segment.distanceM)
+              ? segment.kind === 'station'
+                ? formatMeters(segment.distanceM)
+                : formatDistance(segment.distanceM)
               : t.reps(segment.reps ?? 0);
             const weight =
               segment.weightKg !== undefined

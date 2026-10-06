@@ -40,6 +40,9 @@ export function formatDistance(meters: number): string {
     : `${formatNumber(meters / 1000, 2)} ${fr.units.km}`;
 }
 
+/** Toujours en mètres (stations Hyrox : « 1000 m ») ; « 400 m ». */
+export const formatMeters = (meters: number): string => `${formatNumber(meters, 0)} ${fr.units.m}`;
+
 /** Allure en secondes par kilomètre (null si distance ou temps manquant). */
 export function paceSecondsPerKm(
   distanceM: number | null,

@@ -5,7 +5,7 @@ import { Alert, Pressable, Text, View } from 'react-native';
 
 import { IconButton, ReorderableList } from '@/components/ui';
 import type { Exercise } from '@/db/schema';
-import { formatDistance } from '@/features/exercises/tracking';
+import { formatDistance, formatMeters } from '@/features/exercises/tracking';
 import { hyroxSegments, type HyroxSegment } from '@/features/hyrox/segments';
 import { fr } from '@/i18n/fr';
 import { cn } from '@/lib/cn';
@@ -50,7 +50,7 @@ const openEditor = (key: string) => router.push({ pathname: '/templates/block', 
 /** Segment Hyrox : « Course + SkiErg · 1 km · 1000 m » (ou la station seule). */
 function SegmentRow({ station, run }: { station: HyroxSegment; run: HyroxSegment | undefined }) {
   const stationMeta = station.distanceM
-    ? formatDistance(station.distanceM)
+    ? formatMeters(station.distanceM)
     : t.reps(station.reps ?? 0);
   return (
     <View className="h-[34px] flex-row items-center gap-2 rounded-sm bg-bg px-2">

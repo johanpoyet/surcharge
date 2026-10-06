@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { db } from '@/db/client';
-import { formatDistance } from '@/features/exercises/tracking';
+import { formatDistance, formatMeters } from '@/features/exercises/tracking';
 import { parseBlockConfig } from '@/features/templates/blockConfig';
 import { fr } from '@/i18n/fr';
 import { cn } from '@/lib/cn';
@@ -62,7 +62,9 @@ export function HyroxView({ workout, now, unit }: HyroxViewProps) {
   const detail = (p: ExerciseProgress) => {
     const seg = p.item.segment;
     const target = p.item.targetDistanceM
-      ? formatDistance(p.item.targetDistanceM)
+      ? seg?.kind === 'station'
+        ? formatMeters(p.item.targetDistanceM)
+        : formatDistance(p.item.targetDistanceM)
       : tb.reps(seg?.reps ?? 0);
     if (seg?.weightKg === undefined) return target;
     const division = t.divisionShort[config.division];

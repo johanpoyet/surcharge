@@ -264,6 +264,15 @@ export function StrengthView({
           />
         ) : null}
         <Button label={primaryLabel} onPress={onPrimary} />
+        {nextBlockName !== null && primaryLabel !== t.blocks.next(nextBlockName) ? (
+          <Button
+            label={t.blocks.next(nextBlockName)}
+            variant="ghost"
+            tone="muted"
+            size="sm"
+            onPress={workout.nextBlock}
+          />
+        ) : null}
       </View>
     </>
   );

@@ -237,6 +237,15 @@ export function CardioView({
             }}
           />
         )}
+        {nextBlockName !== null && !allDone ? (
+          <Button
+            label={fr.workout.blocks.next(nextBlockName)}
+            variant="ghost"
+            tone="muted"
+            size="sm"
+            onPress={workout.nextBlock}
+          />
+        ) : null}
       </View>
     </>
   );
