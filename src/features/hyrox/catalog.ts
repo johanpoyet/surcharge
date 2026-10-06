@@ -1,7 +1,6 @@
 // Catalogue Hyrox (SPEC_V2 §4.3) : ordre officiel 8 × (1 km de course + 1 station).
 // Les charges par division sont ici, jamais en dur dans les écrans.
-// TODO vérifier : toutes les charges ci-dessous sont à contrôler sur hyrox.com avant la mise en
-// production (liste dans docs/DECISIONS.md).
+// Charges vérifiées par Johan sur hyrox.com le 06/10/2026.
 
 import type { SeedExercise } from '@/db/seed';
 
@@ -57,14 +56,14 @@ export const HYROX_STATIONS: readonly HyroxStation[] = [
     key: 'sled_push',
     exercise: hyrox('hyrox_sled_push', 'Sled Push', 'weight_distance', 'other', 'legs'),
     distanceM: 50,
-    // TODO vérifier (charge traîneau compris)
+    // Traîneau compris
     weights: { open_women: 102, open_men: 152, pro_women: 152, pro_men: 202, doubles: 152 },
   },
   {
     key: 'sled_pull',
     exercise: hyrox('hyrox_sled_pull', 'Sled Pull', 'weight_distance', 'other', 'back'),
     distanceM: 50,
-    // TODO vérifier (charge traîneau compris)
+    // Traîneau compris
     weights: { open_women: 78, open_men: 103, pro_women: 103, pro_men: 153, doubles: 103 },
   },
   {
@@ -87,21 +86,20 @@ export const HYROX_STATIONS: readonly HyroxStation[] = [
     exercise: hyrox('hyrox_farmers_carry', 'Farmers Carry', 'weight_distance', 'other'),
     distanceM: 200,
     weightCount: 2,
-    // TODO vérifier (par kettlebell)
+    // Par kettlebell
     weights: { open_women: 16, open_men: 24, pro_women: 24, pro_men: 32, doubles: 24 },
   },
   {
     key: 'sandbag_lunges',
     exercise: hyrox('hyrox_sandbag_lunges', 'Sandbag Lunges', 'weight_distance', 'other', 'legs'),
     distanceM: 100,
-    // TODO vérifier
     weights: { open_women: 10, open_men: 20, pro_women: 20, pro_men: 30, doubles: 20 },
   },
   {
     key: 'wall_balls',
     exercise: hyrox('hyrox_wall_balls', 'Wall Balls', 'reps', 'other', 'legs'),
     reps: 100,
-    // TODO vérifier (médecine-ball)
+    // Médecine-ball
     weights: { open_women: 4, open_men: 6, pro_women: 6, pro_men: 9, doubles: 6 },
   },
 ];

@@ -523,7 +523,7 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   appareils hors ligne ne créent pas de doublon. Le catalogue d'une discipline n'est ajouté que
   quand elle est choisie (profil) : pas d'exercices Hyrox dans la bibliothèque d'un pratiquant de
   muscu (SPEC_V2 §5.5 : les disciplines filtrent le catalogue).
-- **Charges Hyrox à vérifier sur hyrox.com** (`src/features/hyrox/catalog.ts`, `// TODO vérifier`) :
+- **Charges Hyrox** (`src/features/hyrox/catalog.ts`), **vérifiées par Johan sur hyrox.com le 06/10/2026** :
   Sled Push 102 / 152 / 152 / 202 kg (Open F / Open H / Pro F / Pro H, traîneau compris),
   Sled Pull 78 / 103 / 103 / 153 kg, Farmers 2 × 16 / 24 / 24 / 32 kg, Sandbag 10 / 20 / 20 / 30 kg,
   Wall Balls 4 / 6 / 6 / 9 kg. Doubles : charges Open Homme par défaut ; « custom » : pas de charge.
