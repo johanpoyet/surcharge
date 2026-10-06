@@ -1,3 +1,4 @@
+import * as Application from 'expo-application';
 import { format, parseISO } from 'date-fns';
 import { fr as frLocale } from 'date-fns/locale';
 import { router } from 'expo-router';
@@ -261,6 +262,9 @@ export default function ProfileScreen() {
 
         <Text className="text-center font-body text-13 text-muted">
           {syncing ? t.syncing : pending === 0 ? t.synced : t.pending(pending)}
+        </Text>
+        <Text className="-mt-2 text-center font-body text-12 text-faint">
+          {t.version(Application.nativeApplicationVersion ?? '', Application.nativeBuildVersion)}
         </Text>
 
         {__DEV__ ? (

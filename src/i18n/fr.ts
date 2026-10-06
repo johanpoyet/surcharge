@@ -542,6 +542,9 @@ export const fr = {
     body: (name: string) => `Aujourd'hui : ${name}`,
   },
   profile: {
+    // Version installée (support, mises à jour) : « Version 1.2.0 (9) ».
+    version: (version: string, build: string | null) =>
+      build ? `Version ${version} (${build})` : `Version ${version}`,
     title: 'Profil',
     signOut: 'Se déconnecter',
     csv: {
