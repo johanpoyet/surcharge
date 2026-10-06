@@ -69,7 +69,8 @@ scripts/           update-production.sh    website/      pages légales (build +
 ## État du projet (06/10/2026)
 
 - V1 (SPEC.md, phases 0 à 10) terminée. **iOS** : 1.0.0 publiée sur l'App Store ; 1.1.0
-  (build 7 : Live Activity, EAS Update, correctifs) soumise, sortie automatique après validation.
+  (build 8 : Live Activity, EAS Update, correctifs, écran de mise à jour obligatoire) soumise,
+  sortie automatique après validation. Code livré : branche `release/1.1.0`.
   **Android** : APK signé distribué à quelques amis (pas de Play Store).
 - Les mises à jour JavaScript passent par EAS Update (`runtimeVersion` = version d'app.json :
   seuls les builds de la même version les reçoivent). Tout changement natif (module, plugin,
@@ -103,10 +104,12 @@ secret du client OAuth Web (Supabase), clé API Resend (SMTP Supabase), jeton Se
 - **TestFlight** : pas d'EAS Build (file gratuite trop lente). Prebuild, puis `CFBundleVersion`
   = N dans `ios/Surcharge/Info.plist` **et** `ios/ExpoWidgetsTarget/Info.plist` (N > dernier
   build), `xcodebuild archive` puis `-exportArchive` (method `app-store-connect`, destination
-  `upload`, team `R7GAYTSBWH`). Dernier build envoyé : **7**. Prévoir ~25 min (l'envoi des
+  `upload`, team `R7GAYTSBWH`). Dernier build envoyé : **8**. Prévoir ~25 min (l'envoi des
   symboles à Sentry attend le traitement serveur ~12 min : ce n'est pas un blocage).
 - **APK Android** : voir README (JDK 17 obligatoire, `-PreactNativeArchitectures=arm64-v8a`,
-  incrémenter `android.versionCode`, actuellement 1).
+  incrémenter `android.versionCode`, actuellement 2).
+  Numéro de build de l'extension Live Activity : `CURRENT_PROJECT_VERSION` de la cible
+  `ExpoWidgetsTarget` dans `project.pbxproj` (son `Info.plist` est généré).
 - **Supabase** : migrations `npx supabase db push` (ou SQL Editor) après test PGlite ; derniers
   numéros : `0005`. Réglages faits dans le tableau de bord (non versionnés) : Confirm email
   désactivé, Skip nonce checks (Google), SMTP Resend + modèle « Reset Password »

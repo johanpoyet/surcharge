@@ -488,3 +488,8 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Version unique** pour iOS et Android (les deux plateformes ont les mêmes numéros).
 - `expo-application` ajouté en dépendance directe (§9 de SPEC_V2) à la **même version** (57.0.3)
   que celle déjà embarquée via `expo-notifications` : aucun changement natif.
+- **Livré dans la 1.1.0 plutôt qu'en 1.2.0** (06/10/2026) : la 1.1.0 était encore en vérification ;
+  Johan l'a retirée et resoumise avec le **build 8** (code de `release/1.1.0`, version 1.1.0) et
+  un APK `versionCode` 2. Tous les utilisateurs qui passent à la 1.1.0 ont donc l'écran ; pas
+  d'OTA nécessaire. `release/1.2.0` est devenue inutile (le passage en 1.2.0 reste dans `v2`).
+  Migrations `0004` (absente de l'historique de la prod, rejouable) et `0005` appliquées en prod.
