@@ -371,3 +371,12 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   (repos 2 min, sans cible de reps). Les brouillons et le repos en cours ne sont pas repris.
 - Écran de secours (séance vraiment introuvable) : marge haute explicite et bouton « Retour à
   l'accueil ».
+
+## Marges des écrans plein écran (branche `fix/marges-plein-ecran`)
+
+- Retour de séance (1.1.0) : en séance, les boutons du haut passaient sous l'heure et « Valider la
+  série » sous la barre d'accueil. `SafeAreaView` mesure les marges sur la vue elle-même, encore
+  hors écran pendant l'animation d'ouverture d'une modale plein écran : il garde parfois 0.
+- **`FullScreen`** (design system) : marges prises sur la fenêtre (`useSafeAreaInsets`). Utilisé
+  par l'écran de séance, le récap de fin et `KeyboardScreen` (connexion, inscription, onboarding,
+  formulaires d'exercice et de séance type). Les onglets gardent `SafeAreaView` (pas de modale).
