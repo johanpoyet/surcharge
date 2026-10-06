@@ -162,7 +162,7 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   rouverte automatiquement (une fois par lancement).
 - **Plan figé** : modifier la séance type pendant une séance ne change pas la séance en cours.
 - **Pré-remplissage** : même série à la dernière séance, sinon sa dernière série, sinon la cible
-  (reps max, sinon min, sinon 10) avec 20 kg pour une barre et 0 sinon.
+  (reps max, sinon min, sinon 10) avec 20 kg pour une barre et 0 sinon. Complété en 1.1.0 (voir « Correctifs 1.0.x → 1.1.0 »).
 - **Conseil de charge** (SPEC 9.3) : sur les séries de la dernière séance ; la charge de référence
   est la charge max de cette séance. Bandeau seulement pour « augmenter » / « baisser ».
 - **Après la dernière série d'un exercice**, on passe au prochain exercice non terminé ; le repos
@@ -255,7 +255,7 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Déclencheurs** : ouverture des onglets (démarrage, connexion), retour du réseau (NetInfo), retour
   de l'app au premier plan, fin de séance, et toutes les 60 s s'il reste des modifications.
 - **Séance commencée sur un autre appareil** : pas d'état d'écran local (`workout_state`) ;
-  limitation connue de la V1.
+  levé en 1.1.0, voir « Séance démarrée sur un autre appareil ».
 
 ## Phase 10 (partie sans comptes Apple / Sentry)
 
@@ -394,3 +394,55 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **JDK 17** (Homebrew `openjdk@17`) pour Gradle : le JDK 25 d'Android Studio fait échouer la
   configuration CMake des modules natifs.
 - Apple masqué hors iOS (déjà en place) ; Live Activity : module iOS seulement (stub Android).
+
+## Correctifs 1.0.x → 1.1.0
+
+- **Couleur des titres** : `Heading` prend `tone` (`text` / `onVolt` / `volt`) ; une classe de
+  couleur passée par `className` ne l'emportait pas (ordre des classes non garanti). Titres de la
+  carte volt de l'accueil en `onVolt`.
+- **Pré-remplissage** (retour de salle, exercice fait pour la première fois) : même série à la
+  dernière séance > dernière série validée **dans la séance du jour** > dernière série de la
+  dernière séance > cible. Johan veut garder la priorité à « la même série la séance d'avant ».
+- **Carte Progression de l'accueil** : avec une seule séance, texte « apparaît à partir de 2
+  séances » au lieu d'une barre pleine largeur.
+- **Planning** : un jour sans séance prévue mais avec une séance faite affiche son nom et « Hors
+  planning » (semaine et mois), au lieu de « Repos ✓ Faite ».
+- **Pluriels** des tuiles de l'accueil (« 1 séance », « 1 record »).
+
+## Sécurité (Security Advisor Supabase, 06/10/2026)
+
+- Revue : requêtes paramétrées partout (Supabase JS, Drizzle), RLS sur toutes les tables et le
+  bucket, aucune clé secrète dans l'app, Edge Function limitée au compte appelant.
+- **Migration `0004`** : `handle_new_user()` (security definer) n'est plus exécutable par `anon` /
+  `authenticated` ; le trigger d'inscription fonctionne toujours (testé sur PGlite).
+- Longueur minimale du mot de passe portée à 8 côté Supabase (comme l'app).
+- Restent volontairement : « Leaked Password Protection » (offre payante), inscription sans
+  confirmation d'e-mail, session en AsyncStorage (standard Supabase, sandbox iOS).
+
+## App Store (1.0.0 et 1.1.0)
+
+- **Compte de démo** `demo.surcharge@johanpoyet.fr`, rempli par `supabase/demo/seed-demo.sql`
+  (10 semaines Push / Pull / Legs, pesées ; refuse de tourner deux fois), à lancer après
+  l'onboarding du compte.
+- **Captures** prises sur simulateur iPhone 18 Pro Max (barre d'état 9:41 via `simctl status_bar`),
+  envoyées au format **6,5" (1284 × 2778)** exigé par App Store Connect ; photo d'exercice
+  Unsplash (licence libre).
+- **Première soumission refusée en « 2.1 Information Needed »** (compte développeur sans
+  historique) : réponse = vidéo d'écran sur iPhone (inscription → séance → déconnexion →
+  suppression de compte) + 6 réponses écrites (`docs/app-store/reponse-review.md`), recopiées dans
+  les Notes de vérification pour les versions suivantes. Acceptée ensuite.
+- Statut DSA : **non commerçant** ; dispositif médical réglementé : non ; classification 4+.
+- 1.0.0 en publication manuelle (sortie le 06/10/2026) ; 1.1.0 en publication automatique.
+- Toujours **soumettre un build qui contient lui-même les correctifs** (les vérificateurs
+  d'Apple n'ont pas la mise à jour OTA au premier lancement).
+
+## Outillage et contournements
+
+- **Builds iOS en local** (Xcode archive + export) au lieu d'EAS Build / Submit : la file gratuite
+  d'EAS a pris 1 à 2 h. Le compteur de builds d'EAS n'est donc pas à jour
+  (`eas build:version:set` si on revient à EAS Build).
+- **Sentry en local** : `SENTRY_DISABLE_AUTO_UPLOAD=true` pour les builds de test ; le build
+  d'archive envoie source maps + dSYM (jeton dans `.env.sentry-build-plugin`).
+- **Rendu sur simulateur pour vérifier un écran** : build Release + `simctl io screenshot`
+  (DeviceHub sous Xcode 27 ne gère pas le glisser-déposer : `simctl addmedia` pour les photos).
+
