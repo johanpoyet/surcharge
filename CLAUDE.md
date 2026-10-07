@@ -105,7 +105,7 @@ secret du client OAuth Web (Supabase), clé API Resend (SMTP Supabase), jeton Se
 - **TestFlight** : pas d'EAS Build (file gratuite trop lente). Prebuild, puis `CFBundleVersion`
   = N dans `ios/Surcharge/Info.plist` **et** `ios/ExpoWidgetsTarget/Info.plist` (N > dernier
   build), `xcodebuild archive` puis `-exportArchive` (method `app-store-connect`, destination
-  `upload`, team `R7GAYTSBWH`). Dernier build envoyé : **8**. Prévoir ~25 min (l'envoi des
+  `upload`, team `R7GAYTSBWH`). Dernier build envoyé : **9** (2.0.0). Prévoir ~25 min (l'envoi des
   symboles à Sentry attend le traitement serveur ~12 min : ce n'est pas un blocage).
 - **APK Android** : voir README (JDK 17 obligatoire, `-PreactNativeArchitectures=arm64-v8a`,
   incrémenter `android.versionCode`, actuellement 2).
