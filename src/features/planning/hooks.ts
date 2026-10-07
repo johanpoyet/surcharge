@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 
 import { liveDb } from '@/db/client';
 import { useAuth } from '@/features/auth/AuthProvider';
+import { templateSummary } from '@/features/templates/blockSummary';
 import { estimateTemplate } from '@/features/templates/estimate';
 import { useTemplateBlocks, useTemplateItems, useTemplates } from '@/features/templates/hooks';
 import { weeklyScheduleQuery } from '@/features/templates/repository';
@@ -15,6 +16,8 @@ export type TemplateInfo = {
   exerciseCount: number;
   minutes: number;
   muscles: string[];
+  /** Résumé des blocs (séance multi-sport), null pour une séance de musculation seule. */
+  summary: string | null;
 };
 
 /** Modèle de semaine, exceptions et infos des séances types, en direct. */
@@ -40,6 +43,7 @@ export function usePlanning() {
             exerciseCount: rows.length,
             minutes: estimateTemplate(blocks.get(t.id) ?? [], rows).minutes,
             muscles: [...new Set(rows.map((r) => fr.exercises.muscles[r.muscle].toLowerCase()))],
+            summary: templateSummary(blocks.get(t.id) ?? [], rows),
           },
         ];
       }),

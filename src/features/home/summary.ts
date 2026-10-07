@@ -86,3 +86,42 @@ export function monthCounts(
     records: recordSets(sets).filter((s) => inMonth(s.completedAt)).length,
   };
 }
+
+/** Kilomètres courus dans le mois de `today` : exercices de course et courses Hyrox. */
+export function kmInMonth(
+  sets: readonly {
+    completedAt: string;
+    distanceM?: number | null;
+    discipline?: string | null;
+    catalogKey?: string | null;
+  }[],
+  today: Date,
+): number {
+  const meters = sets.reduce((sum, set) => {
+    const date = parseISO(set.completedAt);
+    const running = set.discipline === 'running' || set.catalogKey === 'hyrox_run';
+    const inMonth =
+      date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth();
+    return running && inMonth ? sum + (set.distanceM ?? 0) : sum;
+  }, 0);
+  return Math.round(meters / 100) / 10;
+}
+
+export type HyroxRun = { endedAt: string; totalS: number };
+
+/** Simus Hyrox complètes terminées, de la plus ancienne à la plus récente (carte d'accueil). */
+export function hyroxHistory(
+  blocks: readonly {
+    endedAt: string | null;
+    config: Record<string, unknown>;
+    result: Record<string, unknown>;
+  }[],
+): HyroxRun[] {
+  return blocks
+    .flatMap((block) =>
+      block.endedAt && block.config.format === 'full' && typeof block.result.totalS === 'number'
+        ? [{ endedAt: block.endedAt, totalS: block.result.totalS }]
+        : [],
+    )
+    .sort((a, b) => a.endedAt.localeCompare(b.endedAt));
+}

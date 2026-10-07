@@ -505,3 +505,23 @@ export const sessionTypedSetsQuery = (db: AppDatabase, sessionId: string) =>
     .innerJoin(exercises, eq(exercises.id, sessionSets.exerciseId))
     .where(and(eq(sessionSets.sessionId, sessionId), isNull(sessionSets.deletedAt)))
     .orderBy(asc(sessionSets.exerciseOrder), asc(sessionSets.setNumber));
+
+/** Blocs Hyrox terminés (carte « Meilleure simu Hyrox » de l'accueil). */
+export const hyroxBlocksQuery = (db: AppDatabase, userId: string) =>
+  db
+    .select({
+      endedAt: sessionBlocks.endedAt,
+      config: sessionBlocks.config,
+      result: sessionBlocks.result,
+    })
+    .from(sessionBlocks)
+    .innerJoin(sessions, eq(sessions.id, sessionBlocks.sessionId))
+    .where(
+      and(
+        eq(sessionBlocks.userId, userId),
+        eq(sessionBlocks.type, 'hyrox'),
+        isNotNull(sessionBlocks.endedAt),
+        isNull(sessionBlocks.deletedAt),
+        isNull(sessions.deletedAt),
+      ),
+    );

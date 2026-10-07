@@ -3,6 +3,7 @@
 
 export type Goal = 'muscle' | 'strength' | 'fat_loss' | 'fitness';
 export type WeightUnit = 'kg' | 'lb';
+export type Discipline = 'strength' | 'running' | 'cross_training' | 'hyrox' | 'other';
 
 type Timestamps = {
   created_at: string;
@@ -17,6 +18,8 @@ export type ProfileRow = Timestamps & {
   weight_unit: WeightUnit;
   default_rest_seconds: number;
   reminders_enabled: boolean;
+  /** V2 (Postgres : discipline[]) ; absent si la base n'a pas encore la migration 0006. */
+  disciplines?: Discipline[];
 };
 
 export type BodyWeightRow = Timestamps & {

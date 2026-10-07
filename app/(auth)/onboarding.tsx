@@ -12,10 +12,11 @@ import {
 import { useAuth } from '@/features/auth/AuthProvider';
 import { StepHeader } from '@/features/auth/components/StepHeader';
 import { authErrorMessage } from '@/features/auth/errors';
+import { DisciplinesPicker } from '@/features/profile/components/DisciplinesPicker';
 import { completeOnboarding, skipOnboarding } from '@/features/profile/onboarding';
 import { signOut } from '@/features/auth/api';
 import { fr } from '@/i18n/fr';
-import type { Goal, WeightUnit } from '@/lib/database.types';
+import type { Discipline, Goal, WeightUnit } from '@/lib/database.types';
 import { formatNumber } from '@/lib/format';
 import { convertDisplayed, fromKg, toKg } from '@/lib/units';
 
@@ -44,6 +45,7 @@ export default function OnboardingScreen() {
   const [weight, setWeight] = useState(DEFAULT_WEIGHT_KG);
   const [goal, setGoal] = useState<Goal>('muscle');
   const [sessionsPerWeek, setSessionsPerWeek] = useState(3);
+  const [disciplines, setDisciplines] = useState<Discipline[]>(['strength']);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,6 +71,7 @@ export default function OnboardingScreen() {
         weightUnit: unit,
         goal,
         sessionsPerWeek,
+        disciplines,
       });
       setOnboardingPending(false);
     } catch (e) {
@@ -105,6 +108,12 @@ export default function OnboardingScreen() {
           unit={fr.units[unit]}
           format={(v) => formatNumber(v, 1)}
         />
+      </View>
+
+      <View className="gap-2">
+        <SectionLabel>{t.disciplines}</SectionLabel>
+        <DisciplinesPicker value={disciplines} onChange={setDisciplines} />
+        <Text className="font-body text-13 text-muted">{t.disciplinesHint}</Text>
       </View>
 
       <View className="gap-2">

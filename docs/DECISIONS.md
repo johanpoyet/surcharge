@@ -624,3 +624,32 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - ⚠️ **Stats (Phase F)** : les records et le volume V1 ne tiennent pas encore compte du type de
   suivi (ex. wall balls 6 kg × 100 compté comme une série de muscu). Le récap V1 s'affiche en fin de
   séance en attendant les récaps Hyrox / circuit / cardio.
+
+## V2 — Phase F (récaps et stats multi-sport)
+
+- **Stats par type de suivi** (`src/features/stats/typed.ts`) : records (accueil, calendrier,
+  profil, records battus en séance) selon le type ; pour la course, sur la même distance. Le
+  volume, le 1RM et la carte Progression ne comptent que les séries « charge × reps ». Les séries
+  sont lues avec le type de suivi de leur exercice (jointure `exercises`).
+- **Récap de fin de séance** : récap de chaque bloc terminé (Hyrox, circuit, cardio), puis la
+  partie musculation V1 (durée, volume, séries, records) s'il y en a. Une séance de musculation
+  seule s'affiche comme en V1.
+- **Récap Hyrox** (maquette `recap-hyrox`) : temps total, badge « Record −X:XX » contre le meilleur
+  temps des simus précédentes du même bloc (ou même config), tuiles Course (allure moyenne) /
+  Stations / Transitions (si mesurées), barres par station avec l'écart avec la dernière simu, la
+  station la plus en retard en orange, **point faible** = plus gros retard > 10 s avec « Ajouter le
+  bloc » (bloc Hyrox « station seule » de la même catégorie, ajouté à la fin de la séance type).
+- `session_blocks.result.splits` (Hyrox) : temps de chaque segment dans l'ordre (ajout au format
+  de SPEC_V2 §4.4, sans effet sur les anciennes versions). Sert au récap et à la comparaison.
+- **Partager** : texte du récap via la feuille de partage native (`Share` de React Native, aucune
+  dépendance) ; l'image stylée est en V2.1 (SPEC_V2 §8).
+- **Accueil** : course dans les disciplines → tuile « km courus en <mois> » (exercices de la
+  discipline Course + courses Hyrox), stats en grille 2 × 2 ; Hyrox → carte « Meilleure simu
+  Hyrox » (simus complètes : meilleur temps et courbe). La carte « Séance du jour » résume les
+  blocs d'une séance multi-sport (« Hyrox complet · 8 km + 8 stations · 2 exercices »).
+- **Disciplines** : section « Tes disciplines » dans l'écran d'onboarding (au lieu d'un écran de
+  plus : l'onboarding reste en 2 étapes) ; feuille unique au premier lancement de la V2 pour les
+  comptes existants (indicateur local `AsyncStorage`, par appareil) ; réglage « Disciplines » dans
+  le profil. Choisir une discipline ajoute son catalogue d'exercices.
+- Non fait : durée estimée d'un bloc Hyrox d'après la moyenne de l'utilisateur (SPEC_V2 §4.6,
+  « dès qu'il a un historique ») : durées fixes gardées.

@@ -117,6 +117,8 @@ export const fr = {
   },
   onboarding: {
     title: ['On fait', 'connaissance.'],
+    disciplines: 'Tes disciplines',
+    disciplinesHint: 'Exercices et stats adaptés. Modifiable dans le profil.',
     weight: 'Ton poids actuel',
     goal: 'Ton objectif',
     goals: {
@@ -526,13 +528,35 @@ export const fr = {
     monthCaption: (month: string) => `prévues en ${month}`,
     noTemplates: 'Crée d’abord une séance type (onglet Mes séances).',
   },
+  // Feuille « Tes disciplines » (comptes V1, premier lancement de la V2) et réglage du profil.
+  disciplines: {
+    title: 'Tes disciplines',
+    hint: 'Nouveau : Surcharge suit aussi la course, le cross-training et l’Hyrox. Que pratiques-tu ?',
+    validate: 'Valider',
+    later: 'Plus tard',
+    saved: 'Disciplines enregistrées',
+  },
   home: {
     greeting: (firstName: string) => (firstName ? `Salut ${firstName}` : 'Salut'),
+    kmMonth: (month: string) => `km courus en ${month}`,
+    hyrox: {
+      title: 'Meilleure simu Hyrox',
+      empty: 'Fais ta première simu Hyrox pour suivre ton temps ici.',
+      count: (n: number) => (n > 1 ? `${n} simus` : `${n} simu`),
+      chartA11y: (n: number) => `Courbe des temps Hyrox, ${n} simus`,
+    },
     profile: 'Profil',
     day: {
       overline: 'Séance du jour',
       planned: 'Prévue au planning',
       changed: 'Changée pour aujourd’hui',
+      // Séance en blocs : résumé des blocs (SPEC_V2 §5.5).
+      metaBlocks: (summary: string, duration: string) => `${summary} · ~${duration}`,
+      hyroxFull: 'Hyrox complet · 8 km + 8 stations',
+      hyroxHalf: 'Demi Hyrox · 4 km + 4 stations',
+      runKm: (km: string) => `Course · ${km} km`,
+      cardio: 'Cardio',
+      exercisesCount: (n: number) => `${n} ${n > 1 ? 'exercices' : 'exercice'}`,
       meta: (exercises: number, duration: string, muscles: string) =>
         [`${exercises} ${exercises > 1 ? 'exercices' : 'exercice'}`, `~${duration}`, muscles]
           .filter(Boolean)
@@ -577,6 +601,7 @@ export const fr = {
       build ? `Version ${version} (${build})` : `Version ${version}`,
     title: 'Profil',
     signOut: 'Se déconnecter',
+    disciplines: 'Disciplines',
     csv: {
       columns: [
         'date',

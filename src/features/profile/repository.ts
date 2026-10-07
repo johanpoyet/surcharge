@@ -3,7 +3,7 @@ import { and, desc, eq, isNull } from 'drizzle-orm';
 import type { AppDatabase } from '@/db/client';
 import { bodyWeights, profiles, type BodyWeight, type Profile } from '@/db/schema';
 import { nowIso } from '@/db/time';
-import type { Goal, ProfileRow, WeightUnit } from '@/lib/database.types';
+import type { Discipline, Goal, ProfileRow, WeightUnit } from '@/lib/database.types';
 import { newId } from '@/lib/id';
 import { enqueue } from '@/sync/outbox';
 
@@ -26,6 +26,7 @@ export function saveRemoteProfile(db: AppDatabase, row: ProfileRow): void {
     weightUnit: row.weight_unit,
     defaultRestSeconds: row.default_rest_seconds,
     remindersEnabled: row.reminders_enabled,
+    ...(row.disciplines ? { disciplines: row.disciplines } : {}),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     dirty: false,
@@ -40,6 +41,7 @@ export type ProfilePatch = Partial<{
   weightUnit: WeightUnit;
   defaultRestSeconds: number;
   remindersEnabled: boolean;
+  disciplines: Discipline[];
 }>;
 
 export function updateProfile(db: AppDatabase, id: string, patch: ProfilePatch): void {

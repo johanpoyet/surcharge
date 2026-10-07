@@ -1,26 +1,44 @@
 import { format, parseISO } from 'date-fns';
 import { fr as frLocale } from 'date-fns/locale';
 import { router } from 'expo-router';
-import { useMemo } from 'react';
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+import { useEffect, useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Heading, Overline, StatTile } from '@/components/ui';
+import { Heading, Overline, StatTile, useToast } from '@/components/ui';
+import { db, liveDb } from '@/db/client';
+import type { Discipline } from '@/db/schema';
+import { useAuth } from '@/features/auth/AuthProvider';
 import { useExercises } from '@/features/exercises/hooks';
 import { BodyWeightCard } from '@/features/home/components/BodyWeightCard';
+import { HyroxBestCard } from '@/features/home/components/HyroxBestCard';
 import { DayCard, type DayCardState } from '@/features/home/components/DayCard';
 import { ProgressionCard } from '@/features/home/components/ProgressionCard';
 import { RegularityCalendar } from '@/features/home/components/RegularityCalendar';
-import { bodyWeightSummary, monthCounts, progressionOf } from '@/features/home/summary';
+import {
+  bodyWeightSummary,
+  hyroxHistory,
+  kmInMonth,
+  monthCounts,
+  progressionOf,
+} from '@/features/home/summary';
 import { planForDay } from '@/features/planning/calendar';
 import { usePlanning } from '@/features/planning/hooks';
+import { DisciplinesSheet } from '@/features/profile/components/DisciplinesSheet';
+import {
+  disciplinesAsked,
+  markDisciplinesAsked,
+  saveDisciplines,
+} from '@/features/profile/disciplines';
 import { useBodyWeights, useProfile } from '@/features/profile/hooks';
 import { recordSets, regularityWeeks } from '@/features/stats/regularity';
 import { useActiveSession, useAllSets, useCompletedSessions } from '@/features/workout/hooks';
+import { hyroxBlocksQuery } from '@/features/workout/repository';
 import { useStartWorkout } from '@/features/workout/useStartWorkout';
 import { formatEstimate } from '@/features/templates/format';
 import { fr } from '@/i18n/fr';
-import { toLocalDateString } from '@/lib/format';
+import { formatNumber, toLocalDateString } from '@/lib/format';
 import { useNow } from '@/lib/useNow';
 
 const t = fr.home;
@@ -34,6 +52,34 @@ export default function HomeScreen() {
   const weights = useBodyWeights();
   const exercises = useExercises();
   const { start, openWorkout } = useStartWorkout();
+  const userId = useAuth().session?.user.id ?? '';
+  const toast = useToast();
+  const disciplines: Discipline[] = profile?.disciplines ?? ['strength'];
+  const { data: hyroxBlocks } = useLiveQuery(hyroxBlocksQuery(liveDb, userId), [userId]);
+  const hyroxRuns = useMemo(() => hyroxHistory(hyroxBlocks), [hyroxBlocks]);
+
+  // Comptes V1 : une seule fois, la question « Tes disciplines » (SPEC_V2 §5.5).
+  const [askDisciplines, setAskDisciplines] = useState(false);
+  const profileId = profile?.id;
+  useEffect(() => {
+    if (!profileId) return;
+    let cancelled = false;
+    void disciplinesAsked(profileId).then((asked) => {
+      if (!cancelled && !asked) setAskDisciplines(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [profileId]);
+  const closeDisciplines = (chosen?: Discipline[]) => {
+    setAskDisciplines(false);
+    if (!profileId) return;
+    void markDisciplinesAsked(profileId);
+    if (chosen) {
+      saveDisciplines(db, profileId, chosen);
+      toast.show(fr.disciplines.saved);
+    }
+  };
   // Rafraîchi chaque minute : l'accueil change de jour à minuit.
   const now = useNow(60_000);
   const today = useMemo(() => new Date(now), [now]);
@@ -66,6 +112,7 @@ export default function HomeScreen() {
     [profile?.sessionsPerWeek, sessions, today],
   );
   const progression = useMemo(() => progressionOf(sets), [sets]);
+  const km = useMemo(() => kmInMonth(sets, today), [sets, today]);
   const weight = useMemo(() => bodyWeightSummary(weights), [weights]);
 
   const active = useActiveSession();
@@ -83,11 +130,13 @@ export default function HomeScreen() {
           ? {
               kind: 'planned',
               name: planned.name,
-              meta: t.day.meta(
-                planned.exerciseCount,
-                formatEstimate(planned.minutes),
-                planned.muscles.join(', '),
-              ),
+              meta: planned.summary
+                ? t.day.metaBlocks(planned.summary, formatEstimate(planned.minutes))
+                : t.day.meta(
+                    planned.exerciseCount,
+                    formatEstimate(planned.minutes),
+                    planned.muscles.join(', '),
+                  ),
               changed: plan.source === 'override',
             }
           : { kind: 'rest' };
@@ -142,14 +191,35 @@ export default function HomeScreen() {
           onCreate={() => router.push('/templates/new')}
         />
 
-        <View className="flex-row gap-2">
-          <StatTile
-            value={String(counts.sessions)}
-            caption={t.stats.sessions(counts.sessions, monthShort)}
-          />
-          <StatTile value={String(counts.records)} caption={t.stats.records(counts.records)} />
-          <StatTile value={String(streak)} unit={t.stats.streakUnit} caption={t.stats.streak} />
-        </View>
+        {disciplines.includes('running') ? (
+          // Course : tuile « km courus ce mois » en plus (grille 2 × 2).
+          <View className="gap-2">
+            <View className="flex-row gap-2">
+              <StatTile
+                value={String(counts.sessions)}
+                caption={t.stats.sessions(counts.sessions, monthShort)}
+              />
+              <StatTile value={String(counts.records)} caption={t.stats.records(counts.records)} />
+            </View>
+            <View className="flex-row gap-2">
+              <StatTile value={String(streak)} unit={t.stats.streakUnit} caption={t.stats.streak} />
+              <StatTile
+                value={formatNumber(km, 1)}
+                unit={fr.units.km}
+                caption={t.kmMonth(monthShort)}
+              />
+            </View>
+          </View>
+        ) : (
+          <View className="flex-row gap-2">
+            <StatTile
+              value={String(counts.sessions)}
+              caption={t.stats.sessions(counts.sessions, monthShort)}
+            />
+            <StatTile value={String(counts.records)} caption={t.stats.records(counts.records)} />
+            <StatTile value={String(streak)} unit={t.stats.streakUnit} caption={t.stats.streak} />
+          </View>
+        )}
 
         <RegularityCalendar
           today={today}
@@ -159,11 +229,19 @@ export default function HomeScreen() {
           overrides={overrides}
         />
 
+        {disciplines.includes('hyrox') ? <HyroxBestCard runs={hyroxRuns} /> : null}
+
         {progression ? (
           <ProgressionCard progression={progression} exerciseName={progressionName} unit={unit} />
         ) : null}
         {weight ? <BodyWeightCard summary={weight} unit={unit} /> : null}
       </ScrollView>
+      <DisciplinesSheet
+        visible={askDisciplines}
+        initial={disciplines}
+        onSave={(chosen) => closeDisciplines(chosen)}
+        onClose={() => closeDisciplines()}
+      />
     </SafeAreaView>
   );
 }

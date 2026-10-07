@@ -10,7 +10,14 @@ jest.mock('../useDayActions', () => ({ dayTitle: () => 'jour' }));
 const t = fr.planning;
 // Semaine du lundi 21 septembre 2026 ; Push prévu le lundi, rien le jeudi.
 const days = weekDays(new Date(2026, 8, 21));
-const push = { id: 'push', name: 'Push', exerciseCount: 4, minutes: 35, muscles: [] };
+const push = {
+  id: 'push',
+  name: 'Push',
+  exerciseCount: 4,
+  minutes: 35,
+  muscles: [],
+  summary: null,
+};
 
 it('affiche la séance faite un jour de repos au lieu de « Repos »', async () => {
   await render(

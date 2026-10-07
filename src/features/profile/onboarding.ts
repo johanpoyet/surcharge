@@ -1,6 +1,8 @@
 import { db } from '@/db/client';
+import { ensureCatalogExercises } from '@/features/exercises/catalog';
 import { seedDefaultExercises } from '@/features/exercises/repository';
 import { fetchProfile, saveOnboarding, type OnboardingValues } from './api';
+import { markDisciplinesAsked } from './disciplines';
 import { saveBodyWeight, saveRemoteProfile } from './repository';
 
 /** Fin de l'onboarding : Supabase, copie locale, puis bibliothèque d'exercices par défaut. */
@@ -12,6 +14,9 @@ export async function completeOnboarding(userId: string, values: OnboardingValue
     id: bodyWeight.id,
   });
   seedDefaultExercises(db, userId);
+  // Catalogue des autres disciplines choisies (course, cross-training, Hyrox).
+  ensureCatalogExercises(db, userId, values.disciplines);
+  await markDisciplinesAsked(userId);
 }
 
 /** « Passer cette étape » : profil local si le réseau répond, bibliothèque dans tous les cas. */

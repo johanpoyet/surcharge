@@ -1,6 +1,6 @@
 import { randomUUID } from 'expo-crypto';
 
-import type { Goal, ProfileRow, WeightUnit } from '@/lib/database.types';
+import type { Discipline, Goal, ProfileRow, WeightUnit } from '@/lib/database.types';
 import { toLocalDateString } from '@/lib/format';
 import { supabase } from '@/lib/supabase';
 
@@ -12,6 +12,7 @@ export type OnboardingValues = {
   weightUnit: WeightUnit;
   goal: Goal;
   sessionsPerWeek: number;
+  disciplines: Discipline[];
 };
 
 export type OnboardingResult = {
@@ -30,6 +31,7 @@ export async function saveOnboarding(
       goal: values.goal,
       sessions_per_week: values.sessionsPerWeek,
       weight_unit: values.weightUnit,
+      disciplines: values.disciplines,
     })
     .eq('id', userId)
     .select('*')

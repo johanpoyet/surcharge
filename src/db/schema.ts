@@ -10,14 +10,14 @@ import { sql } from 'drizzle-orm';
 import { index, integer, real, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 import type { Difficulty } from '@/features/workout/difficulty';
-import type { Goal, WeightUnit } from '@/lib/database.types';
+import type { Discipline, Goal, WeightUnit } from '@/lib/database.types';
 
 export type MuscleGroup = 'chest' | 'back' | 'shoulders' | 'legs' | 'arms' | 'abs' | 'other';
 export type Equipment = 'barbell' | 'dumbbell' | 'machine' | 'cable' | 'bodyweight' | 'other';
 /** Ce que l'on note à chaque série (SPEC_V2 §4.1). */
 export type TrackingType =
   'weight_reps' | 'distance_time' | 'time' | 'reps' | 'calories' | 'weight_distance';
-export type Discipline = 'strength' | 'running' | 'cross_training' | 'hyrox' | 'other';
+export type { Discipline };
 export type BlockType = 'warmup' | 'strength' | 'cardio' | 'circuit' | 'hyrox';
 /** Contenu JSON libre (config et résultat d'un bloc), typé par type de bloc côté métier. */
 export type JsonObject = Record<string, unknown>;

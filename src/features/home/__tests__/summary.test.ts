@@ -1,4 +1,4 @@
-import { bodyWeightSummary, monthCounts, progressionOf } from '../summary';
+import { bodyWeightSummary, hyroxHistory, kmInMonth, monthCounts, progressionOf } from '../summary';
 
 const set = (
   sessionId: string,
@@ -58,4 +58,41 @@ it('séances et records du mois', () => {
       today,
     ),
   ).toEqual({ sessions: 2, records: 1 });
+});
+
+describe('cartes multi-sport de l’accueil', () => {
+  const today = new Date(2026, 9, 20);
+  it('km courus ce mois : course et courses Hyrox, pas le rameur', () => {
+    expect(
+      kmInMonth(
+        [
+          { completedAt: '2026-10-02T10:00:00Z', distanceM: 5000, discipline: 'running' },
+          {
+            completedAt: '2026-10-03T10:00:00Z',
+            distanceM: 1000,
+            catalogKey: 'hyrox_run',
+            discipline: 'hyrox',
+          },
+          {
+            completedAt: '2026-10-03T10:05:00Z',
+            distanceM: 1000,
+            catalogKey: 'hyrox_rowing',
+            discipline: 'hyrox',
+          },
+          { completedAt: '2026-09-28T10:00:00Z', distanceM: 8000, discipline: 'running' },
+        ],
+        today,
+      ),
+    ).toBe(6);
+  });
+
+  it('simus Hyrox complètes seulement, dans l’ordre', () => {
+    expect(
+      hyroxHistory([
+        { endedAt: '2026-10-10T10:00:00Z', config: { format: 'full' }, result: { totalS: 4800 } },
+        { endedAt: '2026-10-01T10:00:00Z', config: { format: 'full' }, result: { totalS: 5000 } },
+        { endedAt: '2026-10-05T10:00:00Z', config: { format: 'station' }, result: { totalS: 300 } },
+      ]).map((r) => r.totalS),
+    ).toEqual([5000, 4800]);
+  });
 });

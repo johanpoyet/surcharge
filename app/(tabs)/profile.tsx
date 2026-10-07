@@ -16,7 +16,10 @@ import { authErrorMessage } from '@/features/auth/errors';
 import { useExercises } from '@/features/exercises/hooks';
 import { BodyWeightChartCard } from '@/features/profile/components/BodyWeightChartCard';
 import { RecordsCard } from '@/features/profile/components/RecordsCard';
+import { DisciplinesSheet } from '@/features/profile/components/DisciplinesSheet';
 import { deleteAccount } from '@/features/profile/deleteAccount';
+import { saveDisciplines } from '@/features/profile/disciplines';
+import type { Discipline } from '@/db/schema';
 import { exportCsv } from '@/features/profile/export';
 import { useBodyWeights, useProfile } from '@/features/profile/hooks';
 import { updateProfile } from '@/features/profile/repository';
@@ -77,6 +80,8 @@ export default function ProfileScreen() {
   const exercises = useExercises();
   const [signingOut, setSigningOut] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [editingDisciplines, setEditingDisciplines] = useState(false);
+  const disciplines: Discipline[] = profile?.disciplines ?? ['strength'];
 
   const stats = useMemo(() => globalStats(sessions, sets), [sessions, sets]);
   const records = useMemo(() => {
@@ -208,6 +213,11 @@ export default function ProfileScreen() {
         <RecordsCard records={records} unit={unit} />
 
         <Card className="overflow-hidden p-0">
+          <SettingRow
+            label={t.disciplines}
+            value={disciplines.map((d) => fr.exercises.tracking.disciplines[d]).join(', ')}
+            onPress={() => setEditingDisciplines(true)}
+          />
           <SettingRow label={t.settings.unit} value={fr.units[unit]} onPress={chooseUnit} />
           <SettingRow
             label={t.settings.rest}
@@ -275,6 +285,17 @@ export default function ProfileScreen() {
           />
         ) : null}
       </ScrollView>
+      <DisciplinesSheet
+        visible={editingDisciplines}
+        initial={disciplines}
+        onSave={(chosen) => {
+          setEditingDisciplines(false);
+          if (!profile) return;
+          saveDisciplines(db, profile.id, chosen);
+          toast.show(fr.disciplines.saved);
+        }}
+        onClose={() => setEditingDisciplines(false)}
+      />
     </SafeAreaView>
   );
 }

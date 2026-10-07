@@ -14,6 +14,7 @@ import { colors } from '@/theme/tokens';
 import { canUndo, formatDelta, segmentMs } from '../blocks/engine';
 import { formatClock } from '../logic';
 import { lastBlock } from '../repository';
+import { blockSplits } from './HyroxRecapCard';
 import type { ExerciseProgress, Workout } from '../useWorkout';
 
 const t = fr.workout.blocks.hyrox;
@@ -44,10 +45,7 @@ export function HyroxView({ workout, now, unit }: HyroxViewProps) {
     () => lastBlock(db, userId, block, workout.session?.id ?? ''),
     [block, userId, workout.session?.id],
   );
-  const lastDurations = useMemo(
-    () => (last?.sets ?? []).map((set) => set.durationS ?? null),
-    [last],
-  );
+  const lastDurations = useMemo(() => (last ? blockSplits(last.block) : []), [last]);
 
   const nameOf = (p: ExerciseProgress | undefined) =>
     !p

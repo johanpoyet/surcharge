@@ -1,12 +1,13 @@
 // Résumés affichés sur les cartes de bloc (maquette seance-multi-blocs). Fonctions pures.
 
-import type { TrackingType } from '@/db/schema';
+import type { BlockType, JsonObject, TrackingType } from '@/db/schema';
+import { hyroxStations } from '@/features/hyrox/segments';
 import { formatDistance } from '@/features/exercises/tracking';
 import { formatClock } from '@/features/workout/logic';
 import { fr } from '@/i18n/fr';
 import type { WeightUnit } from '@/lib/database.types';
-import { formatWeight } from '@/lib/format';
-import type { CircuitConfig } from './blockConfig';
+import { formatNumber, formatWeight } from '@/lib/format';
+import { parseBlockConfig, type CircuitConfig } from './blockConfig';
 import type { DraftItem } from './draftStore';
 import { parseRepsTarget, parseRest } from './format';
 
@@ -57,4 +58,51 @@ export function circuitTitle(config: CircuitConfig): string {
     case 'tabata':
       return t.circuitSummary.tabata(config.rounds, config.workS, config.restS);
   }
+}
+
+type SummaryBlock = { id: string; type: BlockType; config: JsonObject };
+type SummaryItem = {
+  blockId: string | null;
+  targetSets: number;
+  targetDistanceM: number | null;
+  discipline: string;
+};
+
+/**
+ * Résumé des blocs d'une séance type pour la carte « Séance du jour » (SPEC_V2 §5.5) :
+ * « Hyrox complet · 8 km + 8 stations · 2 exercices ». Null pour une séance de musculation seule
+ * (la carte garde son affichage V1).
+ */
+export function templateSummary(
+  blocks: readonly SummaryBlock[],
+  items: readonly SummaryItem[],
+): string | null {
+  if (blocks.every((b) => b.type === 'strength')) return null;
+  const d = fr.home.day;
+  const parts = blocks.flatMap((block): string[] => {
+    const own = items.filter((i) => i.blockId === block.id);
+    switch (block.type) {
+      case 'hyrox': {
+        const config = parseBlockConfig('hyrox', block.config);
+        if (config.format === 'full') return [d.hyroxFull];
+        if (config.format === 'half') return [d.hyroxHalf];
+        return [hyroxStations(config)[0]?.exercise.name ?? t.tags.hyrox];
+      }
+      case 'circuit':
+        return [circuitTitle(parseBlockConfig('circuit', block.config))];
+      case 'cardio': {
+        const meters = own.reduce(
+          (sum, i) =>
+            sum + (i.discipline === 'running' ? (i.targetDistanceM ?? 0) * i.targetSets : 0),
+          0,
+        );
+        return [meters > 0 ? d.runKm(formatNumber(meters / 1000, 1)) : d.cardio];
+      }
+      case 'strength':
+        return own.length > 0 ? [d.exercisesCount(own.length)] : [];
+      case 'warmup':
+        return [];
+    }
+  });
+  return parts.join(' · ');
 }
