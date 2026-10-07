@@ -8,7 +8,8 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { Animated, Text } from 'react-native';
+import { Animated, Platform, Text } from 'react-native';
+import { FullWindowOverlay } from 'react-native-screens';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors } from '@/theme/tokens';
@@ -21,6 +22,18 @@ const VISIBLE_MS = 2200;
 const FADE_MS = 180;
 // Au-dessus de la barre d'onglets (≈ 88 px).
 const BOTTOM_OFFSET = 96;
+
+/**
+ * iOS : couche au-dessus de toute la fenêtre, modales plein écran comprises (sinon le toast reste
+ * caché derrière la séance en cours ou le récap). Ailleurs : rendu sur place.
+ */
+function Overlay({ children }: { children: ReactNode }) {
+  return Platform.OS === 'ios' ? (
+    <FullWindowOverlay>{children}</FullWindowOverlay>
+  ) : (
+    <>{children}</>
+  );
+}
 
 /** Toast discret pour les confirmations. À placer une fois, dans le layout racine. */
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -58,22 +71,24 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={{ show }}>
       {children}
       {message ? (
-        <Animated.View
-          pointerEvents="none"
-          accessibilityLiveRegion="polite"
-          accessibilityRole="alert"
-          className="absolute left-screen right-screen flex-row items-center gap-2 rounded-input border border-line bg-surface2 px-4 py-3"
-          style={{
-            bottom: insets.bottom + BOTTOM_OFFSET,
-            opacity,
-            transform: [
-              { translateY: opacity.interpolate({ inputRange: [0, 1], outputRange: [8, 0] }) },
-            ],
-          }}
-        >
-          <Check size={18} color={colors.volt} strokeWidth={2.5} />
-          <Text className="flex-1 font-body-semibold text-14 text-text">{message}</Text>
-        </Animated.View>
+        <Overlay>
+          <Animated.View
+            pointerEvents="none"
+            accessibilityLiveRegion="polite"
+            accessibilityRole="alert"
+            className="absolute left-screen right-screen flex-row items-center gap-2 rounded-input border border-line bg-surface2 px-4 py-3"
+            style={{
+              bottom: insets.bottom + BOTTOM_OFFSET,
+              opacity,
+              transform: [
+                { translateY: opacity.interpolate({ inputRange: [0, 1], outputRange: [8, 0] }) },
+              ],
+            }}
+          >
+            <Check size={18} color={colors.volt} strokeWidth={2.5} />
+            <Text className="flex-1 font-body-semibold text-14 text-text">{message}</Text>
+          </Animated.View>
+        </Overlay>
       ) : null}
     </ToastContext.Provider>
   );

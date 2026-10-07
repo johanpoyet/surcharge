@@ -487,7 +487,7 @@ export const fr = {
         weakSuffix: (seconds: number) =>
           `, ${seconds} s perdues. Ajouter un bloc dédié à ta prochaine séance ?`,
         addBlock: 'Ajouter le bloc',
-        added: (template: string) => `Bloc ajouté à ${template}`,
+        added: (template: string) => `✓ Bloc ajouté à ${template}`,
         share: (time: string, division: string) =>
           `Hyrox ${time}${division ? ` (${division})` : ''}`,
       },

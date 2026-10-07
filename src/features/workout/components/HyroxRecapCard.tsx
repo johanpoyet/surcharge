@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { BrandWatermark, useToast } from '@/components/ui';
+import { BrandWatermark } from '@/components/ui';
 import { db } from '@/db/client';
 import type { SessionBlock } from '@/db/schema';
 import { hyroxRecap, type HyroxRecap } from '@/features/hyrox/recap';
@@ -68,7 +68,6 @@ type HyroxRecapCardProps = {
 
 /** Récap d'une simu Hyrox (maquette recap-hyrox). */
 export function HyroxRecapCard({ block, sessionName, userId, template }: HyroxRecapCardProps) {
-  const toast = useToast();
   const recap = useHyroxRecap(block, userId);
   const config = parseBlockConfig('hyrox', block.config);
   const [added, setAdded] = useState(false);
@@ -81,7 +80,6 @@ export function HyroxRecapCard({ block, sessionName, userId, template }: HyroxRe
       config: { format: 'station', division: config.division, stations: [recap.weakPoint.station] },
     });
     setAdded(true);
-    toast.show(t.added(template.name));
   };
 
   return (
@@ -178,6 +176,10 @@ export function HyroxRecapCard({ block, sessionName, userId, template }: HyroxRe
             <Text className="font-body-bold text-diffHard">{recap.weakPoint.name}</Text>
             {t.weakSuffix(recap.weakPoint.deltaS)}
           </Text>
+          {/* Confirmation dans le bandeau : un toast serait caché derrière cette modale. */}
+          {added && template ? (
+            <Text className="font-body-bold text-14 text-volt">{t.added(template.name)}</Text>
+          ) : null}
           {template && recap.weakPoint.station && !added ? (
             <Pressable
               accessibilityRole="button"
