@@ -2,6 +2,7 @@ import {
   colors,
   fonts,
   fontSizes,
+  hardAlpha,
   letterSpacings,
   onVoltAlpha,
   scrim,
@@ -29,6 +30,8 @@ const preset = {
         'volt-border': voltAlpha.border,
         'onVolt-tag': onVoltAlpha.tag,
         scrim,
+        'diffHard-subtle': hardAlpha.subtle,
+        'diffHard-border': hardAlpha.border,
       },
       fontFamily: {
         display: [fonts.display],

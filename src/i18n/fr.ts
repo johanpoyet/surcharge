@@ -468,6 +468,35 @@ export const fr = {
       records: 'Records battus',
       noRecords: 'Pas de record cette fois : la régularité paie.',
       done: 'Terminer',
+      share: 'Partager',
+      shareFooter: 'Noté avec Surcharge',
+      strength: 'Musculation',
+      // Récap Hyrox (SPEC_V2 §5.4, maquette recap-hyrox).
+      hyrox: {
+        done: (name: string) => `${name} terminée`,
+        record: (delta: string) => `Record ${delta}`,
+        run: 'Course',
+        stations: 'Stations',
+        transitions: 'Transitions',
+        roxzone: 'Roxzone',
+        stationCount: (n: number) => `${n} ${n > 1 ? 'stations' : 'station'}`,
+        vsLast: 'vs dernière simu',
+        weakPrefix: 'Point faible : ',
+        weakSuffix: (seconds: number) =>
+          `, ${seconds} s perdues. Ajouter un bloc dédié à ta prochaine séance ?`,
+        addBlock: 'Ajouter le bloc',
+        added: (template: string) => `Bloc ajouté à ${template}`,
+        share: (time: string, division: string) =>
+          `Hyrox ${time}${division ? ` (${division})` : ''}`,
+      },
+      circuit: {
+        vsLastRounds: (delta: number) =>
+          delta === 0
+            ? 'Comme la dernière fois'
+            : `${delta > 0 ? '+' : '−'}${Math.abs(delta)} ${Math.abs(delta) > 1 ? 'tours' : 'tour'} vs la dernière fois`,
+        vsLastTime: (delta: string) => `${delta} vs la dernière fois`,
+      },
+      cardio: { distance: 'Distance', time: 'Temps', pace: 'Allure' },
     },
   },
   planning: {

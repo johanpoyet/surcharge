@@ -332,6 +332,46 @@ export function listTemplateBlocks(db: AppDatabase, templateId: string): LoadedB
   return blocks;
 }
 
+/**
+ * Ajoute un bloc à la fin d'une séance type (récap Hyrox : bloc dédié au point faible,
+ * SPEC_V2 §5.4). Retourne l'id du bloc.
+ */
+export function appendTemplateBlock(
+  db: AppDatabase,
+  userId: string,
+  templateId: string,
+  block: { type: BlockType; name: string | null; config: JsonObject },
+): string {
+  const id = newId();
+  const now = nowIso();
+  db.transaction((tx) => {
+    const position = tx
+      .select({ id: templateBlocks.id })
+      .from(templateBlocks)
+      .where(and(eq(templateBlocks.templateId, templateId), isNull(templateBlocks.deletedAt)))
+      .all().length;
+    tx.insert(templateBlocks)
+      .values({
+        ...block,
+        id,
+        userId,
+        templateId,
+        position,
+        createdAt: now,
+        updatedAt: now,
+        dirty: true,
+      })
+      .run();
+    enqueue(tx, 'template_blocks', id, 'upsert');
+    tx.update(workoutTemplates)
+      .set({ updatedAt: now, dirty: true })
+      .where(eq(workoutTemplates.id, templateId))
+      .run();
+    enqueue(tx, 'workout_templates', templateId, 'upsert');
+  });
+  return id;
+}
+
 export function getTemplate(db: AppDatabase, id: string): WorkoutTemplate | undefined {
   return db.select().from(workoutTemplates).where(eq(workoutTemplates.id, id)).get();
 }

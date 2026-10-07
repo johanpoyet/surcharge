@@ -6,6 +6,7 @@ import { createExercise, listExercises } from '@/features/exercises/repository';
 import { createTestDb } from '@/test/testDb';
 import type { AppDatabase } from '@/db/client';
 import {
+  appendTemplateBlock,
   deleteTemplate,
   duplicateTemplate,
   getTemplate,
@@ -210,4 +211,17 @@ describe('séances types en blocs (V2)', () => {
     });
     expect(listTemplateBlocks(db, id)).toMatchObject([{ type: 'strength', id }]);
   });
+});
+
+it('point faible Hyrox : un bloc « station seule » ajouté à la fin de la séance type', () => {
+  const id = saveTemplate(db, USER, { name: 'Simu', weekdays: [], items: [item(exerciseIds[0]!)] });
+  appendTemplateBlock(db, USER, id, {
+    type: 'hyrox',
+    name: null,
+    config: { format: 'station', division: 'open_men', stations: ['burpee_broad_jumps'] },
+  });
+  expect(listTemplateBlocks(db, id).map((b) => [b.type, b.config.format])).toEqual([
+    ['strength', undefined],
+    ['hyrox', 'station'],
+  ]);
 });

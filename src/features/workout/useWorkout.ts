@@ -311,11 +311,15 @@ export function useWorkout(sessionId: string) {
         (p) => blockSets.find((s) => s.exerciseOrder === p.order)?.durationS ?? null,
       );
       const config = parseBlockConfig('hyrox', block.config);
-      return hyroxResult(
-        items.map((p) => ({ kind: p.item.segment?.kind ?? 'run' })),
-        durations,
-        config.timeTransitions ? (run.hyrox?.transitions ?? []) : null,
-      );
+      // `splits` : temps de chaque segment dans l'ordre (récap, comparaison avec la dernière fois).
+      return {
+        ...hyroxResult(
+          items.map((p) => ({ kind: p.item.segment?.kind ?? 'run' })),
+          durations,
+          config.timeTransitions ? (run.hyrox?.transitions ?? []) : null,
+        ),
+        splits: durations,
+      };
     }
     if (block.type === 'circuit') {
       const config = parseBlockConfig('circuit', block.config);

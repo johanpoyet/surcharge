@@ -32,7 +32,7 @@ export const fonts = {
 
 // Tailles de police en px. SPEC + tailles relevées dans les maquettes (96, 80, 56, 44, 40, 38, 32, 28, 24, 18, 10).
 export const fontSizes = {
-  display: [96, 80, 60, 56, 48, 44, 40, 38, 34, 32, 30, 28, 26, 24, 22, 20],
+  display: [96, 80, 72, 60, 56, 48, 44, 40, 38, 34, 32, 30, 28, 26, 24, 22, 20],
   body: [18, 17, 16, 15, 14, 13, 12, 11, 10],
 } as const;
 
@@ -70,6 +70,12 @@ export const voltAlpha = {
   selected: 'rgba(215,255,58,0.08)',
   soft: 'rgba(215,255,58,0.12)',
   border: 'rgba(215,255,58,0.35)',
+} as const;
+
+// Orange transparent : bandeau « point faible » du récap Hyrox (maquette recap-hyrox)
+export const hardAlpha = {
+  subtle: 'rgba(255,122,47,0.06)',
+  border: 'rgba(255,122,47,0.4)',
 } as const;
 
 // Fond assombri derrière une feuille du bas (maquette ajouter-bloc)

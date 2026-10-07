@@ -236,15 +236,15 @@ export function listSessionBlocks(db: AppDatabase, sessionId: string): SessionBl
 export type LastBlock = { block: SessionBlock; sets: SessionSet[] };
 
 /**
- * Dernière fois qu'un bloc a été fait (SPEC_V2 §4.5) : dernier bloc terminé du même bloc de séance
- * type, à défaut du même type et de la même config. Ses séries dans l'ordre de la séance.
+ * Fois précédentes où un bloc a été fait, de la plus récente à la plus ancienne (SPEC_V2 §4.5) :
+ * blocs terminés du même bloc de séance type, à défaut du même type et de la même config.
  */
-export function lastBlock(
+export function previousBlocks(
   db: AppDatabase,
   userId: string,
-  block: PlannedBlock,
+  block: Pick<PlannedBlock, 'type' | 'templateBlockId' | 'config'>,
   excludeSessionId: string,
-): LastBlock | null {
+): SessionBlock[] {
   const candidates = db
     .select({ block: sessionBlocks })
     .from(sessionBlocks)
@@ -263,10 +263,22 @@ export function lastBlock(
     .all()
     .map((row) => row.block);
   const config = JSON.stringify(block.config);
-  const found =
-    (block.templateBlockId
-      ? candidates.find((c) => c.templateBlockId === block.templateBlockId)
-      : undefined) ?? candidates.find((c) => JSON.stringify(c.config) === config);
+  const sameTemplate = block.templateBlockId
+    ? candidates.filter((c) => c.templateBlockId === block.templateBlockId)
+    : [];
+  return sameTemplate.length > 0
+    ? sameTemplate
+    : candidates.filter((c) => JSON.stringify(c.config) === config);
+}
+
+/** Dernière fois qu'un bloc a été fait, avec ses séries dans l'ordre de la séance. */
+export function lastBlock(
+  db: AppDatabase,
+  userId: string,
+  block: PlannedBlock,
+  excludeSessionId: string,
+): LastBlock | null {
+  const found = previousBlocks(db, userId, block, excludeSessionId)[0];
   if (!found) return null;
   const sets = db
     .select()
