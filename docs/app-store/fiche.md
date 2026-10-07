@@ -235,7 +235,7 @@ Compte démo enrichi avant la soumission (`supabase/demo/seed-demo-v2.sql` : sé
 au planning, deux simus terminées, un AMRAP, une course). Ajouter en fin de notes :
 
 ```
-New in 2.0.0 (multi-sport): the demo account contains a "Simu Hyrox" workout made of blocks (warm-up, Hyrox, strength) and two completed Hyrox simulations. To see the Hyrox recap, open Profile or the Home tab ("Best Hyrox simulation"), or start "Simu Hyrox" from the Workouts tab: tap "Start block", then the large button once per segment (the last tap can be undone for 5 seconds). Circuit blocks (AMRAP, EMOM, For Time, Tabata) play a short beep at each interval; no microphone or other permission is used.
+New in 2.0.0 (multi-sport): on first launch, a sheet asks which sports you practice (the demo account already has strength, running, cross-training and Hyrox: just tap "Valider"). The Home tab then shows the kilometres run this month and a "Meilleure simu Hyrox" card (two Hyrox simulations are already in the history). In the Workouts tab ("Séances" → "Mes séances"), "Simu Hyrox" is a workout made of blocks (warm-up, Hyrox, strength): tap it, then "Démarrer". For each block tap "Démarrer le bloc"; during the Hyrox block, tap the large button once per segment (the last tap can be undone for 5 seconds). At the end, the recap compares each station with the previous simulation. "WOD" is a 12-minute AMRAP circuit: a short beep plays at the end (no microphone or other permission is used).
 ```
 
 ### Captures (facultatif)
