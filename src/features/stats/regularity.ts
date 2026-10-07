@@ -1,6 +1,6 @@
 // Régularité et records sur une période (SPEC 9.2). Fonctions pures.
 
-import { beats, isSuccessful, type SetLike } from './calc';
+import { beatsTyped, isCounted, recordKey, type TypedSet } from './typed';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -37,21 +37,23 @@ export function regularityWeeks(
   return streak;
 }
 
-export type DatedSet = SetLike & { exerciseId: string; completedAt: string };
+export type DatedSet = TypedSet & { exerciseId: string; completedAt: string };
 
 /**
- * Séries qui ont battu le record de leur exercice au moment où elles ont été faites.
- * La toute première série d'un exercice ne compte pas (il n'y avait pas de record à battre).
+ * Séries qui ont battu le record de leur exercice au moment où elles ont été faites, selon son
+ * type de suivi (SPEC_V2 §4.1 ; pour la course : sur la même distance). La toute première série
+ * ne compte pas (il n'y avait pas de record à battre).
  */
 export function recordSets<T extends DatedSet>(sets: readonly T[]): T[] {
-  const best = new Map<string, SetLike>();
+  const best = new Map<string, TypedSet>();
   const records: T[] = [];
   for (const set of [...sets].sort((a, b) => a.completedAt.localeCompare(b.completedAt))) {
-    if (!isSuccessful(set)) continue;
-    const previous = best.get(set.exerciseId);
-    if (!previous) best.set(set.exerciseId, set);
-    else if (beats(set, previous)) {
-      best.set(set.exerciseId, set);
+    if (!isCounted(set)) continue;
+    const key = recordKey(set);
+    const previous = best.get(key);
+    if (!previous) best.set(key, set);
+    else if (beatsTyped(set, previous)) {
+      best.set(key, set);
       records.push(set);
     }
   }

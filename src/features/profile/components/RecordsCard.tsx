@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { Card } from '@/components/ui';
+import type { TrackingType } from '@/db/schema';
+import { formatSet, type TrackedSet } from '@/features/exercises/tracking';
 import { fr } from '@/i18n/fr';
 import type { WeightUnit } from '@/lib/database.types';
 import { cn } from '@/lib/cn';
@@ -14,12 +16,11 @@ import { colors } from '@/theme/tokens';
 const t = fr.profile.records;
 const PREVIEW = 3;
 
-export type RecordItem = {
+export type RecordItem = TrackedSet & {
   id: string;
   exerciseName: string;
-  weightKg: number;
-  reps: number;
   completedAt: string;
+  trackingType: TrackingType | null;
 };
 
 /** Records personnels (le plus récent d'abord), « Tout voir » déplie la liste. */
@@ -59,7 +60,9 @@ export function RecordsCard({ records, unit }: { records: RecordItem[]; unit: We
               </Text>
             </View>
             <Text className="font-display text-22 text-volt">
-              {t.value(formatWeight(record.weightKg, unit), record.reps)}
+              {record.trackingType && record.trackingType !== 'weight_reps'
+                ? formatSet(record.trackingType, record, unit)
+                : t.value(formatWeight(record.weightKg, unit), record.reps)}
             </Text>
           </View>
         ))

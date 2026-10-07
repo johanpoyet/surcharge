@@ -47,7 +47,11 @@ export function sessionMax(sets: readonly SetLike[]): number | null {
 
 /** Volume : Σ charge × reps. */
 export function volume(sets: readonly SetLike[]): number {
-  return sets.reduce((sum, s) => sum + s.weightKg * s.reps, 0);
+  // Seules les séries « charge × reps » comptent (pas les wall balls d'un Hyrox, SPEC_V2 §4.1).
+  return sets.reduce((sum, s) => {
+    const type = (s as { trackingType?: string | null }).trackingType;
+    return type && type !== 'weight_reps' ? sum : sum + s.weightKg * s.reps;
+  }, 0);
 }
 
 export type Trend =

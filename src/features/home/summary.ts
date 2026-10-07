@@ -2,8 +2,9 @@
 
 import { parseISO } from 'date-fns';
 
-import { sessionMax, type SetLike } from '@/features/stats/calc';
+import { sessionMax } from '@/features/stats/calc';
 import { daysBetween, recordSets, type DatedSet } from '@/features/stats/regularity';
+import { isStrength } from '@/features/stats/typed';
 
 type SessionSetRow = DatedSet & { sessionId: string };
 
@@ -20,7 +21,8 @@ const BARS = 8;
 /** Exercice le plus pratiqué (en séances) et ses 8 dernières charges max. */
 export function progressionOf(sets: readonly SessionSetRow[]): Progression | null {
   const byExercise = new Map<string, Map<string, SessionSetRow[]>>();
-  for (const set of sets) {
+  // Courbe de charge : exercices de musculation seulement.
+  for (const set of sets.filter(isStrength)) {
     const sessions = byExercise.get(set.exerciseId) ?? new Map<string, SessionSetRow[]>();
     sessions.set(set.sessionId, [...(sessions.get(set.sessionId) ?? []), set]);
     byExercise.set(set.exerciseId, sessions);
@@ -72,7 +74,7 @@ export function bodyWeightSummary(
 /** Séances et records du mois de `today`. */
 export function monthCounts(
   sessionStarts: readonly string[],
-  sets: readonly (SetLike & { exerciseId: string; completedAt: string })[],
+  sets: readonly DatedSet[],
   today: Date,
 ): { sessions: number; records: number } {
   const inMonth = (iso: string) => {

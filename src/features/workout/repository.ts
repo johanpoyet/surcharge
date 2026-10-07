@@ -2,6 +2,7 @@ import { and, asc, desc, eq, gt, inArray, isNotNull, isNull, lt, ne } from 'driz
 
 import type { AppDatabase } from '@/db/client';
 import {
+  exercises,
   sessionBlocks,
   sessions,
   sessionSets,
@@ -399,18 +400,19 @@ export function lastSessionSets(
   return result;
 }
 
-/** Séries faites avant une date (record à battre pendant la séance). */
+/** Séries faites avant une date (record à battre pendant la séance), avec leur type de suivi. */
 export function setsBefore(
   db: AppDatabase,
   userId: string,
   exerciseIds: readonly string[],
   beforeIso: string,
-): Map<string, PreviousSet[]> {
-  const result = new Map<string, PreviousSet[]>();
+): Map<string, TypedSetRow[]> {
+  const result = new Map<string, TypedSetRow[]>();
   if (exerciseIds.length === 0) return result;
   const rows = db
-    .select()
+    .select(typedSetColumns)
     .from(sessionSets)
+    .innerJoin(exercises, eq(exercises.id, sessionSets.exerciseId))
     .where(
       and(
         eq(sessionSets.userId, userId),
@@ -455,17 +457,39 @@ export const completedSessionsQuery = (db: AppDatabase, userId: string) =>
     )
     .orderBy(desc(sessions.startedAt));
 
-/** Toutes les séries (records, progression). */
+/** Colonnes d'une série avec le type de suivi de son exercice (records et volume par type). */
+const typedSetColumns = {
+  id: sessionSets.id,
+  sessionId: sessionSets.sessionId,
+  exerciseId: sessionSets.exerciseId,
+  blockId: sessionSets.blockId,
+  weightKg: sessionSets.weightKg,
+  reps: sessionSets.reps,
+  difficulty: sessionSets.difficulty,
+  completedAt: sessionSets.completedAt,
+  distanceM: sessionSets.distanceM,
+  durationS: sessionSets.durationS,
+  calories: sessionSets.calories,
+  trackingType: exercises.trackingType,
+  discipline: exercises.discipline,
+  catalogKey: exercises.catalogKey,
+};
+
+/** Toutes les séries (records, progression, km courus), avec le type de suivi de l'exercice. */
 export const allSetsQuery = (db: AppDatabase, userId: string) =>
   db
-    .select({
-      id: sessionSets.id,
-      sessionId: sessionSets.sessionId,
-      exerciseId: sessionSets.exerciseId,
-      weightKg: sessionSets.weightKg,
-      reps: sessionSets.reps,
-      difficulty: sessionSets.difficulty,
-      completedAt: sessionSets.completedAt,
-    })
+    .select(typedSetColumns)
     .from(sessionSets)
+    .innerJoin(exercises, eq(exercises.id, sessionSets.exerciseId))
     .where(and(eq(sessionSets.userId, userId), isNull(sessionSets.deletedAt)));
+
+export type TypedSetRow = ReturnType<ReturnType<typeof allSetsQuery>['all']>[number];
+
+/** Séries d'une séance avec leur type de suivi (récap). */
+export const sessionTypedSetsQuery = (db: AppDatabase, sessionId: string) =>
+  db
+    .select(typedSetColumns)
+    .from(sessionSets)
+    .innerJoin(exercises, eq(exercises.id, sessionSets.exerciseId))
+    .where(and(eq(sessionSets.sessionId, sessionId), isNull(sessionSets.deletedAt)))
+    .orderBy(asc(sessionSets.exerciseOrder), asc(sessionSets.setNumber));

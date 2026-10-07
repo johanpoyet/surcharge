@@ -4,7 +4,9 @@ import { parseISO } from 'date-fns';
 
 import type { Difficulty } from '@/features/workout/difficulty';
 import { toLocalDateString } from '@/lib/format';
-import { recordSet, sessionMax, volume, type SetLike } from './calc';
+import { trackingRecord } from '@/features/exercises/tracking';
+import { sessionMax, volume, type SetLike } from './calc';
+import { typeOf } from './typed';
 import { recordSets, type DatedSet } from './regularity';
 
 export type ChartMetric = 'weight' | 'volume' | 'reps';
@@ -101,15 +103,21 @@ export function weightsInPeriod<T extends { measuredOn: string; weightKg: number
   };
 }
 
-/** Record personnel de chaque exercice, le plus récent d'abord. */
+/** Record personnel de chaque exercice selon son type de suivi, le plus récent d'abord. */
 export function personalRecords<T extends DatedSet>(sets: readonly T[]): T[] {
   const byExercise = new Map<string, T[]>();
   for (const set of sets)
     byExercise.set(set.exerciseId, [...(byExercise.get(set.exerciseId) ?? []), set]);
   return [...byExercise.values()]
     .flatMap((list) => {
-      const best = recordSet(list);
-      return best ? [best] : [];
+      const counted = list.map((s) => ({
+        ...s,
+        distanceM: s.distanceM ?? null,
+        durationS: s.durationS ?? null,
+        calories: s.calories ?? null,
+      }));
+      const best = trackingRecord(typeOf(list[0]!), counted);
+      return best ? [list[counted.indexOf(best)]!] : [];
     })
     .sort((a, b) => b.completedAt.localeCompare(a.completedAt));
 }

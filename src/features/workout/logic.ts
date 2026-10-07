@@ -1,7 +1,8 @@
 // Logique de la séance en cours (SPEC 8.2, 9.2, 9.3). Fonctions pures, testées unitairement.
 
 import type { Equipment } from '@/db/schema';
-import { beats, recordSet, type SetLike } from '@/features/stats/calc';
+import { recordSet, type SetLike } from '@/features/stats/calc';
+import { beatsTyped, isCounted, recordKey, type TypedSet } from '@/features/stats/typed';
 import type { Difficulty } from './difficulty';
 
 export type PreviousSet = SetLike & { setNumber: number };
@@ -82,17 +83,35 @@ export type SessionRecord<T extends SetLike> = { exerciseId: string; set: T };
  * Records battus pendant la séance : meilleure série de chaque exercice qui bat le record
  * d'avant la séance. Un exercice fait pour la première fois n'a pas de record à battre.
  */
-export function recordsBeaten<T extends SetLike>(
+export function recordsBeaten<T extends TypedSet>(
   sessionSets: ReadonlyMap<string, readonly T[]>,
-  previousSets: ReadonlyMap<string, readonly SetLike[]>,
+  previousSets: ReadonlyMap<string, readonly TypedSet[]>,
 ): SessionRecord<T>[] {
   const records: SessionRecord<T>[] = [];
   for (const [exerciseId, sets] of sessionSets) {
-    const best = recordSet(sets);
-    const before = recordSet(previousSets.get(exerciseId) ?? []);
-    if (best && before && beats(best, before)) records.push({ exerciseId, set: best });
+    // Par type de suivi (course : sur la même distance), meilleure série de la séance contre la
+    // meilleure d'avant.
+    const before = previousSets.get(exerciseId) ?? [];
+    let found: T | null = null;
+    for (const key of new Set(sets.map((s) => recordKey({ ...s, exerciseId })))) {
+      const inKey = <S extends TypedSet>(list: readonly S[]) =>
+        list.filter((s) => recordKey({ ...s, exerciseId }) === key && isCounted(s));
+      const best = bestOf(inKey(sets));
+      const previous = bestOf(inKey(before));
+      if (best && previous && beatsTyped(best, previous) && (!found || beatsTyped(best, found))) {
+        found = best;
+      }
+    }
+    if (found) records.push({ exerciseId, set: found });
   }
   return records;
+}
+
+/** Meilleure série d'une liste selon son type de suivi. */
+function bestOf<S extends TypedSet>(sets: readonly S[]): S | null {
+  let best: S | null = null;
+  for (const set of sets) if (!best || beatsTyped(set, best)) best = set;
+  return best;
 }
 
 /** Chrono : « 32:14 » ou « 1:05:09 ». */
