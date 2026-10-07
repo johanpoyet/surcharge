@@ -152,3 +152,93 @@ notes :
 New in 1.1.0: during a workout, the rest timer is shown as a Live Activity (Dynamic Island and Lock Screen) after a set is validated. It is started and ended locally by the app (no push notifications) and tapping it reopens the current workout.
 ```
 
+
+## Version 2.0.0 (multi-sport) — textes proposés, à valider par Johan
+
+Le **nom** ne change pas (« Surcharge : carnet de muscu », bon pour le référencement). Le sous-titre,
+les mots-clés et le texte promotionnel annoncent le multi-sport.
+
+| Champ | Valeur | Limite |
+|---|---|---|
+| Sous-titre | Muscu, course, Hyrox et WOD | 27 / 30 |
+| Mots-clés | musculation,muscu,hyrox,wod,course,running,amrap,emom,séance,salle,gym,force,progression,cardio | 95 / 100 |
+| Texte promotionnel | Muscu, course, circuits et simus Hyrox dans un seul carnet : note chaque série en un tap, même sans réseau, et vois ta progression. | 131 / 170 |
+
+« CrossFit » est une marque déposée : on ne l'emploie pas (« cross-training », « WOD » à la place).
+
+### Nouveautés (« What's New »)
+
+```
+Surcharge devient multi-sport : muscu, course, circuits et Hyrox dans un seul carnet.
+
+• Séances en blocs : enchaîne échauffement, muscu, course, circuit et Hyrox dans la même séance. Glisse les blocs pour les réordonner.
+• Hyrox : simu complète, demi ou station seule, avec les charges officielles de ta catégorie. Un seul gros bouton par segment, l'écart avec ta dernière simu en direct, et un récap qui montre ton point faible.
+• Circuits : AMRAP, EMOM, For Time et Tabata, avec un bip à chaque intervalle.
+• Course et cardio : chrono d'un tap par série, allure calculée, récup automatique.
+• Chaque exercice a son type de suivi (charge × reps, distance + temps, temps, reps, calories…) avec ses records et ses courbes.
+• Choisis tes disciplines : l'accueil affiche tes km courus du mois et ta meilleure simu Hyrox.
+• Ta version de l'app est affichée en bas du profil.
+
+Toujours hors ligne, toujours sans publicité. Bonnes séances !
+```
+
+### Description (remplace la précédente)
+
+```
+Surcharge, c'est ton carnet d'entraînement : muscu, course, circuits et Hyrox. Note chaque série en quelques secondes et vois clairement ta progression.
+
+PENSÉ POUR LA SALLE
+• Charge et répétitions avec de gros boutons + / −, appui long pour aller vite
+• Chaque série est pré-remplie avec ta dernière séance : valider une série, c'est un tap
+• Chrono de repos automatique, visible dans la Dynamic Island et sur l'écran verrouillé
+• Fonctionne hors ligne : pas besoin de réseau au sous-sol de la salle
+• Écran toujours allumé pendant la séance, reprise automatique si l'app se ferme
+
+MULTI-SPORT
+• Séances en blocs : échauffement, muscu, course, circuit et Hyrox dans la même séance
+• Hyrox : simu complète, demi ou station seule, charges officielles par catégorie, un tap par segment, écarts en direct avec ta dernière simu et récap avec ton point faible
+• Circuits : AMRAP, EMOM, For Time et Tabata, avec un bip à chaque intervalle
+• Course et cardio : distance, temps et allure, chrono d'un tap, récup automatique
+
+PROGRESSE POUR DE VRAI
+• Ressenti de chaque série : facile, moyen, difficile, échec
+• Conseil de charge : « Tout était facile la dernière fois : vise 82,5 kg »
+• Records selon le type d'exercice : charge, meilleur temps, durée, reps, calories
+• Courbes de progression, 1RM estimé, calendrier de régularité, km courus, poids corporel
+
+ORGANISE TA SEMAINE
+• Crée tes séances types et place-les dans ta semaine
+• L'accueil te propose la bonne séance chaque jour
+• Change une séance juste pour un jour, sans toucher au reste du planning
+• Rappel le matin des jours de séance
+
+TES EXERCICES, TES MACHINES
+• Exercices de muscu, de course, de cross-training et stations Hyrox prêts à l'emploi
+• Ajoute les tiens avec une photo de la machine pour la reconnaître d'un coup d'œil
+
+TES DONNÉES T'APPARTIENNENT
+• Synchronisées sur tous tes appareils, hébergées en France
+• Aucune publicité, aucun traçage
+• Export CSV de toutes tes séances, suppression du compte en un geste
+
+Surcharge est gratuite.
+```
+
+### Confidentialité
+
+Questionnaire **inchangé** : pas de nouvelle donnée collectée (les séances multi-sport restent des
+données de forme physique), pas de micro (les bips sont joués par l'app, sans permission).
+
+### Vérification d'Apple
+
+Compte démo enrichi avant la soumission (`supabase/demo/seed-demo-v2.sql` : séance « Simu Hyrox »
+au planning, deux simus terminées, un AMRAP, une course). Ajouter en fin de notes :
+
+```
+New in 2.0.0 (multi-sport): the demo account contains a "Simu Hyrox" workout made of blocks (warm-up, Hyrox, strength) and two completed Hyrox simulations. To see the Hyrox recap, open Profile or the Home tab ("Best Hyrox simulation"), or start "Simu Hyrox" from the Workouts tab: tap "Start block", then the large button once per segment (the last tap can be undone for 5 seconds). Circuit blocks (AMRAP, EMOM, For Time, Tabata) play a short beep at each interval; no microphone or other permission is used.
+```
+
+### Captures (facultatif)
+
+Ajouter 2 ou 3 captures multi-sport (prises avec le compte démo) : séance Hyrox en cours, récap
+Hyrox, séance type en blocs.
