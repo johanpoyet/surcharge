@@ -330,6 +330,7 @@ export const fr = {
       createTitle: 'Créer un exercice',
       createHint: 'Nom, muscle ciblé, photo',
       alreadyAdded: 'Déjà dans la séance',
+      goesToCardio: 'Ira dans un bloc Course / cardio',
       submit: (n: number) =>
         n === 0 ? 'Choisis des exercices' : `Ajouter ${n} ${n > 1 ? 'exercices' : 'exercice'}`,
     },

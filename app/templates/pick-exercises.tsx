@@ -12,7 +12,7 @@ import { useExercises } from '@/features/exercises/hooks';
 import { muscleOptions } from '@/features/exercises/labels';
 import { normalizeSearch } from '@/features/exercises/summary';
 import { useProfile } from '@/features/profile/hooks';
-import { defaultItem, useTemplateDraft } from '@/features/templates/draftStore';
+import { fitsStrengthBlock, useTemplateDraft } from '@/features/templates/draftStore';
 import { fr } from '@/i18n/fr';
 import { cn } from '@/lib/cn';
 import { colors } from '@/theme/tokens';
@@ -51,14 +51,11 @@ export default function PickExercisesScreen() {
   const submit = () => {
     const byId = new Map(exercises.map((e) => [e.id, e]));
     addExercises(
-      selected.map((id) =>
-        defaultItem(
-          target?.type ?? 'strength',
-          id,
-          byId.get(id)?.trackingType ?? 'weight_reps',
-          restSeconds,
-        ),
-      ),
+      selected.map((id) => ({
+        exerciseId: id,
+        tracking: byId.get(id)?.trackingType ?? 'weight_reps',
+      })),
+      restSeconds,
     );
     router.back();
   };
@@ -134,7 +131,9 @@ export default function PickExercisesScreen() {
                 <Text className="font-body text-13 text-muted">
                   {disabled
                     ? t.alreadyAdded
-                    : `${fr.exercises.muscles[item.muscle]} · ${fr.exercises.equipment[item.equipment].toLowerCase()}`}
+                    : target?.type === 'strength' && !fitsStrengthBlock(item.trackingType)
+                      ? t.goesToCardio
+                      : `${fr.exercises.muscles[item.muscle]} · ${fr.exercises.equipment[item.equipment].toLowerCase()}`}
                 </Text>
               </View>
               <View

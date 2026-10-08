@@ -2,7 +2,8 @@ import { blocksFromDraft, draftFromBlocks } from '../draftConvert';
 import { defaultItem, useTemplateDraft } from '../draftStore';
 
 const state = () => useTemplateDraft.getState();
-const strength = (ids: string[]) => ids.map((id) => defaultItem('strength', id, 'weight_reps', 90));
+const picked = (ids: string[]) =>
+  ids.map((id) => ({ exerciseId: id, tracking: 'weight_reps' as const }));
 
 beforeEach(() =>
   state().load({
@@ -19,7 +20,7 @@ it('charge un brouillon propre, jours triés', () => {
 
 it('ajoute des exercices au bloc choisi, avec les valeurs par défaut', () => {
   state().setPickTarget('b1');
-  state().addExercises(strength(['a', 'b']));
+  state().addExercises(picked(['a', 'b']), 90);
   expect(
     state().blocks[0]!.items.map((i) => [i.exerciseId, i.targetSets, i.repsText, i.restText]),
   ).toEqual([
@@ -29,9 +30,33 @@ it('ajoute des exercices au bloc choisi, avec les valeurs par défaut', () => {
   expect(state().dirty).toBe(true);
 });
 
+it('envoie course, gainage et calories d’un bloc Musculation dans le bloc Course / cardio suivant', () => {
+  state().setPickTarget('b1');
+  state().addExercises(
+    [
+      { exerciseId: 'bench', tracking: 'weight_reps' },
+      { exerciseId: 'run', tracking: 'distance_time' },
+      { exerciseId: 'pullup', tracking: 'reps' },
+      { exerciseId: 'plank', tracking: 'time' },
+    ],
+    90,
+  );
+  expect(state().blocks.map((b) => [b.type, b.items.map((i) => i.exerciseId)])).toEqual([
+    ['strength', ['bench', 'pullup']],
+    ['cardio', ['run', 'plank']],
+  ]);
+  expect(state().blocks[1]!.items[0]).toMatchObject({ targetSets: 1, targetDistanceM: 1000 });
+
+  // Un second ajout réutilise le bloc Course / cardio qui suit.
+  state().setPickTarget('b1');
+  state().addExercises([{ exerciseId: 'row', tracking: 'calories' }], 90);
+  expect(state().blocks).toHaveLength(2);
+  expect(state().blocks[1]!.items.map((i) => i.exerciseId)).toEqual(['run', 'plank', 'row']);
+});
+
 it('réordonne, modifie et retire des exercices dans un bloc', () => {
   state().setPickTarget('b1');
-  state().addExercises(strength(['a', 'b', 'c']));
+  state().addExercises(picked(['a', 'b', 'c']), 90);
   state().moveItem('b1', 0, 2);
   expect(state().blocks[0]!.items.map((i) => i.exerciseId)).toEqual(['b', 'c', 'a']);
   const [first] = state().blocks[0]!.items;
@@ -85,7 +110,7 @@ describe('conversion brouillon ↔ blocs', () => {
     expect(blocksFromDraft([])).toEqual({ error: 'noBlocks' });
     expect(blocksFromDraft(state().blocks)).toEqual({ error: 'emptyBlock' });
     state().setPickTarget('b1');
-    state().addExercises(strength(['a']));
+    state().addExercises(picked(['a']), 90);
     state().updateItem(state().blocks[0]!.items[0]!.key, { repsText: 'beaucoup' });
     expect(blocksFromDraft(state().blocks)).toEqual({ error: 'invalidItems' });
   });

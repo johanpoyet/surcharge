@@ -31,6 +31,7 @@ export type DraftBlock = {
 };
 
 type ItemInit = Omit<DraftItem, 'key'>;
+export type PickedExercise = { exerciseId: string; tracking: TrackingType };
 export type DraftInit = {
   templateId?: string;
   name: string;
@@ -57,7 +58,12 @@ type DraftState = {
   moveBlock: (from: number, to: number) => void;
   duplicateBlock: (key: string) => void;
   setPickTarget: (blockKey: string) => void;
-  addExercises: (items: readonly ItemInit[]) => void;
+  /**
+   * Ajoute les exercices choisis au bloc cible. Un bloc Musculation ne note que charge × reps :
+   * les exercices suivis autrement (course, gainage, calories…) vont dans le bloc Course / cardio
+   * qui le suit, créé au besoin.
+   */
+  addExercises: (picked: readonly PickedExercise[], restSeconds: number) => void;
   updateItem: (key: string, patch: Partial<ItemInit>) => void;
   removeItem: (key: string) => void;
   moveItem: (blockKey: string, from: number, to: number) => void;
@@ -113,6 +119,10 @@ export function defaultItem(
       return { ...item, targetDistanceM: circuit ? 100 : 200 };
   }
 }
+
+/** Types de suivi qu'un bloc Musculation sait afficher et noter (charge × reps, reps seules). */
+export const fitsStrengthBlock = (tracking: TrackingType): boolean =>
+  tracking === 'weight_reps' || tracking === 'reps';
 
 const withKeys = (items: readonly ItemInit[]): DraftItem[] =>
   items.map((item) => ({ ...item, key: item.id ?? newId() }));
@@ -200,17 +210,34 @@ export const useTemplateDraft = create<DraftState>((set) => ({
       return { blocks, dirty: true };
     }),
   setPickTarget: (blockKey) => set({ pickBlockKey: blockKey }),
-  addExercises: (items) =>
+  addExercises: (picked, restSeconds) =>
     set((state) => {
-      const target = state.pickBlockKey ?? state.blocks[0]?.key;
+      const targetKey = state.pickBlockKey ?? state.blocks[0]?.key;
+      const index = state.blocks.findIndex((block) => block.key === targetKey);
+      const target = state.blocks[index];
       if (!target) return state;
-      return {
-        blocks: mapBlock(state.blocks, target, (block) => ({
-          ...block,
-          items: [...block.items, ...withKeys(items)],
-        })),
-        dirty: true,
-      };
+      const itemsFor = (type: BlockType, list: readonly PickedExercise[]) =>
+        withKeys(list.map((p) => defaultItem(type, p.exerciseId, p.tracking, restSeconds)));
+      const strength = target.type === 'strength';
+      const kept = strength ? picked.filter((p) => fitsStrengthBlock(p.tracking)) : picked;
+      const moved = strength ? picked.filter((p) => !fitsStrengthBlock(p.tracking)) : [];
+      const blocks = [...state.blocks];
+      blocks[index] = { ...target, items: [...target.items, ...itemsFor(target.type, kept)] };
+      if (moved.length > 0) {
+        const next = blocks[index + 1];
+        if (next?.type === 'cardio') {
+          blocks[index + 1] = { ...next, items: [...next.items, ...itemsFor('cardio', moved)] };
+        } else {
+          blocks.splice(index + 1, 0, {
+            key: newId(),
+            type: 'cardio',
+            name: null,
+            config: toJson(DEFAULT_CONFIGS.cardio),
+            items: itemsFor('cardio', moved),
+          });
+        }
+      }
+      return { blocks, dirty: true };
     }),
   updateItem: (key, patch) =>
     set((state) => ({
