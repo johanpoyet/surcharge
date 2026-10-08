@@ -663,3 +663,9 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   la même façon). Un exercice perso du même nom (même supprimé) n'est pas doublé : il est rattaché
   au catalogue ; un exercice du catalogue supprimé n'est pas remis. Pas de catégorie
   « kettlebell » : équipement « Autre ». « SkiErg » n'existe que dans le catalogue Hyrox.
+- **Séances toutes prêtes** (`src/features/templates/presets.ts`) : 18 séances (muscu débutant et
+  intermédiaire, PPL, haut / bas du corps, Hyrox complet / demi / stations, course, AMRAP, EMOM,
+  Tabata, For Time), données dans le code, exercices désignés par leur clé du catalogue.
+  « Ajouter à mes séances » crée une **copie** ordinaire (modifiable, sans lien avec le
+  catalogue) : exercices manquants ajoutés, exercices supprimés restaurés, nom rendu unique
+  (« Push 2 »). Accès : bandeau en haut de « Mes séances » et bouton de l'état vide.

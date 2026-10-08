@@ -157,6 +157,28 @@ export const fr = {
     deleteTitle: 'Supprimer cette séance type ?',
     deleteMessage: 'Elle disparaît de tes séances et du planning. Tes séances déjà faites restent.',
     deleted: 'Séance supprimée',
+    // Séances toutes prêtes (catalogue à copier dans ses séances).
+    presets: {
+      open: 'Séances toutes prêtes',
+      openHint: 'Muscu, Hyrox, course, cross-training : ajoute-les puis adapte-les.',
+      title: 'Séances toutes prêtes',
+      hint: 'Ajoute une séance à tes séances, puis modifie-la comme tu veux : exercices, séries, jours au planning.',
+      close: 'Fermer',
+      categories: {
+        strength: 'Musculation',
+        hyrox: 'Hyrox',
+        running: 'Course',
+        cross_training: 'Cross-training',
+      },
+      levels: { beginner: 'Débutant', intermediate: 'Intermédiaire' },
+      meta: (level: string, duration: string) => `${level} · ~${duration}`,
+      add: 'Ajouter à mes séances',
+      addAgain: 'Ajouter encore',
+      added: (name: string) => `« ${name} » ajoutée à tes séances`,
+      lift: (name: string, sets: number, reps: string) => `${name} · ${sets} × ${reps}`,
+      warmup: (minutes: number, note: string | null) =>
+        note ? `Échauffement ${minutes} min · ${note}` : `Échauffement ${minutes} min`,
+    },
     editor: {
       newTitle: 'Nouvelle séance',
       editTitle: 'Modifier la séance',

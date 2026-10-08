@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { MoreHorizontal, Plus } from 'lucide-react-native';
+import { MoreHorizontal, Plus, Sparkles } from 'lucide-react-native';
 import { useState } from 'react';
 import { Alert, FlatList, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,6 +20,7 @@ import {
 import { deleteTemplate, duplicateTemplate } from '@/features/templates/repository';
 import { useStartWorkout } from '@/features/workout/useStartWorkout';
 import { fr } from '@/i18n/fr';
+import { colors } from '@/theme/tokens';
 
 const t = fr.templates;
 type Tab = 'planning' | 'templates';
@@ -94,10 +95,30 @@ export default function SessionsScreen() {
           data={templates}
           keyExtractor={(item) => item.id}
           contentContainerClassName="gap-1.5 px-screen pb-6 pt-4"
+          ListHeaderComponent={
+            templates.length > 0 ? (
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => router.push('/templates/presets')}
+                className="mb-1.5 flex-row items-center gap-3 rounded-tile border border-dashed border-volt px-4 py-3 active:opacity-80"
+              >
+                <Sparkles size={20} color={colors.volt} strokeWidth={2} />
+                <View className="flex-1">
+                  <Text className="font-body-bold text-15 text-volt">{t.presets.open}</Text>
+                  <Text className="font-body text-13 text-muted">{t.presets.openHint}</Text>
+                </View>
+              </Pressable>
+            ) : null
+          }
           ListEmptyComponent={
             <View className="gap-4 pt-4">
               <Text className="font-body text-15 text-muted">{t.empty}</Text>
               <Button label={t.emptyCta} onPress={() => router.push('/templates/new')} />
+              <Button
+                label={t.presets.open}
+                variant="outline"
+                onPress={() => router.push('/templates/presets')}
+              />
             </View>
           }
           renderItem={({ item }) => {
