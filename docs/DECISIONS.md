@@ -674,7 +674,7 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   Muscu va dans le bloc Course / cardio qui le suit (créé au besoin) ; la liste de choix le signale.
   Envoyé en EAS Update (runtime 2.0.0) le 08/10/2026.
 - **Saisie à la main** (« je n'ai pas mon téléphone quand je cours ») : écran « Ajouter une
-  sortie » (`app/log-activity.tsx`, accès depuis l'accueil si la course fait partie des
+  sortie » (`app/log-activity.tsx`, accès depuis l'accueil si la course ou Hyrox fait partie des
   disciplines) : activité (exercices distance + temps), distance en km, temps tapé (« 58:30 »,
   « 1:05:20 », « 1h05 »), jour (aujourd'hui par défaut, jusqu'à un an en arrière, sans sélecteur de
   date natif pour ne pas ajouter de dépendance), note. Elle crée une séance terminée avec un bloc

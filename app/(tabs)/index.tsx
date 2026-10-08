@@ -193,8 +193,8 @@ export default function HomeScreen() {
           onCreate={() => router.push('/templates/new')}
         />
 
-        {disciplines.includes('running') ? (
-          // Sortie faite sans téléphone : distance et temps notés au retour.
+        {disciplines.includes('running') || disciplines.includes('hyrox') ? (
+          // Sortie faite sans téléphone (course et Hyrox : on s'entraîne aussi en courant) : distance et temps notés au retour.
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push('/log-activity')}
