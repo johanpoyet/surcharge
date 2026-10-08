@@ -653,3 +653,13 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   le profil. Choisir une discipline ajoute son catalogue d'exercices.
 - Non fait : durée estimée d'un bloc Hyrox d'après la moyenne de l'utilisateur (SPEC_V2 §4.6,
   « dès qu'il a un historique ») : durées fixes gardées.
+
+## Retours des testeurs de la 2.0.0
+
+- **Catalogue d'exercices étendu** (« pas assez d'exercices ») : 136 exercices pour tous (les 34
+  d'origine, 94 de musculation en plus, 8 machines de cardio), plus 11 de course et 27 de
+  cross-training selon les disciplines. Ajoutés à la bibliothèque des nouveaux comptes et des
+  comptes existants (reprise locale après chaque pull : les ajouts futurs au catalogue arrivent de
+  la même façon). Un exercice perso du même nom (même supprimé) n'est pas doublé : il est rattaché
+  au catalogue ; un exercice du catalogue supprimé n'est pas remis. Pas de catégorie
+  « kettlebell » : équipement « Autre ». « SkiErg » n'existe que dans le catalogue Hyrox.

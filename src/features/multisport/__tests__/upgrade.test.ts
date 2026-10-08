@@ -14,7 +14,7 @@ import {
   templateExercises,
   workoutTemplates,
 } from '@/db/schema';
-import { DEFAULT_EXERCISES } from '@/db/seed';
+import { BASE_EXERCISES } from '@/db/seed';
 import { catalogExerciseId } from '@/features/exercises/catalog';
 import { seedDefaultExercises } from '@/features/exercises/repository';
 import { HYROX_EXERCISES } from '@/features/hyrox/catalog';
@@ -132,7 +132,21 @@ describe('reprise V2 d’un compte V1', () => {
     const changed = upgradeLocalData(db, USER);
     const queued = db.select().from(outbox).all();
     expect(changed).toBe(queued.length);
-    expect(queued.map((e) => `${e.tableName}/${e.rowId}`).sort()).toEqual(
+    // Hors exercices ajoutés depuis le catalogue (testés à part).
+    const added = new Set(
+      db
+        .select({ id: exercises.id })
+        .from(exercises)
+        .all()
+        .map((e) => e.id)
+        .filter((id) => id !== SQUAT && id !== CUSTOM),
+    );
+    expect(
+      queued
+        .filter((e) => !added.has(e.rowId))
+        .map((e) => `${e.tableName}/${e.rowId}`)
+        .sort(),
+    ).toEqual(
       [
         `exercises/${SQUAT}`,
         `template_blocks/${T1}`,
@@ -249,7 +263,7 @@ describe('séances types V2', () => {
   it('la bibliothèque par défaut porte les clés du catalogue et des ids stables', () => {
     seedDefaultExercises(db, USER);
     const all = db.select().from(exercises).all();
-    expect(all).toHaveLength(DEFAULT_EXERCISES.length);
+    expect(all).toHaveLength(BASE_EXERCISES.length);
     expect(all.every((e) => e.catalogKey && e.id === catalogExerciseId(USER, e.catalogKey))).toBe(
       true,
     );
@@ -301,5 +315,34 @@ describe('stableId', () => {
     expect(a).toBe(stableId(USER, 'exercise', 'squat'));
     expect(a).not.toBe(stableId(USER, 'exercise', 'bench_press'));
     expect(a).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  });
+});
+
+describe('catalogue complet (retours des testeurs)', () => {
+  it('un compte V1 reçoit les nouveaux exercices, sans doubler un exercice perso du même nom', () => {
+    seedV1Account();
+    // Exercice perso créé à la main, même nom qu'un exercice du catalogue.
+    db.insert(exercises)
+      .values({
+        id: 'perso-bulgare',
+        userId: USER,
+        name: 'squat bulgare',
+        muscle: 'legs',
+        equipment: 'dumbbell',
+        ...synced,
+      })
+      .run();
+    upgradeLocalData(db, USER);
+    const all = db.select().from(exercises).where(eq(exercises.userId, USER)).all();
+    const bulgarian = all.filter((e) => e.name.toLowerCase() === 'squat bulgare');
+    expect(bulgarian).toHaveLength(1);
+    expect(bulgarian[0]).toMatchObject({
+      id: 'perso-bulgare',
+      catalogKey: 'bulgarian_split_squat',
+    });
+    expect(all.some((e) => e.catalogKey === 'hack_squat')).toBe(true);
+    expect(all.some((e) => e.catalogKey === 'elliptical' && e.trackingType === 'time')).toBe(true);
+    // Rien de plus au passage suivant.
+    expect(upgradeLocalData(db, USER)).toBe(0);
   });
 });

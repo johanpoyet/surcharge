@@ -57,9 +57,9 @@ export function upgradeLocalData(db: AppDatabase, userId: string): number {
       .from(profiles)
       .where(eq(profiles.id, userId))
       .get();
-    // La muscu a déjà sa bibliothèque (onboarding V1) ; les autres disciplines reçoivent leur
-    // catalogue quand elles sont choisies.
-    const extra = (profile?.disciplines ?? []).filter((d) => d !== 'strength');
+    // Catalogue de base (muscu complète, cardio) pour tous, plus celui des disciplines choisies.
+    // Le catalogue s'enrichit d'une version à l'autre : les nouveaux exercices arrivent ici.
+    const extra = ['strength' as const, ...(profile?.disciplines ?? [])];
     return (
       tagDefaultExercises(tx, userId) +
       ensureStrengthBlocks(tx, userId) +

@@ -4,7 +4,7 @@
 import { eq } from 'drizzle-orm';
 
 import { exercises, outbox, profiles, sessionSets, templateExercises } from '@/db/schema';
-import { DEFAULT_EXERCISES } from '@/db/seed';
+import { BASE_EXERCISES } from '@/db/seed';
 import {
   createExercise,
   deleteExercise,
@@ -101,11 +101,11 @@ describe('exercices', () => {
   });
 
   it('la bibliothèque par défaut n’est ajoutée qu’une fois', () => {
-    expect(seedDefaultExercises(db, USER)).toBe(DEFAULT_EXERCISES.length);
+    expect(seedDefaultExercises(db, USER)).toBe(BASE_EXERCISES.length);
     expect(seedDefaultExercises(db, USER)).toBe(0);
-    expect(listExercises(db, USER)).toHaveLength(DEFAULT_EXERCISES.length);
-    expect(db.select().from(outbox).all()).toHaveLength(DEFAULT_EXERCISES.length);
-    expect(DEFAULT_EXERCISES.length).toBeGreaterThanOrEqual(30);
+    expect(listExercises(db, USER)).toHaveLength(BASE_EXERCISES.length);
+    expect(db.select().from(outbox).all()).toHaveLength(BASE_EXERCISES.length);
+    expect(BASE_EXERCISES.length).toBeGreaterThanOrEqual(30);
   });
 });
 
@@ -295,9 +295,9 @@ describe('bibliothèque vide', () => {
       typeof import('@/features/exercises/repository')
     >('@/features/exercises/repository');
     createExercise(db, USER, { name: 'squat', muscle: 'legs', equipment: 'barbell' });
-    expect(addMissingDefaultExercises(db, USER)).toBe(DEFAULT_EXERCISES.length - 1);
+    expect(addMissingDefaultExercises(db, USER)).toBe(BASE_EXERCISES.length - 1);
     expect(addMissingDefaultExercises(db, USER)).toBe(0);
-    expect(listExercises(db, USER)).toHaveLength(DEFAULT_EXERCISES.length);
+    expect(listExercises(db, USER)).toHaveLength(BASE_EXERCISES.length);
   });
 
   it('fonctionne même après avoir tout supprimé', async () => {
@@ -307,6 +307,6 @@ describe('bibliothèque vide', () => {
     const id = createExercise(db, USER, { name: 'Squat', muscle: 'legs', equipment: 'barbell' });
     deleteExercise(db, id);
     expect(seedDefaultExercises(db, USER)).toBe(0);
-    expect(addMissingDefaultExercises(db, USER)).toBe(DEFAULT_EXERCISES.length);
+    expect(addMissingDefaultExercises(db, USER)).toBe(BASE_EXERCISES.length);
   });
 });

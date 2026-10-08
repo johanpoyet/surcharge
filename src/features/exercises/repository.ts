@@ -11,7 +11,7 @@ import {
   type MuscleGroup,
   type TrackingType,
 } from '@/db/schema';
-import { DEFAULT_EXERCISES, defaultWeightStep } from '@/db/seed';
+import { BASE_EXERCISES, defaultWeightStep } from '@/db/seed';
 import { nowIso } from '@/db/time';
 import { newId } from '@/lib/id';
 import { enqueue, type Tx } from '@/sync/outbox';
@@ -144,7 +144,7 @@ export function addMissingDefaultExercises(db: AppDatabase, userId: string): num
     );
     const now = nowIso();
     let added = 0;
-    for (const seed of DEFAULT_EXERCISES) {
+    for (const seed of BASE_EXERCISES) {
       if (existing.has(seed.name.toLowerCase())) continue;
       // Nouvel id : l'exercice du catalogue d'origine (id stable) peut exister, supprimé.
       const id = newId();
@@ -184,8 +184,8 @@ export function seedDefaultExercises(db: AppDatabase, userId: string): number {
       .limit(1)
       .all();
     if (existing.length > 0) return 0;
-    for (const seed of DEFAULT_EXERCISES) insertCatalogExercise(tx, userId, seed);
-    return DEFAULT_EXERCISES.length;
+    for (const seed of BASE_EXERCISES) insertCatalogExercise(tx, userId, seed);
+    return BASE_EXERCISES.length;
   });
 }
 
