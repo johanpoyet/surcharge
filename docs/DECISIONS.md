@@ -684,3 +684,8 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Garde-fou d'allure** : une allure plus rapide que 2:00 /km en course (0:40 /km pour le reste)
   demande confirmation (« Corriger » / « Enregistrer quand même »), au chrono comme à la saisie,
   pour ne pas fausser les records par une faute de frappe ou un chrono oublié.
+- **Supprimer une séance faite** : bouton « Supprimer la séance » en bas du récap, avec
+  confirmation. Suppression douce de la séance, de ses blocs et de ses séries (synchronisée) : elle
+  sort de l'historique, des stats, des km et des records. Le récap d'une séance passée s'ouvre en
+  touchant une ligne de l'historique d'un exercice ou un jour fait du calendrier de l'accueil
+  (choix de la séance s'il y en a plusieurs ce jour-là).

@@ -151,6 +151,19 @@ export default function HomeScreen() {
       { text: fr.workout.cancel, style: 'cancel' as const },
     ]);
 
+  // Jour fait du calendrier : récap de la séance (au choix s'il y en a plusieurs ce jour-là).
+  const openDay = (key: string) => {
+    const recap = (sessionId: string) =>
+      router.push({ pathname: '/workout/summary/[sessionId]', params: { sessionId } });
+    const day = sessions.filter((s) => toLocalDateString(parseISO(s.startedAt)) === key);
+    if (day.length === 1) return recap(day[0]!.id);
+    if (day.length > 1)
+      Alert.alert(t.regularity.chooseSession, undefined, [
+        ...day.map((s) => ({ text: s.name, onPress: () => recap(s.id) })),
+        { text: fr.workout.cancel, style: 'cancel' as const },
+      ]);
+  };
+
   const monthShort = format(today, 'MMM', { locale: frLocale });
   const progressionName = progression
     ? (exercises.find((e) => e.id === progression.exerciseId)?.name ?? '')
@@ -244,6 +257,7 @@ export default function HomeScreen() {
           recordDates={recordDates}
           weekly={weekly}
           overrides={overrides}
+          onDonePress={openDay}
         />
 
         {disciplines.includes('hyrox') ? <HyroxBestCard runs={hyroxRuns} /> : null}

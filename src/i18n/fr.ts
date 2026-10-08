@@ -502,6 +502,11 @@ export const fr = {
       done: 'Terminer',
       share: 'Partager',
       shareFooter: 'Noté avec Surcharge',
+      delete: 'Supprimer la séance',
+      deleteTitle: 'Supprimer cette séance ?',
+      deleteMessage: 'Elle disparaît de ton historique, de tes stats et de tes records.',
+      deleteCancel: 'Annuler',
+      deleted: 'Séance supprimée',
       strength: 'Musculation',
       // Récap Hyrox (SPEC_V2 §5.4, maquette recap-hyrox).
       hyrox: {
@@ -645,7 +650,14 @@ export const fr = {
       streak: 'de régularité',
       streakUnit: 'sem.',
     },
-    regularity: { title: 'Régularité', done: 'Faite', planned: 'Prévue', record: 'Record' },
+    regularity: {
+      title: 'Régularité',
+      done: 'Faite',
+      planned: 'Prévue',
+      record: 'Record',
+      openDay: (day: string) => `Séance du ${day} : ouvrir le récap`,
+      chooseSession: 'Quelle séance ?',
+    },
     progression: {
       title: 'Progression',
       badge: (delta: string, weeks: number) => `+${delta} en ${weeks} sem.`,
@@ -855,6 +867,7 @@ export const fr = {
       cancel: 'Annuler',
     },
     detail: {
+      openSession: 'Ouvre le récap de la séance',
       edit: 'Modifier',
       step: (step: string) => `Pas de ${step}`,
       record: 'Record',

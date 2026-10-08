@@ -3,9 +3,9 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Trophy } from 'lucide-react-native';
 import { useMemo } from 'react';
-import { ScrollView, Share, Text, View } from 'react-native';
+import { Alert, ScrollView, Share, Text, View } from 'react-native';
 
-import { Button, Card, FullScreen, Heading, Overline, StatTile } from '@/components/ui';
+import { Button, Card, FullScreen, Heading, Overline, StatTile, useToast } from '@/components/ui';
 import { db, liveDb } from '@/db/client';
 import { sessionBlocks, sessions, workoutTemplates } from '@/db/schema';
 import { useAuth } from '@/features/auth/AuthProvider';
@@ -21,7 +21,12 @@ import {
 } from '@/features/workout/components/BlockRecaps';
 import { HyroxRecapCard } from '@/features/workout/components/HyroxRecapCard';
 import { formatClock, recordsBeaten } from '@/features/workout/logic';
-import { sessionTypedSetsQuery, setsBefore, type TypedSetRow } from '@/features/workout/repository';
+import {
+  deleteSession,
+  sessionTypedSetsQuery,
+  setsBefore,
+  type TypedSetRow,
+} from '@/features/workout/repository';
 import { fr } from '@/i18n/fr';
 import { formatThousands, formatWeight } from '@/lib/format';
 import { fromKg } from '@/lib/units';
@@ -33,6 +38,7 @@ const t = fr.workout.summary;
 export default function WorkoutSummaryScreen() {
   const { sessionId } = useLocalSearchParams<{ sessionId: string }>();
   const userId = useAuth().session?.user.id ?? '';
+  const toast = useToast();
   const unit = useProfile().profile?.weightUnit ?? 'kg';
   const exercises = useExercises();
   const { data: sessionRows } = useLiveQuery(
@@ -92,6 +98,20 @@ export default function WorkoutSummaryScreen() {
     void Share.share({
       message: shareText(session?.name ?? '', durationSeconds, blocks, strengthSets.length),
     }).catch(() => undefined);
+
+  const remove = () =>
+    Alert.alert(t.deleteTitle, t.deleteMessage, [
+      { text: t.deleteCancel, style: 'cancel' },
+      {
+        text: t.delete,
+        style: 'destructive',
+        onPress: () => {
+          deleteSession(db, sessionId);
+          toast.show(t.deleted);
+          router.dismissTo('/');
+        },
+      },
+    ]);
 
   return (
     <FullScreen>
@@ -165,6 +185,7 @@ export default function WorkoutSummaryScreen() {
           <Button label={t.share} variant="secondary" className="h-14 flex-1" onPress={share} />
           <Button label={t.done} className="h-14 flex-1" onPress={() => router.dismissTo('/')} />
         </View>
+        <Button label={t.delete} variant="ghost" tone="danger" size="sm" onPress={remove} />
       </ScrollView>
     </FullScreen>
   );

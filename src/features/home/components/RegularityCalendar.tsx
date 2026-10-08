@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { fr as frLocale } from 'date-fns/locale';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 import { Card } from '@/components/ui';
 import { monthGrid, planForDay } from '@/features/planning/calendar';
@@ -16,6 +16,8 @@ type RegularityCalendarProps = {
   recordDates: ReadonlySet<string>;
   weekly: ReadonlyMap<number, string>;
   overrides: ReadonlyMap<string, string | null>;
+  /** Jour fait touché (clé AAAA-MM-JJ) : ouvre le récap de la séance. */
+  onDonePress?: (key: string) => void;
 };
 
 /** Calendrier du mois : fait (volt), prévu (pointillé), aujourd'hui (bordure), record (point). */
@@ -25,6 +27,7 @@ export function RegularityCalendar({
   recordDates,
   weekly,
   overrides,
+  onDonePress,
 }: RegularityCalendarProps) {
   const month = today.getMonth();
   const todayKey = toLocalDateString(today);
@@ -57,8 +60,14 @@ export function RegularityCalendar({
               const planned =
                 !done && key > todayKey && planForDay(date, overrides, weekly).templateId !== null;
               return (
-                <View
+                <Pressable
                   key={key}
+                  disabled={!done || !onDonePress}
+                  accessibilityRole={done && onDonePress ? 'button' : undefined}
+                  accessibilityLabel={
+                    done ? t.openDay(format(date, 'd MMMM', { locale: frLocale })) : undefined
+                  }
+                  onPress={() => onDonePress?.(key)}
                   className={cn(
                     'aspect-square flex-1 items-center justify-center rounded-sm',
                     done && 'bg-volt',
@@ -87,7 +96,7 @@ export function RegularityCalendar({
                       )}
                     />
                   ) : null}
-                </View>
+                </Pressable>
               );
             })}
           </View>

@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { ChevronLeft } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
@@ -37,6 +37,7 @@ import { cn } from '@/lib/cn';
 import { formatMonth, formatSessionDay, formatShortDay } from '@/lib/dates';
 import { formatNumber, formatWeight } from '@/lib/format';
 import { fromKg } from '@/lib/units';
+import { colors } from '@/theme/tokens';
 
 const t = fr.exercises.detail;
 const HISTORY_PREVIEW = 3;
@@ -245,12 +246,27 @@ export default function ExerciseDetailScreen() {
           <Text className="font-body text-15 text-muted">{t.noHistory}</Text>
         ) : (
           visibleHistory.map((session) => (
-            <View key={session.sessionId} className="gap-2 rounded-tile bg-surface px-3.5 py-3">
-              <View className="flex-row justify-between">
-                <Text className="font-body-bold text-14 text-text">
+            // Toucher une séance ouvre son récap (et permet de la supprimer).
+            <Pressable
+              key={session.sessionId}
+              accessibilityRole="button"
+              accessibilityHint={t.openSession}
+              onPress={() =>
+                router.push({
+                  pathname: '/workout/summary/[sessionId]',
+                  params: { sessionId: session.sessionId },
+                })
+              }
+              className="gap-2 rounded-tile bg-surface px-3.5 py-3 active:opacity-80"
+            >
+              <View className="flex-row items-center gap-2">
+                <Text className="flex-1 font-body-bold text-14 text-text">
                   {formatSessionDay(session.startedAt)}
                 </Text>
-                <Text className="font-body text-14 text-muted">{session.sessionName}</Text>
+                <Text numberOfLines={1} className="shrink font-body text-14 text-muted">
+                  {session.sessionName}
+                </Text>
+                <ChevronRight size={16} color={colors.faint} strokeWidth={2} />
               </View>
               <View className="flex-row flex-wrap gap-1.5">
                 {session.sets.map((set) => (
@@ -269,7 +285,7 @@ export default function ExerciseDetailScreen() {
                   </View>
                 ))}
               </View>
-            </View>
+            </Pressable>
           ))
         )}
         {history.length > HISTORY_PREVIEW ? (

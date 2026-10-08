@@ -406,6 +406,38 @@ export function endWorkout(db: AppDatabase, sessionId: string): 'finished' | 'di
   return hasSets ? 'finished' : 'discarded';
 }
 
+/**
+ * Supprime une séance terminée avec ses blocs et ses séries : elle sort de l'historique, des stats
+ * et des records, sur tous les appareils (suppression douce synchronisée).
+ */
+export function deleteSession(db: AppDatabase, sessionId: string): void {
+  const now = nowIso();
+  const removed = { deletedAt: now, updatedAt: now, dirty: true };
+  db.transaction((tx) => {
+    const sets = tx
+      .select({ id: sessionSets.id })
+      .from(sessionSets)
+      .where(and(eq(sessionSets.sessionId, sessionId), isNull(sessionSets.deletedAt)))
+      .all();
+    const blocks = tx
+      .select({ id: sessionBlocks.id })
+      .from(sessionBlocks)
+      .where(and(eq(sessionBlocks.sessionId, sessionId), isNull(sessionBlocks.deletedAt)))
+      .all();
+    for (const { id } of sets) {
+      tx.update(sessionSets).set(removed).where(eq(sessionSets.id, id)).run();
+      enqueue(tx, 'session_sets', id, 'delete');
+    }
+    for (const { id } of blocks) {
+      tx.update(sessionBlocks).set(removed).where(eq(sessionBlocks.id, id)).run();
+      enqueue(tx, 'session_blocks', id, 'delete');
+    }
+    tx.update(sessions).set(removed).where(eq(sessions.id, sessionId)).run();
+    enqueue(tx, 'sessions', sessionId, 'delete');
+    tx.delete(workoutState).where(eq(workoutState.sessionId, sessionId)).run();
+  });
+}
+
 /** Supprime une série et renumérote les suivantes du même exercice. */
 export function deleteSetAndRenumber(db: AppDatabase, id: string): void {
   const now = nowIso();

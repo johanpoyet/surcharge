@@ -20,6 +20,7 @@ import {
   startSession,
   listSessionBlocks,
   logActivity,
+  deleteSession,
   updateSessionBlock,
 } from '../repository';
 import { restoreWorkoutState, startFromTemplate } from '../start';
@@ -283,4 +284,22 @@ it('note une sortie après coup : séance terminée, bloc cardio avec résultat,
   expect(listSessionSets(db, id)).toMatchObject([
     { blockId: block!.id, distanceM: 12_000, durationS: 3900, setNumber: 1, weightKg: 0 },
   ]);
+});
+
+it('supprime une séance terminée avec ses blocs et ses séries', () => {
+  const run = createExercise(db, USER, { name: 'Footing', muscle: 'other', equipment: 'other' });
+  const id = logActivity(db, USER, {
+    exerciseId: run,
+    name: 'Footing',
+    distanceM: 12_000,
+    durationS: 8,
+    startedAt: '2026-10-08T20:00:00.000Z',
+    endedAt: '2026-10-08T20:00:08.000Z',
+    note: null,
+  });
+  deleteSession(db, id);
+  expect(getSession(db, id)?.deletedAt).not.toBeNull();
+  expect(listSessionSets(db, id)).toEqual([]);
+  expect(listSessionBlocks(db, id)).toEqual([]);
+  expect(setsBefore(db, USER, [run], '2027-01-01T00:00:00.000Z').get(run)).toBeUndefined();
 });
