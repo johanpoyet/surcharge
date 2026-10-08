@@ -2,6 +2,7 @@ import { format, parseISO } from 'date-fns';
 import { fr as frLocale } from 'date-fns/locale';
 import { router } from 'expo-router';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+import { Footprints } from 'lucide-react-native';
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -40,6 +41,7 @@ import { formatEstimate } from '@/features/templates/format';
 import { fr } from '@/i18n/fr';
 import { formatNumber, toLocalDateString } from '@/lib/format';
 import { useNow } from '@/lib/useNow';
+import { colors } from '@/theme/tokens';
 
 const t = fr.home;
 
@@ -190,6 +192,21 @@ export default function HomeScreen() {
           }
           onCreate={() => router.push('/templates/new')}
         />
+
+        {disciplines.includes('running') ? (
+          // Sortie faite sans téléphone : distance et temps notés au retour.
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push('/log-activity')}
+            className="flex-row items-center gap-3 rounded-tile border border-dashed border-volt px-4 py-3 active:opacity-80"
+          >
+            <Footprints size={20} color={colors.volt} strokeWidth={2} />
+            <View className="flex-1">
+              <Text className="font-body-bold text-15 text-volt">{fr.logActivity.entry}</Text>
+              <Text className="font-body text-13 text-muted">{fr.logActivity.entryHint}</Text>
+            </View>
+          </Pressable>
+        ) : null}
 
         {disciplines.includes('running') ? (
           // Course : tuile « km courus ce mois » en plus (grille 2 × 2).

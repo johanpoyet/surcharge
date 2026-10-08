@@ -669,3 +669,18 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   « Ajouter à mes séances » crée une **copie** ordinaire (modifiable, sans lien avec le
   catalogue) : exercices manquants ajoutés, exercices supprimés restaurés, nom rendu unique
   (« Push 2 »). Accès : bandeau en haut de « Mes séances » et bouton de l'état vide.
+- **Bloc Muscu et types de suivi** : un bloc Musculation ne note que charge × reps (et reps
+  seules). Un exercice de course, de temps, de calories ou charge + distance choisi pour un bloc
+  Muscu va dans le bloc Course / cardio qui le suit (créé au besoin) ; la liste de choix le signale.
+  Envoyé en EAS Update (runtime 2.0.0) le 08/10/2026.
+- **Saisie à la main** (« je n'ai pas mon téléphone quand je cours ») : écran « Ajouter une
+  sortie » (`app/log-activity.tsx`, accès depuis l'accueil si la course fait partie des
+  disciplines) : activité (exercices distance + temps), distance en km, temps tapé (« 58:30 »,
+  « 1:05:20 », « 1h05 »), jour (aujourd'hui par défaut, jusqu'à un an en arrière, sans sélecteur de
+  date natif pour ne pas ajouter de dépendance), note. Elle crée une séance terminée avec un bloc
+  cardio, son résultat et une série : historique, stats, km du mois et records la prennent en
+  compte sans code dédié. Une sortie du jour finit « maintenant », une sortie passée est placée à
+  midi. Pendant une séance, « Saisir le temps » remplace le chrono (temps de la montre).
+- **Garde-fou d'allure** : une allure plus rapide que 2:00 /km en course (0:40 /km pour le reste)
+  demande confirmation (« Corriger » / « Enregistrer quand même »), au chrono comme à la saisie,
+  pour ne pas fausser les records par une faute de frappe ou un chrono oublié.

@@ -79,6 +79,7 @@ function RootNavigator() {
           options={{ presentation: 'fullScreenModal', gestureEnabled: false }}
         />
         <Stack.Screen name="body-weight" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="log-activity" options={{ presentation: 'modal' }} />
         <Stack.Screen name="_dev/components" />
       </Stack.Protected>
       <Stack.Protected guard={!signedIn || onboardingPending}>

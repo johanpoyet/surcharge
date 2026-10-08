@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Modal, Pressable, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type SheetProps = {
@@ -15,7 +15,11 @@ export function Sheet({ visible, onClose, closeLabel, children }: SheetProps) {
   const insets = useSafeAreaInsets();
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View className="flex-1 justify-end bg-scrim">
+      {/* Un champ de saisie dans la feuille reste au-dessus du clavier. */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        className="flex-1 justify-end bg-scrim"
+      >
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={closeLabel}
@@ -29,7 +33,7 @@ export function Sheet({ visible, onClose, closeLabel, children }: SheetProps) {
           <View className="h-[5px] w-10 self-center rounded-full bg-lineStrong" />
           {children}
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

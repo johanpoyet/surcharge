@@ -483,6 +483,13 @@ export const fr = {
         pace: (pace: string) => `Allure ${pace}`,
         target: (value: string) => `Objectif ${value}`,
         tapToStart: 'Démarre le chrono au départ, arrête-le à l’arrivée.',
+        // Temps tapé à la main (chrono de la montre).
+        manual: 'Saisir le temps',
+        manualTitle: (n: number) => `Temps de la série ${n}`,
+        manualHint: 'Ex. 4:05 ou 1:02:30',
+        manualSave: 'Valider',
+        manualInvalid: 'Temps invalide : écris-le comme 4:05 ou 1:02:30.',
+        close: 'Fermer',
       },
     },
     summary: {
@@ -523,6 +530,13 @@ export const fr = {
       },
       cardio: { distance: 'Distance', time: 'Temps', pace: 'Allure' },
     },
+    // Garde-fou : allure trop rapide pour être réelle (faute de frappe, chrono oublié).
+    paceCheck: {
+      title: (pace: string) => `Allure de ${pace} ?`,
+      message: 'C’est plus rapide que le record du monde. Une faute de frappe ?',
+      fix: 'Corriger',
+      keep: 'Enregistrer quand même',
+    },
   },
   planning: {
     week: 'Sem.',
@@ -558,6 +572,33 @@ export const fr = {
     validate: 'Valider',
     later: 'Plus tard',
     saved: 'Disciplines enregistrées',
+  },
+  // Sortie notée après coup (course sans téléphone).
+  logActivity: {
+    entry: 'Ajouter une sortie',
+    entryHint: 'Couru sans téléphone ? Note ta distance et ton temps.',
+    title: 'Ajouter une sortie',
+    cancel: 'Annuler',
+    exercise: 'Activité',
+    distance: 'Distance (km)',
+    time: 'Temps',
+    timePlaceholder: '58:30',
+    timeHint: 'Minutes:secondes ou heures:minutes:secondes (1:05:20)',
+    day: 'Jour',
+    today: "Aujourd'hui",
+    yesterday: 'Hier',
+    prevDay: 'Jour précédent',
+    nextDay: 'Jour suivant',
+    note: 'Note (facultatif)',
+    notePlaceholder: 'Parcours, sensations…',
+    pace: (pace: string) => `Allure ${pace}`,
+    paceEmpty: 'L’allure se calcule dès que distance et temps sont remplis.',
+    save: 'Enregistrer la sortie',
+    invalidDistance: 'Distance invalide : écris-la en km, comme 12 ou 12,5.',
+    invalidTime: 'Temps invalide : écris-le comme 58:30 ou 1:05:20.',
+    noExercise:
+      'Ajoute d’abord un exercice de course ou de cardio (distance + temps) à ta bibliothèque.',
+    saved: 'Sortie enregistrée',
   },
   home: {
     greeting: (firstName: string) => (firstName ? `Salut ${firstName}` : 'Salut'),

@@ -1,8 +1,8 @@
 import { Timer } from 'lucide-react-native';
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { Button, Heading, Stepper } from '@/components/ui';
+import { Button, Heading, Sheet, Stepper } from '@/components/ui';
 import {
   formatDistance,
   formatPace,
@@ -17,6 +17,7 @@ import { cn } from '@/lib/cn';
 import type { WeightUnit } from '@/lib/database.types';
 import { colors, iconSizes } from '@/theme/tokens';
 import { formatClock } from '../logic';
+import { isImplausiblePace, parseDuration } from '../manualEntry';
 import type { Workout } from '../useWorkout';
 import { RestBar } from './RestBar';
 
@@ -52,6 +53,9 @@ export function CardioView({
   const withDistance = tracking === 'distance_time' || tracking === 'weight_distance';
   const [distance, setDistance] = useState<Record<number, number>>({});
   const [count, setCount] = useState<Record<number, number>>({});
+  // Temps tapé à la main (chrono de la montre) : texte de la feuille, null quand elle est fermée.
+  const [manual, setManual] = useState<string | null>(null);
+  const [manualError, setManualError] = useState(false);
 
   const effort = state.effort ?? null;
   const running = effort !== null && effort.order === current?.order;
@@ -84,13 +88,49 @@ export function CardioView({
       : null;
   const draft = asDraft();
 
+  /** Enregistre la série ; une allure impossible (faute de frappe, chrono oublié) est confirmée. */
+  const commit = (durationS: number) => {
+    if (!current || !setNumber) return;
+    const save = () =>
+      workout.validateMeasured(current.order, setNumber, {
+        weightKg: current.item.targetWeightKg ?? 0,
+        distanceM: withDistance ? distanceM : null,
+        durationS,
+      });
+    const measured = withDistance ? distanceM : null;
+    if (!isImplausiblePace(measured, durationS, current.exercise?.discipline)) return save();
+    const check = fr.workout.paceCheck;
+    Alert.alert(
+      check.title(formatPace(paceSecondsPerKm(measured, durationS) ?? 0)),
+      check.message,
+      [
+        {
+          text: check.fix,
+          style: 'cancel',
+          onPress: () => {
+            if (running) workout.cancelEffort();
+            setManualError(false);
+            setManual(formatClock(durationS));
+          },
+        },
+        { text: check.keep, onPress: save },
+      ],
+    );
+  };
+
   const stop = () => {
     if (!current || !setNumber || !effort) return;
-    workout.validateMeasured(current.order, setNumber, {
-      weightKg: current.item.targetWeightKg ?? 0,
-      distanceM: withDistance ? distanceM : null,
-      durationS: Math.max(1, elapsedS),
-    });
+    commit(Math.max(1, elapsedS));
+  };
+
+  const submitManual = () => {
+    const durationS = manual === null ? null : parseDuration(manual);
+    if (durationS === null) {
+      setManualError(true);
+      return;
+    }
+    setManual(null);
+    commit(durationS);
   };
 
   const validateCount = () => {
@@ -217,10 +257,23 @@ export function CardioView({
           />
         ) : null}
         {current && setNumber && timed ? (
-          <Button
-            label={running ? t.stop : t.start}
-            onPress={() => (running ? stop() : workout.startEffort(current.order, setNumber))}
-          />
+          <>
+            <Button
+              label={running ? t.stop : t.start}
+              onPress={() => (running ? stop() : workout.startEffort(current.order, setNumber))}
+            />
+            {running ? null : (
+              <Button
+                label={t.manual}
+                variant="ghost"
+                size="sm"
+                onPress={() => {
+                  setManualError(false);
+                  setManual('');
+                }}
+              />
+            )}
+          </>
         ) : current && setNumber ? (
           <Button label={t.validate(setNumber)} onPress={validateCount} />
         ) : allDone ? (
@@ -247,6 +300,33 @@ export function CardioView({
           />
         ) : null}
       </View>
+      <Sheet visible={manual !== null} onClose={() => setManual(null)} closeLabel={t.close}>
+        <Text className="font-body-bold text-18 text-text">{t.manualTitle(setNumber ?? 1)}</Text>
+        <TextInput
+          value={manual ?? ''}
+          onChangeText={(text) => {
+            setManual(text);
+            setManualError(false);
+          }}
+          onSubmitEditing={submitManual}
+          placeholder={t.manualHint}
+          placeholderTextColor={colors.faint}
+          accessibilityLabel={t.manualTitle(setNumber ?? 1)}
+          keyboardType="numbers-and-punctuation"
+          keyboardAppearance="dark"
+          selectionColor={colors.volt}
+          returnKeyType="done"
+          autoFocus
+          className={cn(
+            'h-14 rounded-input bg-bg text-center font-body-bold text-22 text-text',
+            manualError ? 'border-[1.5px] border-danger' : 'border border-line',
+          )}
+        />
+        {manualError ? (
+          <Text className="font-body text-13 text-danger">{t.manualInvalid}</Text>
+        ) : null}
+        <Button label={t.manualSave} onPress={submitManual} />
+      </Sheet>
     </>
   );
 }

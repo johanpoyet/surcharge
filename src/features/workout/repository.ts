@@ -13,6 +13,7 @@ import {
   type SessionSet,
 } from '@/db/schema';
 import { nowIso } from '@/db/time';
+import { DEFAULT_CONFIGS, toJson } from '@/features/templates/blockConfig';
 import { newId } from '@/lib/id';
 import { enqueue } from '@/sync/outbox';
 import type { Difficulty } from './difficulty';
@@ -202,6 +203,80 @@ export function startWorkout(
       .run();
   });
   return id;
+}
+
+export type ActivityInput = {
+  exerciseId: string;
+  name: string;
+  distanceM: number;
+  durationS: number;
+  startedAt: string;
+  endedAt: string;
+  note: string | null;
+};
+
+/**
+ * Sortie notée après coup (course sans téléphone) : une séance terminée avec un bloc Course /
+ * cardio et une série. Elle compte comme une séance faite dans l'historique, les stats et les records.
+ */
+export function logActivity(db: AppDatabase, userId: string, input: ActivityInput): string {
+  const sessionId = newId();
+  const blockId = newId();
+  const setId = newId();
+  const now = nowIso();
+  const sync = { createdAt: now, updatedAt: now, dirty: true };
+  db.transaction((tx) => {
+    tx.insert(sessions)
+      .values({
+        id: sessionId,
+        userId,
+        templateId: null,
+        name: input.name,
+        startedAt: input.startedAt,
+        endedAt: input.endedAt,
+        note: input.note,
+        ...sync,
+      })
+      .run();
+    enqueue(tx, 'sessions', sessionId, 'upsert');
+    tx.insert(sessionBlocks)
+      .values({
+        id: blockId,
+        userId,
+        sessionId,
+        templateBlockId: null,
+        position: 0,
+        type: 'cardio',
+        name: null,
+        config: toJson(DEFAULT_CONFIGS.cardio),
+        startedAt: input.startedAt,
+        endedAt: input.endedAt,
+        result: { totalDistanceM: input.distanceM, totalS: input.durationS },
+        ...sync,
+      })
+      .run();
+    enqueue(tx, 'session_blocks', blockId, 'upsert');
+    tx.insert(sessionSets)
+      .values({
+        id: setId,
+        userId,
+        sessionId,
+        blockId,
+        exerciseId: input.exerciseId,
+        exerciseOrder: 0,
+        setNumber: 1,
+        weightKg: 0,
+        reps: 0,
+        difficulty: null,
+        distanceM: input.distanceM,
+        durationS: input.durationS,
+        completedAt: input.endedAt,
+        ...sync,
+      })
+      .run();
+    enqueue(tx, 'session_sets', setId, 'upsert');
+  });
+  return sessionId;
 }
 
 /** Début, fin et résultat d'un bloc de la séance (SPEC_V2 §4.4). */

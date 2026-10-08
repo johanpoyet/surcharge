@@ -19,6 +19,7 @@ import {
   setsBefore,
   startSession,
   listSessionBlocks,
+  logActivity,
   updateSessionBlock,
 } from '../repository';
 import { restoreWorkoutState, startFromTemplate } from '../start';
@@ -258,4 +259,28 @@ describe('séance en blocs (V2)', () => {
     expect(endWorkout(db, sessionId)).toBe('finished');
     expect(listSessionBlocks(db, sessionId)[0]?.result).toEqual({ rounds: 7, extraReps: 12 });
   });
+});
+
+it('note une sortie après coup : séance terminée, bloc cardio avec résultat, une série', () => {
+  const run = createExercise(db, USER, { name: 'Footing', muscle: 'other', equipment: 'other' });
+  const id = logActivity(db, USER, {
+    exerciseId: run,
+    name: 'Footing',
+    distanceM: 12_000,
+    durationS: 3900,
+    startedAt: '2026-10-06T12:00:00.000Z',
+    endedAt: '2026-10-06T13:05:00.000Z',
+    note: 'Bords de Loire',
+  });
+  expect(getSession(db, id)).toMatchObject({
+    name: 'Footing',
+    endedAt: '2026-10-06T13:05:00.000Z',
+    note: 'Bords de Loire',
+  });
+  expect(getActiveSession(db, USER)).toBeUndefined();
+  const [block] = listSessionBlocks(db, id);
+  expect(block).toMatchObject({ type: 'cardio', result: { totalDistanceM: 12_000, totalS: 3900 } });
+  expect(listSessionSets(db, id)).toMatchObject([
+    { blockId: block!.id, distanceM: 12_000, durationS: 3900, setNumber: 1, weightKg: 0 },
+  ]);
 });
