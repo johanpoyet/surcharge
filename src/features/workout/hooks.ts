@@ -1,11 +1,12 @@
-import { and, desc, eq, isNull } from 'drizzle-orm';
+import { and, asc, desc, eq, isNull } from 'drizzle-orm';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { parseISO } from 'date-fns';
 import { useMemo } from 'react';
 
 import { liveDb } from '@/db/client';
-import { sessions as sessionsTable, type Session } from '@/db/schema';
+import { sessionBlocks, sessions as sessionsTable, type Session } from '@/db/schema';
 import { useAuth } from '@/features/auth/AuthProvider';
+import { mergeKinds, sessionKinds, type SessionKind } from '@/features/templates/kinds';
 import { toLocalDateString } from '@/lib/format';
 import { allSetsQuery, completedSessionsQuery } from './repository';
 
@@ -38,6 +39,32 @@ export function useDoneSessionsByDate(): Map<string, string> {
     }
     return byDate;
   }, [sessions]);
+}
+
+/** Types des séances terminées par jour (date locale) : pictogrammes du planning et du calendrier. */
+export function useDoneKindsByDate(): Map<string, SessionKind[]> {
+  const userId = useUserId();
+  const sessions = useCompletedSessions();
+  const { data: blocks } = useLiveQuery(
+    liveDb
+      .select({ sessionId: sessionBlocks.sessionId, type: sessionBlocks.type })
+      .from(sessionBlocks)
+      .where(and(eq(sessionBlocks.userId, userId), isNull(sessionBlocks.deletedAt)))
+      .orderBy(asc(sessionBlocks.position)),
+    [userId],
+  );
+  return useMemo(() => {
+    const types = new Map<string, (typeof blocks)[number]['type'][]>();
+    for (const block of blocks)
+      types.set(block.sessionId, [...(types.get(block.sessionId) ?? []), block.type]);
+    const byDate = new Map<string, SessionKind[]>();
+    // Du plus ancien au plus récent : l'ordre des icônes suit celui des séances du jour.
+    for (const s of [...sessions].reverse()) {
+      const key = toLocalDateString(parseISO(s.startedAt));
+      byDate.set(key, mergeKinds(byDate.get(key) ?? [], sessionKinds(types.get(s.id) ?? [])));
+    }
+    return byDate;
+  }, [blocks, sessions]);
 }
 
 export function useAllSets() {

@@ -34,7 +34,12 @@ import {
 } from '@/features/profile/disciplines';
 import { useBodyWeights, useProfile } from '@/features/profile/hooks';
 import { recordSets, regularityWeeks } from '@/features/stats/regularity';
-import { useActiveSession, useAllSets, useCompletedSessions } from '@/features/workout/hooks';
+import {
+  useActiveSession,
+  useAllSets,
+  useCompletedSessions,
+  useDoneKindsByDate,
+} from '@/features/workout/hooks';
 import { hyroxBlocksQuery } from '@/features/workout/repository';
 import { useStartWorkout } from '@/features/workout/useStartWorkout';
 import { formatEstimate } from '@/features/templates/format';
@@ -50,6 +55,7 @@ export default function HomeScreen() {
   const unit = profile?.weightUnit ?? 'kg';
   const { weekly, overrides, templates, templateList } = usePlanning();
   const sessions = useCompletedSessions();
+  const doneKinds = useDoneKindsByDate();
   const sets = useAllSets();
   const weights = useBodyWeights();
   const exercises = useExercises();
@@ -113,6 +119,10 @@ export default function HomeScreen() {
       ),
     [profile?.sessionsPerWeek, sessions, today],
   );
+  const templateKinds = useMemo(
+    () => new Map([...templates].map(([id, info]) => [id, info.kinds])),
+    [templates],
+  );
   const progression = useMemo(() => progressionOf(sets), [sets]);
   const km = useMemo(() => kmInMonth(sets, today), [sets, today]);
   const weight = useMemo(() => bodyWeightSummary(weights), [weights]);
@@ -140,6 +150,7 @@ export default function HomeScreen() {
                     planned.muscles.join(', '),
                   ),
               changed: plan.source === 'override',
+              kinds: planned.kinds,
             }
           : { kind: 'rest' };
 
@@ -257,6 +268,8 @@ export default function HomeScreen() {
           recordDates={recordDates}
           weekly={weekly}
           overrides={overrides}
+          doneKinds={doneKinds}
+          templateKinds={templateKinds}
           onDonePress={openDay}
         />
 

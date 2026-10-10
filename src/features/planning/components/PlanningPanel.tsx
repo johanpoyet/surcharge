@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { IconButton, SegmentedControl, Switch } from '@/components/ui';
-import { useDoneSessionsByDate } from '@/features/workout/hooks';
+import { useDoneKindsByDate, useDoneSessionsByDate } from '@/features/workout/hooks';
 import { fr } from '@/i18n/fr';
 import { addDays, monthGrid, planForDay, startOfWeek, weekDays } from '../calendar';
 import { usePlanning } from '../hooks';
@@ -27,6 +27,7 @@ const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slic
 export function PlanningPanel() {
   const { weekly, overrides, templates } = usePlanning();
   const doneSessions = useDoneSessionsByDate();
+  const doneKinds = useDoneKindsByDate();
   const [mode, setMode] = useState<Mode>('week');
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
   const [monthDate, setMonthDate] = useState(
@@ -88,6 +89,7 @@ export function PlanningPanel() {
           overrides={overrides}
           templates={templates}
           doneSessions={doneSessions}
+          doneKinds={doneKinds}
           onDayPress={(date) => open(date, planForDay(date, overrides, weekly), days)}
         />
       ) : (
@@ -99,6 +101,7 @@ export function PlanningPanel() {
           overrides={overrides}
           templates={templates}
           doneSessions={doneSessions}
+          doneKinds={doneKinds}
           onDayPress={(date) =>
             open(date, planForDay(date, overrides, weekly), weekDays(startOfWeek(date)))
           }

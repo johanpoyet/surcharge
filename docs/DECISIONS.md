@@ -689,3 +689,9 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   sort de l'historique, des stats, des km et des records. Le récap d'une séance passée s'ouvre en
   touchant une ligne de l'historique d'un exercice ou un jour fait du calendrier de l'accueil
   (choix de la séance s'il y en a plusieurs ce jour-là).
+- **Pictogrammes par type de séance** (« des couleurs par discipline ») : pas de nouvelle couleur,
+  le volt reste le seul accent. Le type se lit par une icône déduite des blocs
+  (`src/features/templates/kinds.ts`) : haltère (musculation), pas (course / cardio), flamme
+  (circuit / cross-training), chrono (Hyrox) ; deux icônes au plus pour une séance mixte, une séance
+  sans bloc compte comme musculation. Affichés dans le planning (semaine et mois), le calendrier de
+  l'accueil et la carte du jour : pour un jour fait, ce qui a été fait ; sinon ce qui est prévu.

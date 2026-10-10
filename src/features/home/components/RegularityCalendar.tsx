@@ -4,9 +4,12 @@ import { Pressable, Text, View } from 'react-native';
 
 import { Card } from '@/components/ui';
 import { monthGrid, planForDay } from '@/features/planning/calendar';
+import { KindIcons } from '@/features/templates/components/KindIcons';
+import type { SessionKind } from '@/features/templates/kinds';
 import { fr } from '@/i18n/fr';
 import { cn } from '@/lib/cn';
 import { toLocalDateString } from '@/lib/format';
+import { colors } from '@/theme/tokens';
 
 const t = fr.home.regularity;
 
@@ -16,6 +19,9 @@ type RegularityCalendarProps = {
   recordDates: ReadonlySet<string>;
   weekly: ReadonlyMap<number, string>;
   overrides: ReadonlyMap<string, string | null>;
+  /** Pictogrammes : types des séances faites (par date) et des séances types (par id). */
+  doneKinds: ReadonlyMap<string, SessionKind[]>;
+  templateKinds: ReadonlyMap<string, SessionKind[]>;
   /** Jour fait touché (clé AAAA-MM-JJ) : ouvre le récap de la séance. */
   onDonePress?: (key: string) => void;
 };
@@ -27,6 +33,8 @@ export function RegularityCalendar({
   recordDates,
   weekly,
   overrides,
+  doneKinds,
+  templateKinds,
   onDonePress,
 }: RegularityCalendarProps) {
   const month = today.getMonth();
@@ -57,8 +65,14 @@ export function RegularityCalendar({
                 return <View key={key} className="aspect-square flex-1" />;
               const done = doneDates.has(key);
               const isToday = key === todayKey;
-              const planned =
-                !done && key > todayKey && planForDay(date, overrides, weekly).templateId !== null;
+              const templateId = done ? null : planForDay(date, overrides, weekly).templateId;
+              const planned = key > todayKey && templateId !== null;
+              // Fait : ce qui a été fait ; aujourd'hui ou à venir : ce qui est prévu.
+              const kinds = done
+                ? (doneKinds.get(key) ?? [])
+                : templateId && key >= todayKey
+                  ? (templateKinds.get(templateId) ?? [])
+                  : [];
               return (
                 <Pressable
                   key={key}
@@ -88,6 +102,11 @@ export function RegularityCalendar({
                   >
                     {date.getDate()}
                   </Text>
+                  <KindIcons
+                    kinds={kinds}
+                    size={kinds.length > 1 ? 9 : 11}
+                    color={done ? colors.onVolt : colors.volt}
+                  />
                   {recordDates.has(key) ? (
                     <View
                       className={cn(

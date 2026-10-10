@@ -578,6 +578,13 @@ export const fr = {
     later: 'Plus tard',
     saved: 'Disciplines enregistrées',
   },
+  // Types de séance (pictogrammes du planning et du calendrier).
+  kinds: {
+    strength: 'Musculation',
+    running: 'Course / cardio',
+    cross_training: 'Cross-training',
+    hyrox: 'Hyrox',
+  },
   // Sortie notée après coup (course sans téléphone).
   logActivity: {
     entry: 'Ajouter une sortie',

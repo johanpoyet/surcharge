@@ -1,8 +1,11 @@
 import { Pressable, Text, View } from 'react-native';
 
+import { KindIcons } from '@/features/templates/components/KindIcons';
+import type { SessionKind } from '@/features/templates/kinds';
 import { fr } from '@/i18n/fr';
 import { cn } from '@/lib/cn';
 import { toLocalDateString } from '@/lib/format';
+import { colors } from '@/theme/tokens';
 import { countPlanned, monthLabel, planForDay } from '../calendar';
 import type { TemplateInfo } from '../hooks';
 import { dayTitle } from '../useDayActions';
@@ -18,6 +21,8 @@ type MonthViewProps = {
   templates: ReadonlyMap<string, TemplateInfo>;
   /** Date locale → nom de la séance terminée ce jour-là. */
   doneSessions: ReadonlyMap<string, string>;
+  /** Date locale → types des séances terminées ce jour-là (pictogrammes). */
+  doneKinds: ReadonlyMap<string, SessionKind[]>;
   onDayPress: (date: Date) => void;
 };
 
@@ -30,6 +35,7 @@ export function MonthView({
   overrides,
   templates,
   doneSessions,
+  doneKinds,
   onDayPress,
 }: MonthViewProps) {
   const todayKey = toLocalDateString(new Date());
@@ -61,6 +67,7 @@ export function MonthView({
                 const doneName = doneSessions.get(plan.date);
                 const done = doneName !== undefined;
                 const label = info?.name ?? doneName;
+                const kinds = doneKinds.get(plan.date) ?? info?.kinds ?? [];
                 return (
                   <Pressable
                     key={plan.date}
@@ -73,15 +80,24 @@ export function MonthView({
                       !inMonth && 'opacity-40',
                     )}
                   >
-                    <Text
-                      className={cn(
-                        'text-12',
-                        isToday ? 'font-body-bold text-volt' : 'font-body-semibold text-text',
-                        !inMonth && 'text-faint',
-                      )}
-                    >
-                      {date.getDate()}
-                    </Text>
+                    <View className="flex-row items-center justify-between">
+                      <Text
+                        className={cn(
+                          'text-12',
+                          isToday ? 'font-body-bold text-volt' : 'font-body-semibold text-text',
+                          !inMonth && 'text-faint',
+                        )}
+                      >
+                        {date.getDate()}
+                      </Text>
+                      {label ? (
+                        <KindIcons
+                          kinds={kinds}
+                          size={kinds.length > 1 ? 10 : 12}
+                          color={done || isToday ? colors.volt : colors.muted}
+                        />
+                      ) : null}
+                    </View>
                     {label ? (
                       <View
                         className={cn(

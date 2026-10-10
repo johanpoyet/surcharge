@@ -1,12 +1,15 @@
 import { Text, View } from 'react-native';
 
 import { Button, Card, Heading } from '@/components/ui';
+import { KindIcons } from '@/features/templates/components/KindIcons';
+import type { SessionKind } from '@/features/templates/kinds';
 import { fr } from '@/i18n/fr';
+import { colors } from '@/theme/tokens';
 
 const t = fr.home.day;
 
 export type DayCardState =
-  | { kind: 'planned'; name: string; meta: string; changed: boolean }
+  | { kind: 'planned'; name: string; meta: string; changed: boolean; kinds: SessionKind[] }
   | { kind: 'rest' }
   | { kind: 'active'; name: string }
   | { kind: 'done'; name: string }
@@ -44,6 +47,7 @@ export function DayCard({ state, onStart, onChange, onResume, onRecap, onCreate 
           <View className="flex-row items-center gap-2">
             {overline}
             <Tag label={state.changed ? t.changed : t.planned} />
+            <KindIcons kinds={state.kinds} size={18} color={colors.onVolt} className="ml-auto" />
           </View>
           <Heading size={48} tone="onVolt" className="mt-1">
             {state.name}

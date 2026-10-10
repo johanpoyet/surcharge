@@ -17,6 +17,7 @@ const push = {
   minutes: 35,
   muscles: [],
   summary: null,
+  kinds: ['strength' as const],
 };
 
 it('affiche la séance faite un jour de repos au lieu de « Repos »', async () => {
@@ -32,12 +33,16 @@ it('affiche la séance faite un jour de repos au lieu de « Repos »', async () 
           ['2026-09-24', 'Pull'],
         ])
       }
+      doneKinds={new Map([['2026-09-24', ['running' as const]]])}
       onDayPress={jest.fn()}
     />,
   );
   expect(screen.getByText('Pull')).toBeTruthy();
   expect(screen.getByText(t.offPlan)).toBeTruthy();
   expect(screen.getAllByText(t.done)).toHaveLength(2);
+  // Pictogrammes : musculation prévue le lundi, course faite le jeudi ; rien les jours de repos.
+  expect(screen.getAllByLabelText(fr.kinds.strength)).toHaveLength(1);
+  expect(screen.getAllByLabelText(fr.kinds.running)).toHaveLength(1);
   // Les 5 autres jours restent en repos.
   expect(screen.getAllByText(t.rest)).toHaveLength(5);
 });

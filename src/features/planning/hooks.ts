@@ -5,6 +5,7 @@ import { liveDb } from '@/db/client';
 import { useAuth } from '@/features/auth/AuthProvider';
 import { templateSummary } from '@/features/templates/blockSummary';
 import { estimateTemplate } from '@/features/templates/estimate';
+import { sessionKinds, type SessionKind } from '@/features/templates/kinds';
 import { useTemplateBlocks, useTemplateItems, useTemplates } from '@/features/templates/hooks';
 import { weeklyScheduleQuery } from '@/features/templates/repository';
 import { fr } from '@/i18n/fr';
@@ -18,6 +19,8 @@ export type TemplateInfo = {
   muscles: string[];
   /** Résumé des blocs (séance multi-sport), null pour une séance de musculation seule. */
   summary: string | null;
+  /** Types de la séance (pictogrammes). */
+  kinds: SessionKind[];
 };
 
 /** Modèle de semaine, exceptions et infos des séances types, en direct. */
@@ -44,6 +47,7 @@ export function usePlanning() {
             minutes: estimateTemplate(blocks.get(t.id) ?? [], rows).minutes,
             muscles: [...new Set(rows.map((r) => fr.exercises.muscles[r.muscle].toLowerCase()))],
             summary: templateSummary(blocks.get(t.id) ?? [], rows),
+            kinds: sessionKinds((blocks.get(t.id) ?? []).map((b) => b.type)),
           },
         ];
       }),

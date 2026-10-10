@@ -3,6 +3,8 @@ import { fr as frLocale } from 'date-fns/locale';
 import { Check, GripVertical, Plus } from 'lucide-react-native';
 import { Pressable, Text, View } from 'react-native';
 
+import { KindIcons } from '@/features/templates/components/KindIcons';
+import type { SessionKind } from '@/features/templates/kinds';
 import { formatEstimate } from '@/features/templates/format';
 import { fr } from '@/i18n/fr';
 import { cn } from '@/lib/cn';
@@ -21,6 +23,8 @@ type WeekViewProps = {
   templates: ReadonlyMap<string, TemplateInfo>;
   /** Date locale → nom de la séance terminée ce jour-là. */
   doneSessions: ReadonlyMap<string, string>;
+  /** Date locale → types des séances terminées ce jour-là (pictogrammes). */
+  doneKinds: ReadonlyMap<string, SessionKind[]>;
   onDayPress: (date: Date) => void;
 };
 
@@ -31,6 +35,7 @@ export function WeekView({
   overrides,
   templates,
   doneSessions,
+  doneKinds,
   onDayPress,
 }: WeekViewProps) {
   const todayKey = toLocalDateString(new Date());
@@ -44,6 +49,8 @@ export function WeekView({
         const done = doneName !== undefined;
         // Séance faite un jour de repos : on affiche celle réalisée plutôt que « Repos ».
         const title = info?.name ?? doneName;
+        // Pictogrammes : ce qui a été fait ce jour-là, sinon ce qui est prévu.
+        const kinds = doneKinds.get(plan.date) ?? info?.kinds ?? [];
         const a11yPlan = title ?? t.rest;
         return (
           <View key={plan.date} className="flex-row items-center gap-2.5">
@@ -66,11 +73,19 @@ export function WeekView({
               onPress={() => onDayPress(date)}
               onLongPress={() => onDayPress(date)}
               className={cn(
-                'h-[58px] flex-1 flex-row items-center justify-between rounded-input px-3 active:opacity-80',
+                'h-[58px] flex-1 flex-row items-center justify-between gap-2.5 rounded-input px-3 active:opacity-80',
                 title ? 'bg-surface' : 'border border-dashed border-line',
                 info && isToday && 'border-[1.5px] border-volt',
               )}
             >
+              {title ? (
+                <KindIcons
+                  kinds={kinds}
+                  size={kinds.length > 1 ? 15 : 18}
+                  color={done || isToday ? colors.volt : colors.muted}
+                  className="w-9 justify-center"
+                />
+              ) : null}
               {title ? (
                 <View className="flex-1">
                   <Text numberOfLines={1} className="font-display text-20 uppercase text-text">
@@ -84,7 +99,7 @@ export function WeekView({
                   </Text>
                 </View>
               ) : (
-                <Text className="font-body-semibold text-15 text-muted">
+                <Text className="flex-1 font-body-semibold text-15 text-muted">
                   {t.rest}
                   {plan.source === 'override' ? ` · ${t.onlyThisDay}` : ''}
                 </Text>
