@@ -698,3 +698,6 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Ressenti de la séance précédente** : pendant la séance, à côté de « Précédent » (lignes des
   séries faites et série en cours), petit badge du ressenti noté à la même série la dernière fois
   (rien si elle n'en avait pas).
+- **Xcode 27.1** (Swift 6.4) refuse les modules précompilés d'Expo 57.0.26 (`ExpoModulesJSI`) :
+  mise à jour des correctifs du SDK 57 (`expo` 57.0.30, `expo-modules-core` 57.0.23) avant le
+  build 2.0.0 (11).
