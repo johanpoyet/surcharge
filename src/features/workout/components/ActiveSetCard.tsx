@@ -1,10 +1,11 @@
 import { Text, View } from 'react-native';
 
-import { DifficultyPicker, Stepper } from '@/components/ui';
+import { DifficultyBadge, DifficultyPicker, Stepper } from '@/components/ui';
 import { fr } from '@/i18n/fr';
 import type { WeightUnit } from '@/lib/database.types';
 import { formatNumber } from '@/lib/format';
 import { fromKg } from '@/lib/units';
+import type { Difficulty } from '../difficulty';
 import type { SetDraft } from '../logic';
 
 const t = fr.workout;
@@ -12,6 +13,8 @@ const t = fr.workout;
 type ActiveSetCardProps = {
   setNumber: number;
   previousLabel: string | null;
+  /** Ressenti de la même série à la séance précédente. */
+  previousDifficulty: Difficulty | null;
   draft: SetDraft;
   weightStepKg: number;
   unit: WeightUnit;
@@ -22,6 +25,7 @@ type ActiveSetCardProps = {
 export function ActiveSetCard({
   setNumber,
   previousLabel,
+  previousDifficulty,
   draft,
   weightStepKg,
   unit,
@@ -33,7 +37,12 @@ export function ActiveSetCard({
       <View className="flex-row items-center justify-between px-0.5">
         <Text className="font-body-bold text-15 text-volt">{t.setTitle(setNumber)}</Text>
         {previousLabel ? (
-          <Text className="font-body text-15 text-muted">{t.previous(previousLabel)}</Text>
+          <View className="flex-row items-center gap-1.5">
+            <Text className="font-body text-15 text-muted">{t.previous(previousLabel)}</Text>
+            {previousDifficulty ? (
+              <DifficultyBadge difficulty={previousDifficulty} size="sm" />
+            ) : null}
+          </View>
         ) : null}
       </View>
       <View className="flex-row gap-2">

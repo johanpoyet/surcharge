@@ -695,3 +695,6 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
   (circuit / cross-training), chrono (Hyrox) ; deux icônes au plus pour une séance mixte, une séance
   sans bloc compte comme musculation. Affichés dans le planning (semaine et mois), le calendrier de
   l'accueil et la carte du jour : pour un jour fait, ce qui a été fait ; sinon ce qui est prévu.
+- **Ressenti de la séance précédente** : pendant la séance, à côté de « Précédent » (lignes des
+  séries faites et série en cours), petit badge du ressenti noté à la même série la dernière fois
+  (rien si elle n'en avait pas).

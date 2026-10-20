@@ -54,6 +54,9 @@ export function StrengthView({
     const p = current?.previous.find((s) => s.setNumber === setNumber);
     return p ? setLabel(p.weightKg, p.reps) : t.noPrevious;
   };
+  // Ressenti de la même série la dernière fois (à côté de « Précédent »).
+  const previousDifficultyFor = (setNumber: number) =>
+    current?.previous.find((s) => s.setNumber === setNumber)?.difficulty ?? null;
 
   const last = current ? lastTimeSummary(current.previous) : null;
   const advice = current
@@ -201,6 +204,7 @@ export function StrengthView({
                     key={set.id}
                     set={set}
                     previousLabel={previousFor(set.setNumber)}
+                    previousDifficulty={previousDifficultyFor(set.setNumber)}
                     weightLabel={weightText(set.weightKg)}
                     editing={editing?.id === set.id}
                     onPress={() =>
@@ -233,6 +237,7 @@ export function StrengthView({
                         ? null
                         : previousFor(activeSetNumber)
                     }
+                    previousDifficulty={previousDifficultyFor(activeSetNumber)}
                     draft={activeDraft}
                     weightStepKg={current.exercise?.weightStep ?? 2.5}
                     unit={unit}

@@ -3,6 +3,7 @@ import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeabl
 
 import { DifficultyBadge } from '@/components/ui';
 import type { SessionSet } from '@/db/schema';
+import type { Difficulty } from '../difficulty';
 import { fr } from '@/i18n/fr';
 import { cn } from '@/lib/cn';
 
@@ -20,6 +21,8 @@ export const columnClasses = {
 type SetRowProps = {
   set: SessionSet;
   previousLabel: string;
+  /** Ressenti de la même série à la séance précédente. */
+  previousDifficulty: Difficulty | null;
   weightLabel: string;
   editing: boolean;
   onPress: () => void;
@@ -30,6 +33,7 @@ type SetRowProps = {
 export function SetRow({
   set,
   previousLabel,
+  previousDifficulty,
   weightLabel,
   editing,
   onPress,
@@ -63,9 +67,14 @@ export function SetRow({
         <Text className={cn(columnClasses.set, 'font-body-bold text-16 text-text')}>
           {set.setNumber}
         </Text>
-        <Text className={cn(columnClasses.previous, 'font-body text-16 text-muted')}>
-          {previousLabel}
-        </Text>
+        <View className={cn(columnClasses.previous, 'flex-row items-center gap-1.5')}>
+          <Text numberOfLines={1} className="shrink font-body text-16 text-muted">
+            {previousLabel}
+          </Text>
+          {previousDifficulty ? (
+            <DifficultyBadge difficulty={previousDifficulty} size="sm" />
+          ) : null}
+        </View>
         <Text className={cn(columnClasses.weight, 'font-body-bold text-16 text-text')}>
           {weightLabel}
         </Text>
