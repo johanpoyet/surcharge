@@ -50,6 +50,15 @@ export const profiles = sqliteTable('profiles', {
     .$type<Discipline[]>()
     .notNull()
     .default(['strength']),
+  // Amis (SPEC_V2 §6) : pseudo et code ami sont fixés par le serveur (set_username, trigger) ;
+  // les réglages de partage décident de ce que voient les amis. Le poids corporel n'est jamais partagé.
+  username: text('username'),
+  friendCode: text('friend_code'),
+  shareSessions: integer('share_sessions', { mode: 'boolean' }).notNull().default(true),
+  shareRecords: integer('share_records', { mode: 'boolean' }).notNull().default(true),
+  shareExactWeights: integer('share_exact_weights', { mode: 'boolean' })
+    .notNull()
+    .default(false),
   ...timestamps,
   dirty: integer('dirty', { mode: 'boolean' }).notNull().default(false),
 });

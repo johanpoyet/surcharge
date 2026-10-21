@@ -4,6 +4,7 @@ import { AppState } from 'react-native';
 
 import { db } from '@/db/client';
 import { useAuth } from '@/features/auth/AuthProvider';
+import { pushPublicStats, resetPublicStats } from '@/features/social/sync';
 import { onSyncRequest, runSync, useSyncStatus } from './index';
 import { pendingCount } from './outbox';
 
@@ -23,7 +24,10 @@ export function useSync(): void {
     if (!userId) return;
     const sync = () => {
       lastAttempt.current = Date.now();
-      void runSync(db, userId);
+      // Synchro réussie : les stats publiques vues par les amis suivent (SPEC_V2 §6.3).
+      void runSync(db, userId).then((ok) => {
+        if (ok) void pushPublicStats(db, userId).catch(() => false);
+      });
     };
     sync();
 
@@ -48,6 +52,7 @@ export function useSync(): void {
       unsubscribeNet();
       appState.remove();
       clearInterval(timer);
+      resetPublicStats();
     };
   }, [userId]);
 }

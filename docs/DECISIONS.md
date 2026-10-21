@@ -701,3 +701,40 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Xcode 27.1** (Swift 6.4) refuse les modules précompilés d'Expo 57.0.26 (`ExpoModulesJSI`) :
   mise à jour des correctifs du SDK 57 (`expo` 57.0.30, `expo-modules-core` 57.0.23) avant le
   build 2.0.0 (11).
+
+## V2 — Phase H (backend des amis)
+
+- **Migration `0007_social.sql`** (le SPEC l'appelait 0003 : les numéros 0003 à 0006 étaient déjà
+  pris). Appliquée sur le Supabase **dev** seulement ; la prod attendra la release sociale (Phase J).
+  Additive : les anciennes versions ignorent les nouvelles tables et colonnes ; une ancienne app qui
+  réécrit le profil garde son code ami et ses réglages (testé).
+- **Fonctions SQL plutôt qu'Edge Functions** pour le code ami (trigger + `make_friend_code`), la
+  recherche (`find_user`) et le pseudo (`set_username`) : même garanties (unicité, recherche exacte
+  sans liste, débit limité à 20 recherches par minute via `user_lookups`, mots interdits contrôlés
+  côté serveur), testables sur PGlite, une seule migration à déployer, aucun secret.
+- **Sécurité des amitiés renforcée par rapport au SPEC** : pas de policy `update` sur
+  `friendships` (sinon on pourrait accepter sa propre demande) ; réponse, envoi et blocage passent
+  par `respond_friend_request`, `send_friend_request`, `block_user`. Un blocage n'est visible que
+  de celui qui bloque, lui seul peut le lever ; la personne bloquée reçoit une réponse neutre si elle
+  redemande et ne trouve plus le bloqueur. Le pseudo et le code ami ne se modifient pas en écrivant
+  la ligne `profiles` (trigger).
+- **Profils des autres** : uniquement via `get_friend_profiles()` (prénom, pseudo, code ami pour un
+  ami accepté, statut, sens de la demande). `profiles` reste fermée en lecture. Pas d'avatar : la
+  table n'en a pas, l'app affiche l'initiale.
+- **Stats publiques** (`src/features/social/publicStats.ts`, `sync.ts`) : recalculées en local et
+  envoyées après chaque synchro réussie (pas d'outbox dédiée : on remplace un instantané complet, ce
+  qui reste juste hors ligne puisque la synchro suivante rattrape). Rien n'est renvoyé si rien n'a
+  changé. Triche possible (les stats sont écrites par le client) : enjeu faible, accepté.
+  - `progress_pct_3m` : meilleure valeur des 14 derniers jours contre celle des jours 90 à 104 ;
+    charge pour la muscu, allure (s/km) pour la course (plus rapide = % positif) ; null s'il manque
+    une période. `best_time_s` = meilleure allure en s/km. Exercices du catalogue seulement.
+  - Activités : records (si `share_records`), série de semaines paire et simu Hyrox terminée (si
+    `share_sessions`), sur les 7 derniers jours seulement (pas de fil inondé au premier lancement),
+    avec un id stable pour remplacer sans doublon. Une séance supprimée ou un partage désactivé
+    retire les activités correspondantes. Sans « charges exactes », un record de charge est annoncé
+    sans valeur.
+- **Suppression du compte** : `delete-account` inchangée, toutes les nouvelles tables sont en
+  `on delete cascade` sur `auth.users` (vérifié).
+- **Tests** : `supabase/tests/social-rls.mjs` (PGlite, 44 vérifications : RLS, blocage, débit,
+  anciennes versions, cascade) et `supabase/tests/social-e2e-dev.mjs` (deux comptes de test sur le
+  Supabase dev : amis, stats publiques visibles, séries et profil privés).
