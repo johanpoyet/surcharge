@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { Share, Text, View } from 'react-native';
+import { Pressable, Share, Text, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
 import {
@@ -144,13 +144,16 @@ export default function AddFriendScreen() {
         <Text className="px-2 font-display text-44 text-onVolt">{friendCode ?? '—'}</Text>
         {friendCode ? null : <Text className="font-body text-13 text-onVolt">{t.codeMissing}</Text>}
         <View className="flex-row gap-2 self-stretch">
-          <Button
-            label={t.share}
-            variant="dark"
-            className="flex-1"
+          {/* Maquette : texte volt sur fond noir, même taille que « Scanner un code ». */}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityState={{ disabled: !friendCode }}
             disabled={!friendCode}
             onPress={shareLink}
-          />
+            className="h-[50px] flex-1 items-center justify-center rounded-input bg-onVolt active:opacity-80"
+          >
+            <Text className="font-body-bold text-15 text-volt">{t.share}</Text>
+          </Pressable>
           <Button
             label={t.scan}
             variant="darkOutline"

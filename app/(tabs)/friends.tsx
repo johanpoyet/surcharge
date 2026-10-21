@@ -51,6 +51,8 @@ export default function FriendsScreen() {
         .catch(() => undefined);
       return () => {
         cancelled = true;
+        // La feuille ne doit pas rester par-dessus l'écran suivant.
+        setAskUsername(false);
       };
     }, [identity.username, userId]),
   );
