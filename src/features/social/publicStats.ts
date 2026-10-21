@@ -9,6 +9,8 @@ import { formatClock } from '@/features/workout/logic';
 import { formatWeight, toLocalDateString } from '@/lib/format';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+/** Clé de la ligne « Simu Hyrox » de public_exercise_stats (meilleur temps d'une simu complète). */
+export const HYROX_FULL_KEY = 'hyrox_full_simulation';
 /** Les activités ne remontent pas au-delà : pas de fil inondé au premier lancement. */
 export const EVENT_WINDOW_DAYS = 7;
 
@@ -192,6 +194,18 @@ export function publicSnapshot(input: StatsInput): PublicSnapshot {
       },
     ];
   });
+
+  // Simu Hyrox complète : meilleur temps, comparé comme un exercice du catalogue.
+  const fullRuns = input.hyroxBlocks.filter((b) => b.format === 'full' && b.totalS !== null);
+  if (fullRuns.length > 0) {
+    exercises.push({
+      user_id: input.userId,
+      catalog_key: HYROX_FULL_KEY,
+      progress_pct_3m: null,
+      best_weight_kg: null,
+      best_time_s: Math.min(...fullRuns.map((b) => b.totalS ?? Infinity)),
+    });
+  }
 
   // Activités récentes (records, série de semaines paire, simu Hyrox terminée).
   const since = today.getTime() - EVENT_WINDOW_DAYS * DAY_MS;

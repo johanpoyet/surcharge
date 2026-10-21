@@ -7,6 +7,7 @@ import { ExerciseForm } from '@/features/exercises/components/ExerciseForm';
 import { useExercise, useExerciseHasSets } from '@/features/exercises/hooks';
 import { deleteExercise, updateExercise } from '@/features/exercises/repository';
 import { useProfile } from '@/features/profile/hooks';
+import { useTrainingTab } from '@/stores/trainingTab';
 import { fr } from '@/i18n/fr';
 
 const t = fr.exercises.form;
@@ -30,7 +31,8 @@ export default function EditExerciseScreen() {
         onPress: () => {
           deleteExercise(db, exercise.id);
           toast.show(t.deleted);
-          router.dismissTo('/exercises');
+          useTrainingTab.getState().setTab('exercises');
+          router.dismissTo('/sessions');
         },
       },
     ]);

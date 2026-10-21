@@ -9,6 +9,9 @@ type SearchFieldProps = {
   onChangeText: (value: string) => void;
   placeholder: string;
   clearLabel?: string;
+  /** Touche « Rechercher » du clavier (recherche à la validation plutôt qu'à la frappe). */
+  onSubmit?: () => void;
+  autoCapitalize?: 'none' | 'sentences';
   className?: string;
 };
 
@@ -18,6 +21,8 @@ export function SearchField({
   onChangeText,
   placeholder,
   clearLabel = 'Effacer',
+  onSubmit,
+  autoCapitalize,
   className,
 }: SearchFieldProps) {
   return (
@@ -38,6 +43,8 @@ export function SearchField({
         keyboardAppearance="dark"
         autoCorrect={false}
         returnKeyType="search"
+        onSubmitEditing={onSubmit}
+        autoCapitalize={autoCapitalize}
         className="h-full flex-1 font-body text-16 text-text"
       />
       {value ? (

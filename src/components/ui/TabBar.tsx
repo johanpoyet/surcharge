@@ -18,6 +18,8 @@ type TabBarProps<K extends string> = {
   activeKey: K;
   onSelect: (key: K) => void;
   onCenterPress: () => void;
+  /** Pastille de nouveautés par onglet (Amis : demandes et bravos). */
+  badges?: Partial<Record<K, number>>;
   centerLabel?: string;
   className?: string;
 };
@@ -26,12 +28,13 @@ type TabBarProps<K extends string> = {
 const MIN_BOTTOM_PADDING = 12;
 const HOME_INDICATOR_OFFSET = 10;
 
-/** Barre d'onglets custom : Accueil, Séances, + central surélevé, Exercices, Profil. */
+/** Barre d'onglets custom : Accueil, Entraînement, + central surélevé, Amis, Profil (SPEC_V2 §5.5). */
 export function TabBar<K extends string>({
   items,
   activeKey,
   onSelect,
   onCenterPress,
+  badges,
   centerLabel = fr.tabs.start,
   className,
 }: TabBarProps<K>) {
@@ -41,16 +44,24 @@ export function TabBar<K extends string>({
   const renderItem = (item: TabBarItem<K>) => {
     const active = item.key === activeKey;
     const Icon = item.icon;
+    const badge = badges?.[item.key] ?? 0;
     return (
       <Pressable
         key={item.key}
         accessibilityRole="tab"
-        accessibilityLabel={item.label}
+        accessibilityLabel={badge > 0 ? `${item.label}, ${fr.tabs.badge(badge)}` : item.label}
         accessibilityState={{ selected: active }}
         onPress={() => onSelect(item.key)}
         className="min-h-11 w-16 items-center justify-center gap-1"
       >
-        <Icon size={iconSizes.lg} color={active ? colors.volt : colors.muted} strokeWidth={2} />
+        <View>
+          <Icon size={iconSizes.lg} color={active ? colors.volt : colors.muted} strokeWidth={2} />
+          {badge > 0 ? (
+            <View className="absolute -right-2.5 -top-1.5 h-[18px] min-w-[18px] items-center justify-center rounded-full border-2 border-bg bg-volt px-1">
+              <Text className="font-body-bold text-10 text-onVolt">{badge > 9 ? '9+' : badge}</Text>
+            </View>
+          ) : null}
+        </View>
         <Text className={cn('font-body-semibold text-12', active ? 'text-volt' : 'text-muted')}>
           {item.label}
         </Text>

@@ -1,6 +1,5 @@
 import { router } from 'expo-router';
 import { MoreHorizontal, Plus, Sparkles } from 'lucide-react-native';
-import { useState } from 'react';
 import { Alert, FlatList, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,6 +7,7 @@ import { Button, Heading, IconButton, Tabs, useToast } from '@/components/ui';
 import { db } from '@/db/client';
 import type { WorkoutTemplate } from '@/db/schema';
 import { useAuth } from '@/features/auth/AuthProvider';
+import { ExerciseLibrary } from '@/features/exercises/components/ExerciseLibrary';
 import { PlanningPanel } from '@/features/planning/components/PlanningPanel';
 import { estimateTemplate } from '@/features/templates/estimate';
 import { formatEstimate } from '@/features/templates/format';
@@ -20,13 +20,15 @@ import {
 import { deleteTemplate, duplicateTemplate } from '@/features/templates/repository';
 import { useStartWorkout } from '@/features/workout/useStartWorkout';
 import { fr } from '@/i18n/fr';
+import { useTrainingTab, type TrainingTab } from '@/stores/trainingTab';
 import { colors } from '@/theme/tokens';
 
 const t = fr.templates;
-type Tab = 'planning' | 'templates';
-const TABS = [
-  { value: 'planning' as const, label: t.tabs.planning },
-  { value: 'templates' as const, label: t.tabs.templates },
+// Onglet Entraînement (SPEC_V2 §5.5) : planning, séances types et bibliothèque d'exercices.
+const TABS: { value: TrainingTab; label: string }[] = [
+  { value: 'planning', label: t.tabs.planning },
+  { value: 'templates', label: t.tabs.templates },
+  { value: 'exercises', label: t.tabs.exercises },
 ];
 
 export default function SessionsScreen() {
@@ -37,7 +39,7 @@ export default function SessionsScreen() {
   const items = useTemplateItems();
   const blocks = useTemplateBlocks();
   const weekdays = useTemplateWeekdays();
-  const [tab, setTab] = useState<Tab>('planning');
+  const { tab, setTab } = useTrainingTab();
 
   const open = (template: WorkoutTemplate) =>
     router.push({ pathname: '/templates/[id]', params: { id: template.id } });
@@ -81,8 +83,8 @@ export default function SessionsScreen() {
           <IconButton
             icon={Plus}
             tone="volt"
-            accessibilityLabel={t.create}
-            onPress={() => router.push('/templates/new')}
+            accessibilityLabel={tab === 'exercises' ? fr.exercises.create : t.create}
+            onPress={() => router.push(tab === 'exercises' ? '/exercises/new' : '/templates/new')}
           />
         </View>
         <Tabs options={TABS} value={tab} onChange={setTab} />
@@ -90,6 +92,8 @@ export default function SessionsScreen() {
 
       {tab === 'planning' ? (
         <PlanningPanel />
+      ) : tab === 'exercises' ? (
+        <ExerciseLibrary />
       ) : (
         <FlatList
           data={templates}

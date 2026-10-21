@@ -80,6 +80,12 @@ function RootNavigator() {
         />
         <Stack.Screen name="body-weight" options={{ presentation: 'modal' }} />
         <Stack.Screen name="log-activity" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="friends/add" />
+        <Stack.Screen name="friends/requests" />
+        <Stack.Screen name="friends/[id]" />
+        <Stack.Screen name="friends/scan" options={{ presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="s/[code]" />
+        <Stack.Screen name="add/[code]" />
         <Stack.Screen name="_dev/components" />
       </Stack.Protected>
       <Stack.Protected guard={!signedIn || onboardingPending}>

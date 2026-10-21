@@ -1,13 +1,11 @@
 import { router } from 'expo-router';
-import { Plus } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ChipGroup, Heading, IconButton, SearchField } from '@/components/ui';
+import { ChipGroup, SearchField } from '@/components/ui';
 import type { MuscleGroup } from '@/db/schema';
-import { EmptyLibrary } from '@/features/exercises/components/EmptyLibrary';
-import { ExerciseRow } from '@/features/exercises/components/ExerciseRow';
+import { EmptyLibrary } from './EmptyLibrary';
+import { ExerciseRow } from './ExerciseRow';
 import { useExercises, useExerciseSummaries } from '@/features/exercises/hooks';
 import { muscleOptions } from '@/features/exercises/labels';
 import { normalizeSearch, sortByLastUse } from '@/features/exercises/summary';
@@ -19,7 +17,8 @@ const t = fr.exercises;
 type Filter = MuscleGroup | 'all';
 const FILTERS = [{ value: 'all' as const, label: t.all }, ...muscleOptions];
 
-export default function ExercisesScreen() {
+/** Bibliothèque d'exercices (sous-onglet Exercices de l'onglet Entraînement). */
+export function ExerciseLibrary() {
   const exercises = useExercises();
   const summaries = useExerciseSummaries();
   const unit = useProfile().profile?.weightUnit ?? 'kg';
@@ -37,17 +36,8 @@ export default function ExercisesScreen() {
   }, [exercises, summaries, query, filter]);
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1 bg-bg">
-      <View className="gap-3.5 px-screen pt-3">
-        <View className="flex-row items-center justify-between">
-          <Heading size={34}>{t.title}</Heading>
-          <IconButton
-            icon={Plus}
-            tone="volt"
-            accessibilityLabel={t.create}
-            onPress={() => router.push('/exercises/new')}
-          />
-        </View>
+    <View className="flex-1">
+      <View className="gap-3.5 px-screen pt-4">
         <SearchField
           value={query}
           onChangeText={setQuery}
@@ -89,6 +79,6 @@ export default function ExercisesScreen() {
           )
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }

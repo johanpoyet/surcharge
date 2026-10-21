@@ -42,6 +42,9 @@ export type ProfilePatch = Partial<{
   defaultRestSeconds: number;
   remindersEnabled: boolean;
   disciplines: Discipline[];
+  shareSessions: boolean;
+  shareRecords: boolean;
+  shareExactWeights: boolean;
 }>;
 
 export function updateProfile(db: AppDatabase, id: string, patch: ProfilePatch): void {

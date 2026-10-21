@@ -738,3 +738,31 @@ Choix faits quand le SPEC ne tranchait pas (règle 7), du plus ancien au plus r�
 - **Tests** : `supabase/tests/social-rls.mjs` (PGlite, 44 vérifications : RLS, blocage, débit,
   anciennes versions, cascade) et `supabase/tests/social-e2e-dev.mjs` (deux comptes de test sur le
   Supabase dev : amis, stats publiques visibles, séries et profil privés).
+
+## V2 — Phase I (écrans Amis et nouvelle navigation)
+
+- **Version 2.1.0** dès le début de la phase : `expo-camera` (scan du QR) et les liens d'invitation
+  (Associated Domains, App Links) sont natifs, donc impossibles à livrer par EAS Update sur la 2.0.0.
+  Les correctifs éventuels de la 2.0.0 se font sur `release/2.0.0`.
+- **Navigation** : Accueil · Entraînement · [+] · Amis · Profil. Entraînement a trois sous-onglets
+  (Planning | Mes séances | Exercices), retenus dans un petit store (`src/stores/trainingTab.ts`)
+  pour qu'un autre écran puisse y revenir sur le bon sous-onglet (suppression d'un exercice). Le « + »
+  de l'en-tête crée une séance ou un exercice selon le sous-onglet.
+- **Pseudo** : demandé une seule fois, au premier passage dans l'onglet Amis (« Plus tard » ne
+  redemande pas ; le pseudo reste facultatif, le code ami suffit pour être trouvé).
+- **Classement** : « Toi » est calculé en local à l'ouverture (toujours à jour) ; un ami dont les
+  stats datent d'avant ce lundi compte pour 0 (remise à zéro du lundi sans tâche serveur). Ex æquo :
+  même rang. Progression = moyenne des `progress_pct_3m` des exercices du catalogue.
+- **Comparaison** : périodes Semaine et Mois seulement (pas « 3 mois » : les stats publiques n'ont
+  pas d'historique, la progression affichée par exercice est déjà sur 3 mois). Objectif atteint sur
+  le mois = séances ÷ (objectif × semaines écoulées du mois). Simu Hyrox : meilleur temps de chacun
+  (ligne `hyrox_full_simulation` de `public_exercise_stats`) ; pas d'« écart avec sa dernière »,
+  qui exposerait l'historique. « Encourager » = bravo sur sa dernière activité.
+- **Badge Amis** : demandes reçues + bravos reçus depuis la dernière visite de l'onglet, recalculé à
+  l'ouverture et au retour au premier plan (pas de push serveur en V2).
+- **Liens d'invitation** : `https://johanpoyet.fr/s/{code}` (routes `app/s/[code]` et, en secours,
+  `surcharge://add/{code}` → `app/add/[code]`), qui ouvrent « Ajouter un ami » et lancent la
+  recherche. Johan doit héberger `apple-app-site-association`, `assetlinks.json` et la page `/s/`
+  sur johanpoyet.fr (SPEC_V2 §11) avant la release.
+- **Signaler** : quatre motifs (pseudo inapproprié, comportement abusif, spam, autre) écrits dans
+  `reports`, lus seulement depuis le tableau de bord Supabase.

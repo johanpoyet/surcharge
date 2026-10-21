@@ -214,8 +214,8 @@ describe('TabBar', () => {
       <TabBar
         items={[
           { key: 'home', label: fr.tabs.home, icon: House },
-          { key: 'sessions', label: fr.tabs.sessions, icon: CalendarDays },
-          { key: 'exercises', label: fr.tabs.exercises, icon: Dumbbell },
+          { key: 'sessions', label: fr.tabs.training, icon: CalendarDays },
+          { key: 'exercises', label: fr.tabs.friends, icon: Dumbbell },
           { key: 'profile', label: fr.tabs.profile, icon: UserRound },
         ]}
         activeKey="home"
