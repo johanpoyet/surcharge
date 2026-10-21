@@ -176,6 +176,11 @@ Surcharge devient multi-sport : muscu, course, circuits et Hyrox dans un seul ca
 • Circuits : AMRAP, EMOM, For Time et Tabata, avec un bip à chaque intervalle.
 • Course et cardio : chrono d'un tap par série, allure calculée, récup automatique.
 • Chaque exercice a son type de suivi (charge × reps, distance + temps, temps, reps, calories…) avec ses records et ses courbes.
+• Tu cours sans téléphone ? « Ajouter une sortie » : note ta distance et ton temps au retour.
+• Plus de 130 exercices prêts à l'emploi et 18 séances toutes prêtes (Full body, Push, Pull, Legs, Hyrox, fractionné, AMRAP…) à ajouter à tes séances puis à modifier.
+• Pictogrammes par type de séance dans le planning et le calendrier.
+• Pendant la séance, le ressenti de la dernière fois s'affiche à côté de chaque série.
+• Supprime une séance depuis son récap ; touche un jour du calendrier pour revoir sa séance.
 • Choisis tes disciplines : l'accueil affiche tes km courus du mois et ta meilleure simu Hyrox.
 • Ta version de l'app est affichée en bas du profil.
 
@@ -199,6 +204,7 @@ MULTI-SPORT
 • Hyrox : simu complète, demi ou station seule, charges officielles par catégorie, un tap par segment, écarts en direct avec ta dernière simu et récap avec ton point faible
 • Circuits : AMRAP, EMOM, For Time et Tabata, avec un bip à chaque intervalle
 • Course et cardio : distance, temps et allure, chrono d'un tap, récup automatique
+• Couru sans téléphone ? Note ta sortie au retour, l'allure se calcule toute seule
 
 PROGRESSE POUR DE VRAI
 • Ressenti de chaque série : facile, moyen, difficile, échec
@@ -213,7 +219,8 @@ ORGANISE TA SEMAINE
 • Rappel le matin des jours de séance
 
 TES EXERCICES, TES MACHINES
-• Exercices de muscu, de course, de cross-training et stations Hyrox prêts à l'emploi
+• Plus de 130 exercices de muscu, de course, de cross-training et stations Hyrox prêts à l'emploi
+• 18 séances toutes prêtes pour débuter, à copier dans tes séances puis à modifier
 • Ajoute les tiens avec une photo de la machine pour la reconnaître d'un coup d'œil
 
 TES DONNÉES T'APPARTIENNENT
