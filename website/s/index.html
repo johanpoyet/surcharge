@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invitation — Surcharge</title>
+<meta name="description" content="Un ami t'invite sur Surcharge, le carnet de muscu, course et Hyrox.">
+<meta name="theme-color" content="#0A0A0A">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:ital,wght@1,800&display=swap" rel="stylesheet">
+<style>
+:root{--volt:#D7FF3A;--bg:#0A0A0A;--surface:#151515;--line:#2A2A2A;--text:#F5F5F0;--muted:#9A9A92}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 'Barlow',system-ui,-apple-system,sans-serif}
+.wrap{max-width:480px;margin:0 auto;padding:40px 20px 64px;display:flex;flex-direction:column;gap:16px}
+h1{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;text-transform:uppercase;font-size:44px;line-height:1;margin:8px 0 0}
+p{color:#DADAD3;margin:0}
+.card{background:var(--volt);color:var(--bg);border-radius:20px;padding:24px;text-align:center}
+.card small{display:block;font-weight:700;font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+.code{font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:800;font-size:48px;line-height:1.1;margin-top:8px;word-break:break-all}
+a.button{display:block;text-align:center;padding:16px;border-radius:14px;font-weight:700;text-decoration:none}
+.primary{background:var(--volt);color:var(--bg)}
+.secondary{border:1px solid var(--line);background:var(--surface);color:var(--text)}
+.muted{color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <svg width="40" height="40" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#D7FF3A"/><g transform="skewX(-12) translate(8 0)" fill="#0A0A0A"><rect x="8" y="25" width="7" height="13" rx="2"/><rect x="18" y="18" width="7" height="20" rx="2"/><rect x="28" y="10" width="7" height="28" rx="2"/></g></svg>
+  <h1>Un pote t'invite sur Surcharge</h1>
+  <p>Muscu, course, circuits et Hyrox dans un seul carnet. Ajoute-le en ami pour comparer votre régularité et vos progrès.</p>
+  <div class="card" id="card" hidden>
+    <small>Son code ami</small>
+    <div class="code" id="code"></div>
+  </div>
+  <a class="button primary" id="open" href="surcharge://">Ouvrir dans Surcharge</a>
+  <a class="button secondary" href="https://apps.apple.com/app/id6817838918">Télécharger sur l'App Store</a>
+  <p class="muted">Pas encore l'app ? Installe-la, puis dans l'onglet Amis, touche « Ajouter un ami » et tape ce code.</p>
+</main>
+<script>
+  // /s/{code} : le code est la dernière partie de l'adresse.
+  var raw = decodeURIComponent(location.pathname.replace(/^\/s\/?/, '').replace(/\/$/, ''));
+  var code = /^[A-Za-z]{1,8}-[A-Za-z2-9]{3}$/.test(raw) ? raw.toUpperCase() : '';
+  if (code) {
+    document.getElementById('code').textContent = code;
+    document.getElementById('card').hidden = false;
+    document.getElementById('open').href = 'surcharge://add/' + code;
+  }
+</script>
+</body>
+</html>

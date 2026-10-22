@@ -1,13 +1,14 @@
 # Politique de confidentialité — Surcharge
 
-*Dernière mise à jour : 1er octobre 2026*
+*Dernière mise à jour : 22 octobre 2026*
 
-Surcharge est une application de suivi de musculation. Cette page explique quelles données
+Surcharge est une application de suivi d'entraînement (musculation, course, circuits, Hyrox). Cette page explique quelles données
 l'application traite, pourquoi, où elles sont stockées et comment tu gardes la main dessus.
 
 **En résumé** : tes données servent uniquement à faire fonctionner l'application. Pas de publicité,
-pas de traçage, pas de revente, pas d'outil d'analyse d'audience. Tu peux tout exporter ou tout
-supprimer depuis l'application, à tout moment.
+pas de traçage, pas de revente, pas d'outil d'analyse d'audience. Si tu ajoutes des amis, ils ne
+voient que des résumés (régularité, records, progression), jamais ton poids corporel ni le détail
+de tes séances. Tu peux tout exporter ou tout supprimer depuis l'application, à tout moment.
 
 ## 1. Qui est responsable de tes données ?
 
@@ -20,7 +21,10 @@ l'adresse **surcharge@johanpoyet.fr**.
 |---|---|---|
 | Compte | Adresse e-mail, prénom, mot de passe (jamais stocké en clair : seule une empreinte chiffrée est conservée) | Créer ton compte, te connecter, retrouver tes données sur un autre appareil |
 | Profil | Objectif, nombre de séances par semaine, unité de poids, temps de repos par défaut, préférence de rappels | Adapter l'application à ta pratique |
-| Entraînement | Exercices, séances types, planning, séances réalisées, séries (charge, répétitions, ressenti), notes | Enregistrer tes séances, calculer ta progression et tes records |
+| Entraînement | Exercices, séances types, planning, séances réalisées, séries (charge, répétitions, distance, temps, calories, ressenti), notes | Enregistrer tes séances, calculer ta progression et tes records |
+| Amis (facultatif) | Pseudo et code ami, liste de tes amis et de tes demandes, personnes bloquées, bravos donnés et reçus | Te permettre d'ajouter des amis et de les encourager |
+| Résumés partagés avec tes amis | Séances de la semaine et du mois, objectif hebdo, semaines de régularité, nombre de records, progression en % par exercice, records et simus Hyrox récents ; charges exactes seulement si tu l'actives | Le classement, le fil d'activité et la comparaison avec tes amis |
+| Signalements | Signalements que tu envoies sur un autre utilisateur (motif) | Modérer les comptes et les pseudos inappropriés |
 | Poids corporel | Pesées que tu saisis (facultatives) | Afficher l'évolution de ton poids |
 | Photos | Photos d'exercices ou de machines que tu choisis d'ajouter | T'aider à reconnaître une machine à la salle |
 | Technique | Identifiant de compte, jetons de connexion, dates de création et de modification des données | Sécuriser ton compte et synchroniser tes appareils |
@@ -29,6 +33,10 @@ l'adresse **surcharge@johanpoyet.fr**.
 Surcharge **ne collecte pas** : ta localisation, tes contacts, ton carnet d'adresses, des
 identifiants publicitaires, ni des données d'autres applications (dont Apple Santé).
 
+**Appareil photo.** Il sert à photographier tes machines (si tu le choisis) et à scanner le QR code
+d'un ami. Le scan est fait sur ton téléphone : l'image n'est ni enregistrée ni envoyée, seul le
+code ami lu est utilisé pour retrouver ton ami.
+
 **Poids corporel et données d'entraînement.** Le poids peut être considéré comme une donnée de
 santé. Tu le saisis librement (l'étape est facultative à l'inscription) ; il est traité sur la base
 de ton **consentement explicite**, que tu peux retirer en supprimant tes pesées ou ton compte.
@@ -36,10 +44,10 @@ de ton **consentement explicite**, que tu peux retirer en supprimant tes pesées
 ## 3. Sur quelles bases légales ?
 
 - **L'exécution du contrat** (les conditions d'utilisation que tu acceptes à l'inscription) : compte,
-  profil, entraînement, photos, synchronisation.
+  profil, entraînement, photos, synchronisation, et la partie Amis si tu l'utilises.
 - **Ton consentement explicite** : poids corporel.
 - **L'intérêt légitime** de l'éditeur : sécurité du service (prévention des abus et des accès non
-  autorisés) et correction des bugs (rapports de plantage).
+  autorisés, traitement des signalements) et correction des bugs (rapports de plantage).
 
 ## 4. Où sont stockées tes données ?
 
@@ -64,26 +72,46 @@ de ton **consentement explicite**, que tu peux retirer en supprimant tes pesées
   rapports ne contiennent ni ton adresse IP, ni ton e-mail, ni ton identifiant de compte, ni tes
   données d'entraînement.
 - Tes données sont protégées par un contrôle d'accès : chaque compte ne peut lire et modifier que
-  ses propres données. Les photos sont dans un espace privé, accessible uniquement par liens
+  ses propres données. Seule exception : les résumés décrits à la section 5, lisibles par les amis
+  que tu as acceptés. Les photos sont dans un espace privé, accessible uniquement par liens
   temporaires.
 
 Tes données ne sont **ni vendues, ni louées, ni partagées** avec des tiers à des fins commerciales.
 
-## 5. Notifications
+## 5. Amis : ce qui est partagé
+
+La partie Amis est **facultative** : rien n'est visible tant que tu n'as accepté personne.
+
+- **Te retrouver** : un ami a besoin de ton **code ami** (par exemple JOHAN-7K2), de ton **pseudo
+  exact** ou de ton lien d'invitation. Il n'existe ni annuaire, ni recherche partielle, ni liste
+  d'utilisateurs. Une recherche ne renvoie que ton prénom et ton pseudo.
+- **Ce que voient tes amis acceptés** : ton prénom, ton pseudo, et les résumés listés à la section 2
+  (régularité, nombre de records, progression en %, records et simus Hyrox des 7 derniers jours).
+  Tu choisis dans *Profil → Amis et confidentialité* de partager ou non tes séances et ta
+  régularité, tes records et ta progression, et tes **charges exactes** (désactivé par défaut).
+- **Ce qu'ils ne voient jamais** : ton **poids corporel**, ton e-mail, le détail de tes séances et
+  de tes séries, tes notes et tes photos.
+- **Bloquer et signaler** : tu peux retirer un ami, bloquer quelqu'un (il ne voit plus rien de toi
+  et ne peut plus te retrouver) ou le signaler. Les signalements sont lus uniquement par l'éditeur,
+  pour modérer les comptes.
+
+## 6. Notifications
 
 Les notifications (fin du temps de repos, rappel des jours de séance) sont **programmées
 localement** sur ton téléphone : aucune donnée n'est envoyée à un service de notification. Tu peux
 les désactiver dans les réglages de l'application ou d'iOS.
 
-## 6. Combien de temps sont-elles conservées ?
+## 7. Combien de temps sont-elles conservées ?
 
 Tes données sont conservées **tant que ton compte existe**. Quand tu supprimes ton compte, tes
 données en ligne (profil, entraînement, pesées, photos) sont effacées immédiatement, ainsi que les
-données enregistrées sur ton téléphone. Les copies de sauvegarde techniques de l'hébergeur sont
+données enregistrées sur ton téléphone. Tes liens d'amitié, résumés partagés, activités et bravos
+sont supprimés en même temps. Les signalements sont conservés le temps de leur traitement, et au
+plus **un an**. Les copies de sauvegarde techniques de l'hébergeur sont
 écrasées selon son cycle de rotation habituel. Les rapports de plantage sont supprimés
 automatiquement au bout de **90 jours** au plus.
 
-## 7. Tes droits
+## 8. Tes droits
 
 Tu disposes d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de
 portabilité sur tes données, ainsi que du droit de définir des directives sur leur sort après ton
@@ -97,10 +125,10 @@ décès. Dans l'application :
 Pour toute autre demande : **surcharge@johanpoyet.fr**. Si tu estimes que tes droits ne sont pas
 respectés, tu peux adresser une réclamation à la **CNIL** (www.cnil.fr).
 
-## 8. Âge minimum
+## 9. Âge minimum
 
 Surcharge est destinée aux personnes de **15 ans et plus**.
 
-## 9. Modifications
+## 10. Modifications
 
 Cette politique peut évoluer. En cas de changement important, tu en seras informé dans l'application.

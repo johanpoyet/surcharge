@@ -1,12 +1,13 @@
 # Conditions d'utilisation — Surcharge
 
-*Dernière mise à jour : 30 septembre 2026*
+*Dernière mise à jour : 22 octobre 2026*
 
 ## 1. Objet
 
 Les présentes conditions encadrent l'utilisation de l'application **Surcharge**, éditée par
 **Johan Poyet** (surcharge@johanpoyet.fr). Surcharge permet d'enregistrer ses séances de
-musculation, de planifier ses entraînements et de suivre sa progression.
+musculation, de course, de circuits et d'Hyrox, de planifier ses entraînements, de suivre sa
+progression et de se comparer avec ses amis.
 
 En créant un compte, tu acceptes ces conditions ainsi que la
 [politique de confidentialité]([URL de la politique de confidentialité]).
@@ -46,13 +47,27 @@ Les données et photos que tu ajoutes restent les tiennes. Tu autorises l'édite
 à les traiter uniquement pour faire fonctionner l'application (affichage, synchronisation). Tu
 t'engages à ne pas ajouter de contenu illicite ni de photos de personnes sans leur accord.
 
-## 6. Propriété intellectuelle
+## 6. Amis et comportement
+
+La partie Amis permet d'ajouter des personnes que tu connais, de comparer vos résumés
+d'entraînement et de vous encourager. En l'utilisant, tu t'engages à :
+
+- choisir un **pseudo** respectueux (pas d'insulte, de propos haineux, discriminatoires ou
+  sexuels, pas d'usurpation d'identité) ;
+- ne pas harceler, menacer ni importuner les autres utilisateurs.
+
+Tu peux **bloquer** ou **signaler** un utilisateur depuis sa fiche (*Amis → son nom → ⋯*), et
+écrire à **surcharge@johanpoyet.fr** (*Profil → Contact et signalements*). Les signalements sont
+examinés sous 24 heures ; l'éditeur peut supprimer un pseudo ou suspendre un compte qui ne respecte
+pas ces règles.
+
+## 7. Propriété intellectuelle
 
 L'application, son nom, son logo, son design et son code sont la propriété de l'éditeur. Tu
 bénéficies d'un droit d'utilisation personnel et non commercial. Toute copie, revente ou
 rétro-ingénierie est interdite, sauf dans les limites autorisées par la loi.
 
-## 7. Disponibilité et responsabilité
+## 8. Disponibilité et responsabilité
 
 L'éditeur fait ses meilleurs efforts pour que l'application fonctionne correctement et que tes
 données soient protégées et sauvegardées, sans pouvoir garantir une disponibilité permanente ni
@@ -60,19 +75,19 @@ l'absence totale d'erreurs. Il est conseillé d'exporter régulièrement tes don
 Exporter mes données*). La responsabilité de l'éditeur est limitée aux dommages directs et
 prévisibles, dans la mesure permise par la loi.
 
-## 8. Évolution et fin du service
+## 9. Évolution et fin du service
 
 L'éditeur peut faire évoluer l'application et ces conditions. En cas de changement important, tu en
 seras informé dans l'application ; continuer à l'utiliser vaut acceptation des nouvelles
 conditions. En cas d'arrêt du service, tu seras prévenu à l'avance pour pouvoir exporter tes
 données.
 
-## 9. Droit applicable
+## 10. Droit applicable
 
 Ces conditions sont soumises au **droit français**. En cas de litige, une solution amiable sera
 recherchée en priorité ; tu peux aussi recourir gratuitement à un médiateur de la consommation. À
 défaut, les tribunaux français sont compétents.
 
-## 10. Contact
+## 11. Contact
 
 surcharge@johanpoyet.fr

@@ -894,6 +894,11 @@ export const fr = {
     },
     dev: 'Voir les composants',
     legal: { terms: 'Conditions d’utilisation', privacy: 'Politique de confidentialité' },
+    friends: 'Amis et confidentialité',
+    friendsValue: (username: string | null) =>
+      username ? `@${username}` : 'Ce que tes amis voient',
+    contact: 'Contact et signalements',
+    contactSubject: 'Surcharge : contact',
     deleteAccount: {
       action: 'Supprimer mon compte',
       title: 'Supprimer ton compte ?',

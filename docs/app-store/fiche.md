@@ -249,3 +249,55 @@ New in 2.0.0 (multi-sport): on first launch, a sheet asks which sports you pract
 
 Ajouter 2 ou 3 captures multi-sport (prises avec le compte démo) : séance Hyrox en cours, récap
 Hyrox, séance type en blocs.
+
+## Version 2.1.0 (amis) — textes proposés, à valider par Johan
+
+Nom, sous-titre et mots-clés inchangés. Texte promotionnel (modifiable sans nouvelle version) :
+
+```
+Ajoute tes potes de salle : classement de la semaine sur la régularité, records encouragés d'un bravo. Ton poids reste privé.
+```
+
+### Nouveautés (« What's New »)
+
+```
+Entraîne-toi avec tes potes.
+
+• Onglet Amis : ajoute un ami avec son code, son QR code ou un lien d'invitation.
+• Classement de la semaine sur ta régularité par rapport à ton propre objectif, ta progression ou tes records : chacun à son niveau.
+• Fil d'activité : records, simus Hyrox et séries de semaines de tes amis, avec un « Bravo » à donner.
+• Toi vs ton ami : séances, objectif atteint, records et exercices en commun.
+• Tu choisis ce que tes amis voient. Ton poids corporel n'est jamais partagé, tes charges exactes seulement si tu l'actives.
+• Bloquer ou signaler un utilisateur à tout moment.
+• Nouvel onglet Entraînement : planning, séances et exercices au même endroit.
+
+Bonnes séances !
+```
+
+### Confidentialité (questionnaire App Store Connect)
+
+Pas de nouvelle catégorie Apple : le pseudo, les liens d'amitié, les bravos et les signalements
+entrent dans **Contenu utilisateur → Autre contenu** (déjà déclaré, lié à l'identité, finalité
+Fonctionnalités de l'app). Ajouter « pseudo, amis, signalements » au détail interne. L'appareil
+photo sert aussi au scan du QR code : l'image n'est ni enregistrée ni envoyée (rien à déclarer).
+Politique de confidentialité, conditions d'utilisation et assistance mises à jour (section Amis) :
+**les publier avant la soumission**.
+
+### Classification par âge
+
+Répondre aux nouvelles questions « réseaux sociaux » (App Information → Age Rating) : l'app permet
+des **interactions entre utilisateurs** (amis, bravos) et des **profils visibles par d'autres**
+(prénom, pseudo), **sans messagerie ni contenu libre** (pas de discussion, pas de photo partagée).
+Moyens de modération : blocage, signalement dans l'app, filtre des pseudos, contact
+`surcharge@johanpoyet.fr` (Profil → Contact et signalements), signalements traités sous 24 h.
+
+### Vérification d'Apple
+
+Avant la soumission (quand aucune vérification n'est en cours) : créer dans l'app deux comptes
+« amis » `demo.theo@johanpoyet.fr` et `demo.ines@johanpoyet.fr` (onboarding fait), puis lancer
+`supabase/demo/seed-demo-friends.sql` dans le SQL Editor de la **prod** (après la migration 0007).
+Ajouter en fin de notes :
+
+```
+New in 2.1.0 (friends): the demo account already has two friends (Théo and Inès). Open the "Amis" tab: the weekly leaderboard compares each person's workouts with their own weekly goal, and the activity feed lets you send a "Bravo" (tap again to remove it). Tap a friend to see the comparison; the "⋯" menu lets you remove, block or report them. "Ajouter un ami" (person icon, top right) shows the user's friend code and QR code; friends are found only by exact friend code or username (no directory, no partial search, max 20 searches per minute). The camera is used only to scan a friend's QR code, on device. Moderation: reports are stored for the developer and handled within 24 hours; contact surcharge@johanpoyet.fr is in Profile → "Contact et signalements". Body weight is never shared.
+```

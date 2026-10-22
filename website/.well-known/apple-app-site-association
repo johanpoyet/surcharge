@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["R7GAYTSBWH.fr.johanpoyet.surcharge"],
+        "components": [{ "/": "/s/*", "comment": "Liens d'invitation Surcharge" }]
+      }
+    ]
+  }
+}

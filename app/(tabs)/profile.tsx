@@ -251,6 +251,20 @@ export default function ProfileScreen() {
 
         <Card className="overflow-hidden p-0">
           <SettingRow
+            label={t.friends}
+            value={t.friendsValue(profile?.username ?? null)}
+            onPress={() => router.push('/friends/add')}
+          />
+          <SettingRow
+            label={t.contact}
+            value={config.contactEmail}
+            onPress={() =>
+              void Linking.openURL(
+                `mailto:${config.contactEmail}?subject=${encodeURIComponent(t.contactSubject)}`,
+              )
+            }
+          />
+          <SettingRow
             label={t.legal.terms}
             value=""
             onPress={() => void Linking.openURL(config.termsUrl)}

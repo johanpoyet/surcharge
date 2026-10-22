@@ -156,15 +156,18 @@ export function publicSnapshot(input: StatsInput): PublicSnapshot {
     today,
   );
 
+  // Un partage désactivé envoie des zéros : les amis ne voient plus rien de ce qu'il couvre.
+  const sessionsShared = share.shareSessions;
+  const recordsShared = share.shareRecords;
   const stats: PublicStatsRow = {
     user_id: input.userId,
     week_start: toLocalDateString(monday),
-    sessions_this_week: input.sessionStarts.filter(inWeek).length,
+    sessions_this_week: sessionsShared ? input.sessionStarts.filter(inWeek).length : 0,
     weekly_goal: Math.max(1, input.sessionsPerWeek ?? 1),
-    streak_weeks: streak,
-    sessions_this_month: input.sessionStarts.filter(inMonth).length,
-    records_this_week: records.filter((s) => inWeek(s.completedAt)).length,
-    records_this_month: records.filter((s) => inMonth(s.completedAt)).length,
+    streak_weeks: sessionsShared ? streak : 0,
+    sessions_this_month: sessionsShared ? input.sessionStarts.filter(inMonth).length : 0,
+    records_this_week: recordsShared ? records.filter((s) => inWeek(s.completedAt)).length : 0,
+    records_this_month: recordsShared ? records.filter((s) => inMonth(s.completedAt)).length : 0,
   };
 
   // Par exercice du catalogue (comparaison « exercices en commun »).
@@ -173,7 +176,9 @@ export function publicSnapshot(input: StatsInput): PublicSnapshot {
     if (!set.catalogKey) continue;
     byKey.set(set.catalogKey, [...(byKey.get(set.catalogKey) ?? []), set]);
   }
-  const exercises: ExerciseStatsRow[] = [...byKey].flatMap(([catalogKey, sets]) => {
+  // Records et progression non partagés : aucune stat par exercice.
+  const shownKeys = recordsShared ? [...byKey] : [];
+  const exercises: ExerciseStatsRow[] = shownKeys.flatMap(([catalogKey, sets]) => {
     const counted = sets.filter(isCounted);
     if (counted.length === 0) return [];
     const strength = counted.filter((s) => typeOf(s) === 'weight_reps');
@@ -197,7 +202,7 @@ export function publicSnapshot(input: StatsInput): PublicSnapshot {
 
   // Simu Hyrox complète : meilleur temps, comparé comme un exercice du catalogue.
   const fullRuns = input.hyroxBlocks.filter((b) => b.format === 'full' && b.totalS !== null);
-  if (fullRuns.length > 0) {
+  if (sessionsShared && fullRuns.length > 0) {
     exercises.push({
       user_id: input.userId,
       catalog_key: HYROX_FULL_KEY,

@@ -114,7 +114,15 @@ VPS (`website/nginx/johanpoyet.fr.conf`, HTTPS Let's Encrypt renouvelé automati
 ```bash
 npm i --no-save marked@15 && node website/build.mjs      # régénérer les pages
 rsync -avz --delete -e "ssh -i ~/.ssh/planify_vps_ed25519" \
-  website/surcharge ubuntu@51.210.180.130:/home/ubuntu/sites/johanpoyet.fr/   # publier
+  website/surcharge website/s website/.well-known \
+  ubuntu@51.210.180.130:/home/ubuntu/sites/johanpoyet.fr/   # publier
 ```
+
+Liens d'invitation (2.1.0, amis) : `website/.well-known/apple-app-site-association` (universal
+links iOS), `website/.well-known/assetlinks.json` (App Links Android : y mettre l'empreinte SHA-256
+de la clé de release) et `website/s/index.html` (page `johanpoyet.fr/s/{code}` si l'app n'est pas
+installée). La conf nginx (`location /s/`, type JSON des fichiers `.well-known`) est dans
+`website/nginx/johanpoyet.fr.conf` : la recopier sur le VPS puis `sudo nginx -t && sudo systemctl
+reload nginx`.
 
 La racine `johanpoyet.fr` redirige vers l'assistance en attendant le portfolio.

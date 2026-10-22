@@ -139,3 +139,24 @@ it('série de semaines paire et simu Hyrox : activités si les séances sont par
   });
   expect(off.events).toEqual([]);
 });
+
+it('partage désactivé : zéros et aucune stat par exercice', () => {
+  const input = base({
+    sessionStarts: [daysAgo(0), daysAgo(2)],
+    sets: [lift('squat', 100, 5, daysAgo(20)), lift('squat', 105, 5, daysAgo(1))],
+    hyroxBlocks: [{ id: 'h1', endedAt: daysAgo(2), format: 'full', totalS: 5400 }],
+  });
+  const none = publicSnapshot({
+    ...input,
+    share: { shareSessions: false, shareRecords: false, shareExactWeights: true },
+  });
+  expect(none.stats).toMatchObject({
+    sessions_this_week: 0,
+    sessions_this_month: 0,
+    streak_weeks: 0,
+    records_this_week: 0,
+    records_this_month: 0,
+  });
+  expect(none.exercises).toEqual([]);
+  expect(none.events).toEqual([]);
+});
