@@ -66,13 +66,15 @@ scripts/           update-production.sh    website/      pages légales (build +
 - Tout changement SQL testé sur un vrai Postgres local (ex : PGlite) avant d'écrire la
   migration définitive dans `supabase/migrations/`.
 
-## État du projet (06/10/2026)
+## État du projet (22/10/2026)
 
-- V1 (SPEC.md, phases 0 à 10) terminée. **iOS** : 1.0.0 publiée sur l'App Store ; 1.1.0
-  (build 8 : Live Activity, EAS Update, correctifs, écran de mise à jour obligatoire) publiée le
-  06/10/2026. Code livré : branche `release/1.1.0` (tag `v1.1.0`). `app_config.min_supported_version`
-  = "1.0.0" en prod : personne n'est bloqué tant que Johan ne relève pas cette valeur.
+- **iOS** : **2.0.0** (multi-sport, build 11) publiée sur l'App Store le 22/10/2026 ; code livré :
+  branche `release/2.0.0` (tag `v2.0.0`), `main` = `release/2.0.0`. Les correctifs urgents de la
+  2.0.0 (EAS Update compris) partent de `release/2.0.0`, jamais de `v2`.
+  `app_config.min_supported_version` = "1.0.0" en prod : personne n'est bloqué.
   **Android** : APK signé distribué à quelques amis (pas de Play Store).
+- **V2 en cours** sur `v2`, version **2.1.0** (amis : SPEC_V2 phases H à J). Migration `0007_social`
+  appliquée sur le Supabase dev seulement.
 - Les mises à jour JavaScript passent par EAS Update (`runtimeVersion` = version d'app.json :
   seuls les builds de la même version les reçoivent). Tout changement natif (module, plugin,
   permission, icône, app.json) = nouvelle version + build + vérification Apple + nouvel APK.
