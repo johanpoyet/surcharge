@@ -74,7 +74,7 @@ scripts/           update-production.sh    website/      pages légales (build +
   `app_config.min_supported_version` = "1.0.0" en prod : personne n'est bloqué.
   **Android** : APK signé distribué à quelques amis (pas de Play Store).
 - **V2 en cours** sur `v2`, version **2.1.0** (amis : SPEC_V2 phases H à J). Migration `0007_social`
-  appliquée sur le Supabase dev seulement.
+  appliquée sur le dev et la prod (22/10/2026, SQL Editor, additive). TestFlight 2.1.0 (12) envoyé.
 - Les mises à jour JavaScript passent par EAS Update (`runtimeVersion` = version d'app.json :
   seuls les builds de la même version les reçoivent). Tout changement natif (module, plugin,
   permission, icône, app.json) = nouvelle version + build + vérification Apple + nouvel APK.
@@ -107,14 +107,14 @@ secret du client OAuth Web (Supabase), clé API Resend (SMTP Supabase), jeton Se
 - **TestFlight** : pas d'EAS Build (file gratuite trop lente). Prebuild, puis `CFBundleVersion`
   = N dans `ios/Surcharge/Info.plist` **et** `ios/ExpoWidgetsTarget/Info.plist` (N > dernier
   build), `xcodebuild archive` puis `-exportArchive` (method `app-store-connect`, destination
-  `upload`, team `R7GAYTSBWH`). Dernier build envoyé : **11** (2.0.0). Prévoir ~25 min (l'envoi des
+  `upload`, team `R7GAYTSBWH`). Dernier build envoyé : **12** (2.1.0). Prévoir ~25 min (l'envoi des
   symboles à Sentry attend le traitement serveur ~12 min : ce n'est pas un blocage).
 - **APK Android** : voir README (JDK 17 obligatoire, `-PreactNativeArchitectures=arm64-v8a`,
   incrémenter `android.versionCode`, actuellement 2).
   Numéro de build de l'extension Live Activity : `CURRENT_PROJECT_VERSION` de la cible
   `ExpoWidgetsTarget` dans `project.pbxproj` (son `Info.plist` est généré).
 - **Supabase** : migrations `npx supabase db push` (ou SQL Editor) après test PGlite ; derniers
-  numéros : `0006` en prod, `0007` (amis) sur le dev seulement. Réglages faits dans le tableau de bord (non versionnés) : Confirm email
+  numéros : `0007` (amis), en prod via le SQL Editor (absente de l'historique CLI de la prod). Réglages faits dans le tableau de bord (non versionnés) : Confirm email
   désactivé, Skip nonce checks (Google), SMTP Resend + modèle « Reset Password »
   (`supabase/templates/recovery.html`), longueur min. du mot de passe 8, Redirect URLs
   `surcharge://**`.
