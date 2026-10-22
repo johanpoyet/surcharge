@@ -23,6 +23,7 @@ import { useMyIdentity } from '@/features/social/hooks';
 import { inviteUrl, parseInviteCode } from '@/features/social/invite';
 import { useScannedCode } from '@/features/social/scanned';
 import { fr } from '@/i18n/fr';
+import { goBack } from '@/lib/navigation';
 import { colors } from '@/theme/tokens';
 import { requestSync } from '@/sync';
 
@@ -121,7 +122,11 @@ export default function AddFriendScreen() {
   return (
     <KeyboardScreen contentClassName="gap-4 px-screen">
       <View className="flex-row items-center gap-3">
-        <IconButton icon={ChevronLeft} accessibilityLabel={t.back} onPress={() => router.back()} />
+        <IconButton
+          icon={ChevronLeft}
+          accessibilityLabel={t.back}
+          onPress={() => goBack('/friends')}
+        />
         <Heading size={34}>{t.title}</Heading>
       </View>
 

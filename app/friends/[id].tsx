@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { ChevronLeft, Ellipsis } from 'lucide-react-native';
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
@@ -29,6 +29,7 @@ import { formatPct } from '@/features/social/leaderboard';
 import { buildSnapshot } from '@/features/social/sync';
 import { formatClock } from '@/features/workout/logic';
 import { fr } from '@/i18n/fr';
+import { goBack } from '@/lib/navigation';
 import { cn } from '@/lib/cn';
 import { formatWeight } from '@/lib/format';
 
@@ -129,7 +130,7 @@ export default function FriendCompareScreen() {
       try {
         const people = await getFriendProfiles();
         const friend = people.find((p) => p.userId === id && p.status === 'accepted');
-        if (!friend) return router.back();
+        if (!friend) return goBack('/friends');
         const [stats, exercises, feed] = await Promise.all([
           fetchFriendStats([id]),
           fetchExerciseStats([id]),
@@ -208,7 +209,7 @@ export default function FriendCompareScreen() {
                 void removeFriendship(friend.friendshipId)
                   .then(() => {
                     toast.show(t.removed);
-                    router.back();
+                    goBack('/friends');
                   })
                   .catch(() => toast.show(fr.friends.addScreen.error)),
             },
@@ -227,7 +228,7 @@ export default function FriendCompareScreen() {
                 void blockUser(friend.userId)
                   .then(() => {
                     toast.show(t.blocked);
-                    router.back();
+                    goBack('/friends');
                   })
                   .catch(() => toast.show(fr.friends.addScreen.error)),
             },
@@ -257,7 +258,7 @@ export default function FriendCompareScreen() {
           <IconButton
             icon={ChevronLeft}
             accessibilityLabel={t.back}
-            onPress={() => router.back()}
+            onPress={() => goBack('/friends')}
           />
           <IconButton icon={Ellipsis} accessibilityLabel={t.menu} onPress={menu} />
         </View>

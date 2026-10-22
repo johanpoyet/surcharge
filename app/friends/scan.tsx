@@ -1,5 +1,4 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { router } from 'expo-router';
 import { X } from 'lucide-react-native';
 import { useRef } from 'react';
 import { Linking, Text, View } from 'react-native';
@@ -8,6 +7,7 @@ import { Button, FullScreen, IconButton } from '@/components/ui';
 import { parseInviteCode } from '@/features/social/invite';
 import { useScannedCode } from '@/features/social/scanned';
 import { fr } from '@/i18n/fr';
+import { goBack } from '@/lib/navigation';
 
 const t = fr.friends.scan;
 
@@ -21,14 +21,14 @@ export default function ScanScreen() {
     if (!code || done.current) return;
     done.current = true;
     useScannedCode.setState({ code });
-    router.back();
+    goBack('/friends/add');
   };
 
   return (
     <FullScreen>
       <View className="flex-row items-center justify-between px-screen pt-2">
         <Text className="font-body-bold text-18 text-text">{t.title}</Text>
-        <IconButton icon={X} accessibilityLabel={t.close} onPress={() => router.back()} />
+        <IconButton icon={X} accessibilityLabel={t.close} onPress={() => goBack('/friends/add')} />
       </View>
       {permission?.granted ? (
         <View className="flex-1 gap-4 px-screen pb-6 pt-4">

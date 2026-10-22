@@ -1,4 +1,4 @@
-import { router, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
@@ -14,6 +14,7 @@ import {
 import { Avatar } from '@/features/social/components/Avatar';
 import { useFriendsBadge } from '@/features/social/hooks';
 import { fr } from '@/i18n/fr';
+import { goBack } from '@/lib/navigation';
 
 const t = fr.friends.requests;
 
@@ -90,7 +91,7 @@ export default function FriendRequestsScreen() {
           <IconButton
             icon={ChevronLeft}
             accessibilityLabel={fr.friends.addScreen.back}
-            onPress={() => router.back()}
+            onPress={() => goBack('/friends')}
           />
           <Heading size={34}>{t.title}</Heading>
         </View>
