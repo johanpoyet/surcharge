@@ -40,6 +40,7 @@ export const fr = {
     or: 'ou',
     comingSoon: 'Bientôt disponible',
     settings: 'Réglages',
+    settingsManual: 'Ouvre Réglages › Surcharge pour autoriser l’accès.',
     clear: 'Effacer',
   },
   auth: {

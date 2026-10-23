@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Alert, Linking } from 'react-native';
+import { Alert } from 'react-native';
 
 import { useToast } from '@/components/ui';
 import { fr } from '@/i18n/fr';
+import { openAppSettings } from '@/lib/appSettings';
 import { pickExercisePhoto, PhotoPermissionError, type PhotoSource } from './photos';
 
 const t = fr.exercises.photo;
@@ -20,7 +21,13 @@ export function usePhotoPicker() {
       if (error instanceof PhotoPermissionError) {
         Alert.alert(t.chooseTitle, source === 'camera' ? t.permissionCamera : t.permissionLibrary, [
           { text: t.cancel, style: 'cancel' },
-          { text: fr.common.settings, onPress: () => void Linking.openSettings() },
+          {
+            text: fr.common.settings,
+            onPress: () =>
+              void openAppSettings().then((ok) => {
+                if (!ok) toast.show(fr.common.settingsManual);
+              }),
+          },
         ]);
       } else {
         toast.show(t.failed);

@@ -1,12 +1,13 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { X } from 'lucide-react-native';
 import { useRef } from 'react';
-import { Linking, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { Button, FullScreen, IconButton } from '@/components/ui';
+import { Button, FullScreen, IconButton, useToast } from '@/components/ui';
 import { parseInviteCode } from '@/features/social/invite';
 import { useScannedCode } from '@/features/social/scanned';
 import { fr } from '@/i18n/fr';
+import { openAppSettings } from '@/lib/appSettings';
 import { goBack } from '@/lib/navigation';
 
 const t = fr.friends.scan;
@@ -14,6 +15,7 @@ const t = fr.friends.scan;
 /** Scanner le QR code d'un ami (SPEC_V2 §7.2) : le code lu revient à « Ajouter un ami ». */
 export default function ScanScreen() {
   const [permission, requestPermission] = useCameraPermissions();
+  const toast = useToast();
   const done = useRef(false);
 
   const onScanned = (data: string) => {
@@ -48,7 +50,14 @@ export default function ScanScreen() {
           {permission.canAskAgain ? (
             <Button label={t.allow} onPress={() => void requestPermission()} />
           ) : (
-            <Button label={t.settings} onPress={() => void Linking.openSettings()} />
+            <Button
+              label={t.settings}
+              onPress={() =>
+                void openAppSettings().then((ok) => {
+                  if (!ok) toast.show(fr.common.settingsManual);
+                })
+              }
+            />
           )}
         </View>
       ) : null}
