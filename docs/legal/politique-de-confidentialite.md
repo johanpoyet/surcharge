@@ -1,12 +1,12 @@
 # Politique de confidentialité — Surcharge
 
-*Dernière mise à jour : 22 octobre 2026*
+*Dernière mise à jour : 25 octobre 2026*
 
 Surcharge est une application de suivi d'entraînement (musculation, course, circuits, Hyrox). Cette page explique quelles données
 l'application traite, pourquoi, où elles sont stockées et comment tu gardes la main dessus.
 
 **En résumé** : tes données servent uniquement à faire fonctionner l'application. Pas de publicité,
-pas de traçage, pas de revente, pas d'outil d'analyse d'audience. Si tu ajoutes des amis, ils ne
+pas de traçage, pas de revente, pas d'outil d'analyse d'audience dans l'application. Si tu ajoutes des amis, ils ne
 voient que des résumés (régularité, records, progression), jamais ton poids corporel ni le détail
 de tes séances. Tu peux tout exporter ou tout supprimer depuis l'application, à tout moment.
 
@@ -129,6 +129,14 @@ respectés, tu peux adresser une réclamation à la **CNIL** (www.cnil.fr).
 
 Surcharge est destinée aux personnes de **15 ans et plus**.
 
-## 10. Modifications
+## 10. Site web
+
+Les pages du site johanpoyet.fr, dont celle-ci, utilisent **Umami**, un outil de mesure d'audience
+hébergé sur nos propres serveurs en France. Il ne dépose **aucun cookie**, ne conserve pas ton adresse IP
+et ne collecte aucune donnée permettant de t'identifier : il compte seulement les visites de façon agrégée
+(pages vues, pays, type d'appareil). L'application Surcharge elle-même n'utilise aucun outil de mesure
+d'audience.
+
+## 11. Modifications
 
 Cette politique peut évoluer. En cas de changement important, tu en seras informé dans l'application.
